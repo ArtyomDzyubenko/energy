@@ -1,0 +1,10 @@
+.idea
+out
+target
+
+*.iws
+*.rar
+*.docx
+*.iml
+*.png
+*.xml

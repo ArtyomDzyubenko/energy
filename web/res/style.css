@@ -1,0 +1,51 @@
+table.form {
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+tr.form,td.form {
+    padding: 5px;
+    border: 0;
+    border-collapse: collapse;
+}
+
+table.header {
+    margin-left: auto;
+    margin-right: auto;
+    border: 0;
+    border-collapse: collapse;
+}
+
+tr.header,td.header {
+    padding: 5px;
+    border: 0;
+    border-collapse: collapse;
+}
+
+table.data {
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+tr,td {
+    padding: 5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.topButton {
+    width:100px;
+    border:2px solid #ccc;
+    background:#f7f7f7;
+    text-align:center;
+    padding:10px;
+    position:fixed;
+    bottom:50px;
+    right:50px;
+    cursor:pointer;
+    color:#333;
+}
