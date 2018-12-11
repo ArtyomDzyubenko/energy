@@ -17,6 +17,7 @@ public class AuthFilter implements Filter {
         servicesAllowedForAllUsers.add(AUTH);
         servicesAllowedForAllUsers.add(REGISTER_USER);
         servicesAllowedForAllUsers.add(SHOW_REGISTER_USER_FORM);
+        servicesAllowedForAllUsers.add(INDEX_JSP);
 
         servicesAllowedForUser.add(AUTH);
         servicesAllowedForUser.add(LOGOUT);
@@ -31,7 +32,7 @@ public class AuthFilter implements Filter {
         servicesAllowedForUser.add(SWITCH_LANGUAGE);
     }
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException, SecurityException {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         HttpServletResponse response = (HttpServletResponse)servletResponse;
 
@@ -49,7 +50,7 @@ public class AuthFilter implements Filter {
             if (servicesAllowedForUser.contains(action)) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {
-                throw new SecurityException("access denied!");
+                throw new SecurityException("Access denied!");
             }
         } else {
             request.getRequestDispatcher(INDEX_JSP).forward(request, response);

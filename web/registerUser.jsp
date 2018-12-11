@@ -8,7 +8,7 @@
     <title></title>
 </head>
 <body>
-    <c:if test="${sessionScope.authUser == null}">
+    <c:if test="${authUser.id == null}">
         <div align="center">
             <a href="index.jsp"><<< <fmt:message key="auth"/></a>
         </div>

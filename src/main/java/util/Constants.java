@@ -7,9 +7,17 @@ public final class Constants {
 
     //COMMON
     public static final String EMPTY_STRING = "";
+    public static final String DATE_TIME_DELIMITER = "T";
+    public static final String SPACE = " ";
     public static final Long LONG_ZERO = 0L;
     public static final Integer INT_ZERO = 0;
     public static final Double DOUBLE_ZERO = 0.0;
+    public static final String AUTH_USER = "authUser";
+    public static final String SECRET_KEY = "sKey";
+    public static final String GET_METHOD = "GET";
+    public static final String POST_METHOD = "POST";
+
+    //VALIDATION
     public static final int STRING_MAX_LENGTH = 32;
     public static final int BUILDING_STRING_MAX_LENGTH = 4;
     public static final int FLAT_STRING_MAX_LENGTH = 4;
@@ -22,10 +30,6 @@ public final class Constants {
     public static final String IP_ADDRESS_REGEX = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
     public static final String USER_FIRST_LAST_NAME_REGEX = "[a-zA-Zа-яА-ЯЁё]+";
     public static final String USER_LOGIN_REGEX = "[a-zA-Z0-9]+";
-    public static final String AUTH_USER = "authUser";
-    public static final String SECRET_KEY = "sKey";
-    public static final String GET_METHOD = "GET";
-    public static final String POST_METHOD = "POST";
 
     //JSP
     public static final String RESOURCES_DIR = "/res";

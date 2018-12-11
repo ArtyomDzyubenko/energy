@@ -6,16 +6,21 @@ import exception.ValidationException;
 import java.io.IOException;
 import model.MeterReader;
 import validator.MeterReaderValidator;
+import validator.ServiceParametersValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.addMeterReaderServiceAllowedInputParameters;
 
 public class AddMeterReaderService extends AbstractService {
     private static AddMeterReaderService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private AddMeterReaderService() throws DAOException{}
+    private AddMeterReaderService() throws DAOException{
+        init();
+    }
 
     public static synchronized  AddMeterReaderService getInstance() throws DAOException {
         if (instance==null){
@@ -27,8 +32,10 @@ public class AddMeterReaderService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, addMeterReaderServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             MeterReader meterReader = getMeterReader(parameters);
 
@@ -58,5 +65,12 @@ public class AddMeterReaderService extends AbstractService {
         meterReader.setPort(meterReaderValidator.validatePort(parameters.get(METER_READER_PORT)[0], !allowEmpty));
 
         return meterReader;
+    }
+
+    private void init() {
+        allowedParameters.add(METER_READER_ID);
+        allowedParameters.add(METER_READER_NUMBER);
+        allowedParameters.add(METER_READER_IP_ADDRESS);
+        allowedParameters.add(METER_READER_PORT);
     }
 }

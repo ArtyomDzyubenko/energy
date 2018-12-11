@@ -1,15 +1,13 @@
 package service;
 
-import DAO.AbstractLanguageDAO;
+import DAO.LanguageDAO;
 import exception.DAOException;
 import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
-import DAO.LanguageDAO;
-import DAO.UserDAO;
 import model.Language;
 import model.User;
-import util.Localization;
+import validator.ServiceParametersValidator;
 import validator.UserValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,14 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.authServiceAllowedInputParameters;
 
 public class AuthService extends AbstractService {
-    private String authUserSessionId;
-    private List<Language> languages = new ArrayList<>();
     private static AuthService instance;
+    private List<String> allowedParameters = new ArrayList<>();
+    private String authUserSessionId = EMPTY_STRING;
+    private List<Language> languages = new ArrayList<>();
 
-    private AuthService() throws DAOException {}
+    private AuthService() throws DAOException {
+        init();
+    }
 
     public static synchronized AuthService getInstance() throws DAOException {
         if(instance==null){
@@ -37,8 +37,10 @@ public class AuthService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, authServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             User authUser = getAuthUser(parameters);
             loadLanguages();
@@ -50,7 +52,7 @@ public class AuthService extends AbstractService {
                 authUserSessionId = request.getSession().getId();
                 request.getRequestDispatcher(SHOW_USERS).forward(request, response);
             } else {
-                String errorMessage = Localization.getLocalization().getString("accessDenied");
+                String errorMessage = LanguageService.getInstance().getLocalization().getString("incorrectLoginPassword");
                 throw new SecurityException(errorMessage);
             }
         } catch (ServletException e) {
@@ -69,8 +71,8 @@ public class AuthService extends AbstractService {
     }
 
     private User getAuthUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
-        UserDAO userDAO = UserDAO.getInstance();
         UserValidator userValidator = UserValidator.getInstance();
+
         String userLoginString = parameters.get(USER_LOGIN)[0];
         String userPasswordString = parameters.get(USER_PASSWORD)[0];
         String userLogin = userValidator.validateLogin(userLoginString, !allowEmpty);
@@ -80,7 +82,11 @@ public class AuthService extends AbstractService {
     }
 
     private void loadLanguages() throws DAOException {
-        AbstractLanguageDAO languageDAO = LanguageDAO.getInstance();
-        languages = languageDAO.getAll();
+        languages = LanguageDAO.getInstance().getAll();
+    }
+
+    private void init() {
+        allowedParameters.add(USER_LOGIN);
+        allowedParameters.add(USER_PASSWORD);
     }
 }

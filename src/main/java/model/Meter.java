@@ -1,6 +1,6 @@
 package model;
 
-public class MeterEntity {
+public class Meter {
     private Long id;
     private Integer number;
     private Long meterReaderId;
@@ -10,7 +10,7 @@ public class MeterEntity {
     private Long addressId;
     private String secretKey;
 
-    public MeterEntity(){}
+    public Meter(){}
 
     public void setId(Long id) {
         this.id = id;

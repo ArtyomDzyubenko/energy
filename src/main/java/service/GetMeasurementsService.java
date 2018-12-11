@@ -5,21 +5,22 @@ import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
 import model.Measurement;
-import validator.MeasurementValidator;
-import validator.MeterValidator;
+import validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.getMeasurementsServiceAllowedInputParameters;
 
 public class GetMeasurementsService extends AbstractService {
     private static GetMeasurementsService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private GetMeasurementsService() throws DAOException {}
+    private GetMeasurementsService() throws DAOException {
+        init();
+    }
 
     public static synchronized GetMeasurementsService getInstance() throws DAOException {
         if (instance==null){
@@ -31,8 +32,10 @@ public class GetMeasurementsService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, getMeasurementsServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Long meterId = getMeterId(parameters);
             String secretKey = parameters.get(SECRET_KEY)[0];
@@ -58,5 +61,12 @@ public class GetMeasurementsService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(METER_ID);
+        allowedParameters.add(ADDRESS_ID);
+        allowedParameters.add(USER_ID);
+        allowedParameters.add(SECRET_KEY);
     }
 }

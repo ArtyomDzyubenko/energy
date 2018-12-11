@@ -4,8 +4,6 @@ import exception.DAOException;
 import model.Resource;
 import java.util.List;
 
-import static util.Constants.LONG_ZERO;
-
 public class ResourceDAO extends AbstractResourceDAO {
     private static final String GET_RESOURCE_BY_METER_ID = "select *\n" +
             "from resources r\n" +
@@ -34,7 +32,7 @@ public class ResourceDAO extends AbstractResourceDAO {
 
     @Override
     public List<Resource> getAll() throws DAOException {
-        return getResources(LONG_ZERO, GET_RESOURCES);
+        return getResources(null, GET_RESOURCES);
     }
 
     @Override

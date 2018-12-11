@@ -1,8 +1,9 @@
 package exception;
 
-import util.Localization;
+import service.LanguageService;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.ResourceBundle;
 import static util.Constants.EMPTY_STRING;
 
 public class DAOExceptionHandler {
@@ -20,7 +21,8 @@ public class DAOExceptionHandler {
 
     public void getExceptionMessage(SQLException e) throws DAOException {
         String exceptionMessage = e.getMessage();
-        Enumeration<String> errorKeys = Localization.getDAOErrorLocalization().getKeys();
+        ResourceBundle localization = LanguageService.getInstance().getDAOErrorLocalization();
+        Enumeration<String> errorKeys = localization.getKeys();
 
         String errorMessage = EMPTY_STRING;
 
@@ -28,14 +30,14 @@ public class DAOExceptionHandler {
             String key = errorKeys.nextElement();
 
             if (exceptionMessage.contains(key)){
-                errorMessage = Localization.getDAOErrorLocalization().getString(key);
+                errorMessage = localization.getString(key);
             }
         }
 
         if (!errorMessage.isEmpty()){
             throw new DAOException(errorMessage);
         } else {
-            throw new DAOException(exceptionMessage);
+            throw new DAOException(e);
         }
     }
 }

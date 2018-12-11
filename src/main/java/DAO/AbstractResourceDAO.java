@@ -22,11 +22,10 @@ public abstract class AbstractResourceDAO extends AbstractDAO {
 
     List<Resource> getResources(Long id, String query) throws DAOException {
         List<Resource> resources = new ArrayList<>();
-
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if ((id != null) && !id.equals(LONG_ZERO)){
+            if (id != null){
                 preparedStatement.setLong(1, id);
             }
 

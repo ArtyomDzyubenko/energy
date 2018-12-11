@@ -18,20 +18,16 @@ public final class MeterReaderParser {
     private static final int END_SECONDS_STRING_POSITION = 26;
     private static final int START_MEASUREMENT_STRING_POSITION = 26;
     private static final int END_MEASUREMENT_STRING_POSITION = 34;
-    private static final int OFFSET = 946684800;        //in input stream time starts from 2000-01-01, but EPOCH time starts from 1970-01-01
+    private static final int OFFSET = 946684800;        //in input stream, time starts from 2000-01-01, but EPOCH time starts from 1970-01-01
     private static final StringBuilder stringBuilder = new StringBuilder();
 
     private static MeterReaderParser parser;
 
     private MeterReaderParser() {}
 
-    public static MeterReaderParser getInstance() {
+    public static synchronized MeterReaderParser getInstance() {
         if(parser==null){
-            synchronized (MeterReaderParser.class){
-                if(parser==null){
-                    parser = new MeterReaderParser();
-                }
-            }
+            parser = new MeterReaderParser();
         }
 
         return parser;

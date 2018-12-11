@@ -3,19 +3,23 @@ package service;
 import exception.DAOException;
 import exception.ServiceException;
 import exception.ValidationException;
-import validator.InvoiceValidator;
+import validator.ServiceParametersValidator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.INVOICES_URL_LAST_STATE;
 import static util.Constants.INVOICE_ID;
-import static util.ServicesAllowedInputParametersLists.deleteInvoiceServiceAllowedInputParameters;
 
 public class DeleteInvoiceService extends AbstractService {
     private static DeleteInvoiceService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private DeleteInvoiceService() throws DAOException{}
+    private DeleteInvoiceService() throws DAOException{
+        init();
+    }
 
     public static synchronized DeleteInvoiceService getInstance() throws DAOException {
         if(instance==null){
@@ -27,8 +31,10 @@ public class DeleteInvoiceService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, deleteInvoiceServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Long invoiceId = getInvoiceId(parameters);
 
@@ -42,5 +48,9 @@ public class DeleteInvoiceService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(INVOICE_ID);
     }
 }

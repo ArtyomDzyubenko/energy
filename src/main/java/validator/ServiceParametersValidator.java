@@ -2,16 +2,16 @@ package validator;
 
 import exception.DAOException;
 import exception.ValidationException;
+import service.LanguageService;
 import util.Encryption;
-import util.Localization;
 import java.util.List;
 import java.util.Map;
 
-public class ServiceParametersValidator {
+public class ServiceParametersValidator extends AbstractValidator {
     private StringBuilder concat = new StringBuilder();
     private static ServiceParametersValidator instance;
 
-    private ServiceParametersValidator() { }
+    private ServiceParametersValidator() {}
 
     public static synchronized ServiceParametersValidator getInstance() {
         if(instance==null){
@@ -25,8 +25,9 @@ public class ServiceParametersValidator {
         for(String parameter: validParameters){
             if(!inputParameters.containsKey(parameter)){
                 concat.setLength(0);
-                String errorMessage = concat.append(Localization.getLocalization().getString("parameterNotFound"))
+                String errorMessage = concat.append(getErrorLocalization("parameterNotFound"))
                         .append(" ").append(parameter).toString();
+
                 throw new ValidationException(errorMessage);
             }
         }
@@ -36,7 +37,8 @@ public class ServiceParametersValidator {
         String encryptedPair = Encryption.encrypt(parameter + sessionId);
 
         if(!secretKey.equals(encryptedPair)){
-            String errorMessage = Localization.getLocalization().getString("accessDenied");
+            String errorMessage = getErrorLocalization("accessDenied");
+
             throw new SecurityException(errorMessage);
         }
     }

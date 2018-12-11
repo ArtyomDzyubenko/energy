@@ -3,7 +3,6 @@ package DAO;
 import exception.DAOException;
 import model.Street;
 import java.util.List;
-import static util.Constants.LONG_ZERO;
 
 public class StreetDAO extends AbstractStreetDAO {
     private static final String GET_STREET_BY_ADDRESS_ID = "select *\n" +
@@ -33,7 +32,7 @@ public class StreetDAO extends AbstractStreetDAO {
 
     @Override
     public List<Street> getAll() throws DAOException {
-        return getStreets(LONG_ZERO, GET_STREETS);
+        return getStreets(null, GET_STREETS);
     }
 
     @Override

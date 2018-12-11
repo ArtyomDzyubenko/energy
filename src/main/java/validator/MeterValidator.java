@@ -2,7 +2,6 @@ package validator;
 
 import exception.DAOException;
 import exception.ValidationException;
-import util.Localization;
 
 public class MeterValidator extends AbstractValidator {
     private static MeterValidator instance;
@@ -18,12 +17,14 @@ public class MeterValidator extends AbstractValidator {
     }
 
     public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
-        String fieldName = Localization.getLocalization().getString("meterId");
+        String fieldName = getErrorLocalization("meterId");
+
         return validateLongField(id, fieldName, allowEmpty);
     }
 
     public Integer validateNumber(String number, boolean allowEmpty) throws ValidationException, DAOException {
-        String fieldName = Localization.getLocalization().getString("meterNumber");
+        String fieldName = getErrorLocalization("meterNumber");
+
         return validateIntField(number, fieldName, allowEmpty);
     }
 }

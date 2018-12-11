@@ -20,7 +20,6 @@ abstract public class AbstractService {
     AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
     AbstractStreetDAO streetDAO = StreetDAO.getInstance();
     AbstractUserDAO userDAO = UserDAO.getInstance();
-    ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
     boolean allowEmpty = true;
 
     AbstractService() throws DAOException { }
@@ -48,36 +47,42 @@ abstract public class AbstractService {
     Long getAddressId(Map<String, String[]> parameters) throws ValidationException, DAOException {
         AddressValidator addressValidator = AddressValidator.getInstance();
         String addressIdString = parameters.get(ADDRESS_ID)[0];
+
         return addressValidator.validateId(addressIdString, allowEmpty);
     }
 
     Long getMeterId(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeterValidator meterValidator = MeterValidator.getInstance();
         String meterIdString = parameters.get(METER_ID)[0];
+
         return meterValidator.validateId(meterIdString, allowEmpty);
     }
 
     Long getUserId(Map<String, String[]> parameters) throws ValidationException, DAOException {
         UserValidator userValidator = UserValidator.getInstance();
         String userIdString = parameters.get(USER_ID)[0];
+
         return userValidator.validateId(userIdString, allowEmpty);
     }
 
     Long getInvoiceId(Map<String, String[]> parameters) throws ValidationException, DAOException {
         InvoiceValidator invoiceValidator = InvoiceValidator.getInstance();
         String invoiceIdString = parameters.get(INVOICE_ID)[0];
+
         return invoiceValidator.validateId(invoiceIdString, allowEmpty);
     }
 
     Long getMeasurementId(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeasurementValidator measurementValidator = MeasurementValidator.getInstance();
         String measurementIdString = parameters.get(MEASUREMENT_ID)[0];
+
         return measurementValidator.validateId(measurementIdString, allowEmpty);
     }
 
     Long getMeterReaderId(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
         String meterReaderIdString = parameters.get(METER_READER_ID)[0];
+
         return meterReaderValidator.validateId(meterReaderIdString, allowEmpty);
     }
 }

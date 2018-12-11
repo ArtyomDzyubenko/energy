@@ -14,7 +14,7 @@ import static util.Constants.METER_READERS_JSP;
 public class GetMeterReadersService extends AbstractService {
     private static GetMeterReadersService instance;
 
-    private GetMeterReadersService() throws DAOException{}
+    private GetMeterReadersService() throws DAOException{ }
 
     public static synchronized GetMeterReadersService getInstance() throws DAOException {
         if (instance==null) {

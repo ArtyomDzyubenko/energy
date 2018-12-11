@@ -11,7 +11,7 @@ import java.util.List;
 import static util.Constants.*;
 
 public abstract class AbstractAddressDAO extends AbstractDAO {
-    StreetDAO streetDAO = StreetDAO.getInstance();
+    private AbstractStreetDAO streetDAO = StreetDAO.getInstance();
 
     AbstractAddressDAO() throws DAOException { }
 
@@ -27,7 +27,7 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if ((id != null) && !id.equals(LONG_ZERO)) {
+            if (id != null) {
                 preparedStatement.setLong(1, id);
             }
 

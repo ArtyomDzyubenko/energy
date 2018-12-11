@@ -1,7 +1,8 @@
 package util;
 
 import exception.DAOException;
-import model.MeterEntity;
+import model.Meter;
+import service.LanguageService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +11,9 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+import static util.Constants.EMPTY_STRING;
+import static util.Constants.SPACE;
 
 public final class MeterReaderSocket {
     private static final int MAX_STRINGS_FOR_ITERATION = 30;
@@ -23,14 +27,19 @@ public final class MeterReaderSocket {
     private static final String READ_DATA_COMMAND_ID = "5040";
     private static final String READ_STRINGS_NUMBER_COMMAND = "850030402177\n";
     private static final String GET_METER_READER_NUMBER_COMMAND = "2410201558\n";
-    private static final Checksum checksum = new Checksum();
-    private static final StringBuilder stringBuilder = new StringBuilder();
-    private static final MeterReaderParser parser = MeterReaderParser.getInstance();
+    private static final String BYTE_NUMBER_STRING_FORMAT = "%1$04X";
+    private static final String MEMORY_ADDRESS_STRING_FORMAT = "%1$02X";
+    private static final int START_RECORDS_NUMBER_STRING_POSITION = 8;
+    private static final int END_RECORDS_NUMBER_STRING_POSITION = 12;
     private static MeterReaderSocket socket;
+    private Checksum checksum = Checksum.getInstance();
+    private StringBuilder stringBuilder = new StringBuilder();
+    private MeterReaderParser parser = MeterReaderParser.getInstance();
+    private ResourceBundle localization = LanguageService.getInstance().getLocalization();
 
-    private MeterReaderSocket(){}
+    private MeterReaderSocket() throws DAOException {}
 
-    public static synchronized MeterReaderSocket getInstance() {
+    public static synchronized MeterReaderSocket getInstance() throws DAOException {
         if(socket ==null){
             socket = new MeterReaderSocket();
         }
@@ -38,13 +47,13 @@ public final class MeterReaderSocket {
         return socket;
     }
 
-    public List<MeterEntity> getMetersFromMeterReader(String IPAddress, int port) throws IOException, DAOException {
+    public List<Meter> getMetersFromMeterReader(String IPAddress, int port) throws IOException {
         List<String> data = getDataFromMeterReader(IPAddress, port);
-        List<MeterEntity> meters = new ArrayList<>();
+        List<Meter> meters = new ArrayList<>();
 
         for (String dataString: data) {
             if (isDataStringValid(dataString) && parser.getTariffNumber(dataString) == FIRST_TARIFF_NUMBER) {
-                MeterEntity meter = new MeterEntity();
+                Meter meter = new Meter();
                 meter.setNumber(parser.getMeterNumber(dataString));
                 meter.getMeasurement().setDateTime(parser.getDate(dataString));
                 meter.getMeasurement().setValue((double)parser.getMeasurementValue(dataString));
@@ -55,8 +64,8 @@ public final class MeterReaderSocket {
         return meters;
     }
 
-    private List<String> getDataFromMeterReader(String IPAddress, int port) throws IOException, DAOException {
-        List<String> outputData = new ArrayList<>();
+    private List<String> getDataFromMeterReader(String IPAddress, int port) throws IOException {
+        List<String> out = new ArrayList<>();
 
         try(Socket socket = new Socket(IPAddress, port)) {
             socket.setSoTimeout(SOCKET_TIMEOUT);
@@ -64,7 +73,7 @@ public final class MeterReaderSocket {
             InputStream inputStream = socket.getInputStream();
 
             if (!checkConnectionBusy(outputStream, inputStream)){
-                throw new IOException(Localization.getLocalization().getString("connectionBusy"));
+                throw new IOException(localization.getString("connectionBusy"));
             }
 
             List<String> commandsList = makeReadDataCommandsList(getRecordsNumber(outputStream, inputStream));
@@ -76,17 +85,17 @@ public final class MeterReaderSocket {
 
                 if ((commandCounter % MAX_STRINGS_FOR_ITERATION == 0) || commandCounter == commandsList.size()) {
                     for (int i = 0; i < MAX_STRINGS_FOR_ITERATION; i++) {
-                        outputData.add(read(inputStream));
+                        out.add(read(inputStream));
                     }
                 }
             }
         } catch (ConnectException e){
-            throw new IOException(Localization.getLocalization().getString("connectionFailed"));
+            throw new IOException(localization.getString("connectionFailed"));
         } catch (SocketTimeoutException e){
-            return outputData;
+            return out;
         }
 
-        return outputData;
+        return out;
     }
 
     private static boolean checkConnectionBusy(OutputStream outputStream, InputStream inputStream) throws IOException {
@@ -102,13 +111,13 @@ public final class MeterReaderSocket {
     }
 
     private String read(InputStream stream) throws IOException {
-        String out = "";
+        String out = EMPTY_STRING;
         byte[] buffer = new byte[READ_BUFFER_SIZE];
 
         int readByteCount = stream.read(buffer);
 
         if(readByteCount > 0){
-            out = new String(buffer, 0, readByteCount).trim().replace(" ", "");
+            out = new String(buffer, 0, readByteCount).trim().replace(SPACE, EMPTY_STRING);
         }
 
         return out;
@@ -124,24 +133,26 @@ public final class MeterReaderSocket {
 
         for (int recordNumber = 0; recordNumber < recordsNumbers; recordNumber++){
             out.setLength(0);
-            String byteNumberString = out.append(String.format("%1$04X", recordNumber)).reverse().toString();
+            String byteNumberString = out.append(String.format(BYTE_NUMBER_STRING_FORMAT, recordNumber)).reverse().toString();
             out.setLength(0);
-            String memoryAddressString = out.append(String.format("%1$02X", memoryAddress)).reverse().toString(); //"%1$02X", "%1$04X" save significant zeros
+            String memoryAddressString = out.append(String.format(MEMORY_ADDRESS_STRING_FORMAT, memoryAddress))
+                    .reverse().toString(); //"%1$02X", "%1$04X" save significant zeros
 
             memoryAddress++;
 
             if (memoryAddress == LAST_MEMORY_ADDRESS) {
-                memoryAddress=0;
+                memoryAddress = 0;
             }
 
             out.setLength(0);
             out.append(DATA_HEADER).append(memoryAddressString).append(READ_DATA_COMMAND_ID).append(byteNumberString);
             String outString = out.toString();
 
-            String forCalculateChecksum = parser.swapStringSymbols(outString);
+            String dataString = parser.swapStringSymbols(outString);
 
             checksum.setLength(0);
-            checksum.append(Integer.toHexString(calculateChecksum(parser.stringToByteArray(forCalculateChecksum))).toUpperCase()).reverse().append("\n");
+            String checksumString = Integer.toHexString(calculateChecksum(parser.stringToByteArray(dataString))).toUpperCase();
+            checksum.append(checksumString).reverse().append("\n");
 
             out.setLength(0);
             out.append(outString).append(checksum.toString());
@@ -168,7 +179,8 @@ public final class MeterReaderSocket {
         int bytesCount = inputStream.read(buffer);
 
         if (bytesCount > 0) {
-            String input = new String(buffer, 0, bytesCount).trim().substring(8, 12);
+            String input = new String(buffer, 0, bytesCount).trim()
+                    .substring(START_RECORDS_NUMBER_STRING_POSITION, END_RECORDS_NUMBER_STRING_POSITION);
             stringBuilder.setLength(0);
             stringBuilder.append(input).reverse();
             return Integer.parseInt(stringBuilder.toString(), 16);

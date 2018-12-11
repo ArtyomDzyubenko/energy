@@ -5,17 +5,22 @@ import exception.ServiceException;
 import exception.ValidationException;
 import model.Resource;
 import validator.ResourceValidator;
+import validator.ServiceParametersValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.addResourceServiceAllowedInputParameters;
 
 public class AddResourceService extends AbstractService {
     private static AddResourceService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private AddResourceService() throws DAOException{}
+    private AddResourceService() throws DAOException{
+        init();
+    }
 
     public static synchronized AddResourceService getInstance() throws DAOException {
         if (instance==null) {
@@ -27,8 +32,10 @@ public class AddResourceService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, addResourceServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Resource resource = getResource(parameters);
 
@@ -65,5 +72,11 @@ public class AddResourceService extends AbstractService {
         resource.setCost(resourceCost);
 
         return resource;
+    }
+
+    private void init() {
+        allowedParameters.add(RESOURCE_ID);
+        allowedParameters.add(RESOURCE_NAME);
+        allowedParameters.add(RESOURCE_COST);
     }
 }

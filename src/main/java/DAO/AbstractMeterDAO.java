@@ -1,7 +1,7 @@
 package DAO;
 
 import exception.DAOException;
-import model.MeterEntity;
+import model.Meter;
 import model.Resource;
 import service.AuthService;
 import util.Encryption;
@@ -14,15 +14,14 @@ import static util.Constants.LONG_ZERO;
 public abstract class AbstractMeterDAO extends AbstractDAO {
     AbstractMeterDAO() throws DAOException {}
 
-    public abstract List<MeterEntity> getMetersByAddressId(Long id) throws DAOException;
-    public abstract List<MeterEntity> getMeter(Long id) throws DAOException;
-    public abstract void addMeterByAddressId(MeterEntity meter) throws DAOException;
-    public abstract void editMeter(MeterEntity meter) throws DAOException;
+    public abstract List<Meter> getMetersByAddressId(Long id) throws DAOException;
+    public abstract List<Meter> getMeter(Long id) throws DAOException;
+    public abstract void addMeterByAddressId(Meter meter) throws DAOException;
+    public abstract void editMeter(Meter meter) throws DAOException;
     public abstract void deleteMeter(Long id) throws DAOException;
 
-    List<MeterEntity> getMeters(Long id, String query) throws DAOException {
-        List<MeterEntity> meters = new ArrayList<>();
-
+    List<Meter> getMeters(Long id, String query) throws DAOException {
+        List<Meter> meters = new ArrayList<>();
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
@@ -30,7 +29,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                MeterEntity meter = new MeterEntity();
+                Meter meter = new Meter();
                 Long meterId = resultSet.getLong(ID);
                 meter.setId(meterId);
                 meter.setNumber(resultSet.getInt(METER_NUMBER));
@@ -59,7 +58,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
         return meters;
     }
 
-    void addOrEditMeter(MeterEntity meter, String query) throws DAOException {
+    void addOrEditMeter(Meter meter, String query) throws DAOException {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {

@@ -49,6 +49,7 @@ public final class Encryption {
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException |
                 NoSuchPaddingException | BadPaddingException |
                 InvalidKeySpecException | IllegalBlockSizeException e) {
+
             logger.error(e.getMessage());
         }
 

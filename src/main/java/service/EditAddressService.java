@@ -2,28 +2,30 @@ package service;
 
 import exception.DAOException;
 import exception.ServiceException;
-import DAO.StreetDAO;
-import DAO.UserDAO;
 import exception.ValidationException;
 import model.Address;
 import model.Street;
 import model.User;
-import validator.AddressValidator;
+import validator.ServiceParametersValidator;
 import validator.UserValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
 import static util.Constants.ADDRESSES_JSP;
-import static util.ServicesAllowedInputParametersLists.editAddressServiceAllowedInputParameters;
 
 public class EditAddressService extends AbstractService {
     private static EditAddressService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private EditAddressService() throws DAOException {}
+
+    private EditAddressService() throws DAOException {
+        init();
+    }
 
     public static synchronized EditAddressService getInstance() throws DAOException {
         if (instance==null){
@@ -35,12 +37,11 @@ public class EditAddressService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
             UserValidator userValidator = UserValidator.getInstance();
-            UserDAO userDAO = UserDAO.getInstance();
-            StreetDAO streetDAO = StreetDAO.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, editAddressServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             String userIdString = parameters.get(USER_ID)[0];
 
@@ -65,5 +66,10 @@ public class EditAddressService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(ADDRESS_ID);
+        allowedParameters.add(USER_ID);
     }
 }

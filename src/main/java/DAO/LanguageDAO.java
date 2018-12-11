@@ -3,7 +3,6 @@ package DAO;
 import exception.DAOException;
 import model.Language;
 import java.util.List;
-import static util.Constants.LONG_ZERO;
 
 public class LanguageDAO extends AbstractLanguageDAO {
     private static final String GET_LANGUAGES = "select * from languages;";
@@ -22,7 +21,7 @@ public class LanguageDAO extends AbstractLanguageDAO {
 
     @Override
     public List<Language> getAll() throws DAOException {
-        return getLanguages(LONG_ZERO, GET_LANGUAGES);
+        return getLanguages(null, GET_LANGUAGES);
     }
 
     public List<Language> getLanguageById(Long id) throws DAOException {

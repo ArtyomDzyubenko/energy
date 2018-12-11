@@ -7,17 +7,22 @@ import java.io.IOException;
 import model.Measurement;
 import validator.MeasurementValidator;
 import validator.MeterValidator;
+import validator.ServiceParametersValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.addMeasurementServiceAllowedInputParameters;
 
 public class AddMeasurementService extends AbstractService {
     private static AddMeasurementService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private AddMeasurementService() throws DAOException{}
+    private AddMeasurementService() throws DAOException{
+        init();
+    }
 
     public static synchronized AddMeasurementService getInstance() throws DAOException {
         if (instance==null) {
@@ -29,8 +34,10 @@ public class AddMeasurementService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, addMeasurementServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Measurement measurement = getMeasurement(parameters);
 
@@ -73,7 +80,7 @@ public class AddMeasurementService extends AbstractService {
             dateTimeString = parameters.get(MEASUREMENT_DATE_TIME)[0];
         }
 
-        dateTimeString = dateTimeString.replace("T", " ");
+        dateTimeString = dateTimeString.replace(DATE_TIME_DELIMITER, SPACE);
         dateTime = measurementValidator.validateDate(dateTimeString, !allowEmpty);
 
         measurement.setDateTime(dateTime);
@@ -81,5 +88,12 @@ public class AddMeasurementService extends AbstractService {
         measurement.setMeterId(meterId);
 
         return measurement;
+    }
+
+    private void init() {
+        allowedParameters.add(MEASUREMENT_ID);
+        allowedParameters.add(MEASUREMENT_DATE_TIME);
+        allowedParameters.add(MEASUREMENT_VALUE);
+        allowedParameters.add(METER_ID);
     }
 }

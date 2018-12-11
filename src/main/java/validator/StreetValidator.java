@@ -2,7 +2,6 @@ package validator;
 
 import exception.DAOException;
 import exception.ValidationException;
-import util.Localization;
 import static util.Constants.*;
 
 public class StreetValidator extends AbstractValidator {
@@ -19,12 +18,14 @@ public class StreetValidator extends AbstractValidator {
     }
 
     public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
-        String fieldName = Localization.getLocalization().getString("streetId");
+        String fieldName = getErrorLocalization("streetId");
+
         return validateLongField(id,  fieldName, allowEmpty);
     }
 
     public String validateName(String name, boolean allowEmpty) throws ValidationException, DAOException {
-        String fieldName = Localization.getLocalization().getString("streetName");
+        String fieldName = getErrorLocalization("streetName");
+
         return validateStringField(name, STRING_MAX_LENGTH, fieldName, allowEmpty);
     }
 }

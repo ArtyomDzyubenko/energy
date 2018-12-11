@@ -6,18 +6,23 @@ import exception.ValidationException;
 import java.io.IOException;
 import model.Address;
 import validator.AddressValidator;
+import validator.ServiceParametersValidator;
 import validator.StreetValidator;
 import validator.UserValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.addAddressServiceAllowedInputParameters;
 
 public class AddAddressService extends AbstractService {
     private static AddAddressService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private AddAddressService() throws DAOException {}
+    private AddAddressService() throws DAOException {
+        init();
+    }
 
     public static synchronized AddAddressService getInstance() throws DAOException {
         if (instance==null){
@@ -29,8 +34,10 @@ public class AddAddressService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, addAddressServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Address address = getAddress(parameters);
 
@@ -89,5 +96,14 @@ public class AddAddressService extends AbstractService {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(ADDRESS_ID);
+        allowedParameters.add(ADDRESS_BUILDING);
+        allowedParameters.add(ADDRESS_FLAT);
+        allowedParameters.add(USER_ID);
+        allowedParameters.add(STREET_ID);
+        allowedParameters.add(TRANSFER_USER_ID);
     }
 }

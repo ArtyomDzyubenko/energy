@@ -10,14 +10,11 @@ import java.util.List;
 import static util.Constants.*;
 
 public abstract class AbstractUserDAO extends AbstractDAO {
-    private static final String GET_USER_BY_LOGIN_AND_PASSWORD ="select *\n" +
-            "from users\n" +
-            "where login like ? and password like ?;";
-
     AbstractUserDAO() throws DAOException {}
 
     public abstract List<User> getAll() throws DAOException;
     public abstract List<User> getUserById(Long id) throws DAOException;
+    public abstract User getUserByLoginAndPassword(String login, String password) throws DAOException;
     public abstract void addUser(User user) throws DAOException;
     public abstract void editUser(User user) throws DAOException;
     public abstract void registerUser(User user) throws DAOException;
@@ -48,12 +45,12 @@ public abstract class AbstractUserDAO extends AbstractDAO {
         return users;
     }
 
-    public User getUserByLoginAndPassword(String login, String password) throws DAOException {
+    User getUser(String login, String password, String query) throws DAOException {
         User user = new User();
 
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_LOGIN_AND_PASSWORD)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, Encryption.encrypt(password));
             ResultSet resultSet = preparedStatement.executeQuery();

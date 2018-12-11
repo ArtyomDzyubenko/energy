@@ -4,19 +4,24 @@ import exception.DAOException;
 import exception.ServiceException;
 import exception.ValidationException;
 import model.User;
+import validator.ServiceParametersValidator;
 import validator.UserValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.registerUserServiceAllowedInputParameters;
 
 public class RegisterUserService extends AbstractService {
     private static RegisterUserService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private RegisterUserService() throws DAOException{}
+    private RegisterUserService() throws DAOException{
+        init();
+    }
 
     public static synchronized RegisterUserService getInstance() throws DAOException {
         if (instance==null) {
@@ -28,8 +33,10 @@ public class RegisterUserService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, registerUserServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             User registeredUser = getRegisteredUser(parameters);
 
@@ -79,7 +86,16 @@ public class RegisterUserService extends AbstractService {
         user.setPassword(userPassword);
         user.setPhone(userPhone);
         user.setEmail(userEmail);
+        user.setAdmin(false);
 
         return user;
+    }
+
+    private void init() {
+        allowedParameters.add(USER_ID);
+        allowedParameters.add(USER_LOGIN);
+        allowedParameters.add(USER_PASSWORD);
+        allowedParameters.add(USER_PHONE);
+        allowedParameters.add(USER_EMAIL);
     }
 }

@@ -4,8 +4,6 @@ import exception.DAOException;
 import model.MeterReader;
 import java.util.List;
 
-import static util.Constants.LONG_ZERO;
-
 public class MeterReaderDAO extends AbstractMeterReaderDAO {
     private static final String GET_METER_READERS = "select * from meterReaders;";
     private static final String INSERT_METER_READER = "insert into meterReaders(readerNumber, IPAddress, port)\n" +
@@ -31,7 +29,7 @@ public class MeterReaderDAO extends AbstractMeterReaderDAO {
 
     @Override
     public List<MeterReader> getAll() throws DAOException{
-        return getMeterReaders(LONG_ZERO, GET_METER_READERS);
+        return getMeterReaders(null, GET_METER_READERS);
     }
 
     @Override

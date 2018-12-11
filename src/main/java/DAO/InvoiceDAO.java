@@ -28,8 +28,8 @@ public class InvoiceDAO extends AbstractInvoiceDAO {
     }
 
     @Override
-    public List<Invoice> getInvoicesByUserId(Long userId) throws DAOException {
-        return getInvoice(userId, GET_INVOICES_BY_USER_ID);
+    public List<Invoice> getInvoicesByUserId(Long id) throws DAOException {
+        return getInvoice(id, GET_INVOICES_BY_USER_ID);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class InvoiceDAO extends AbstractInvoiceDAO {
     }
 
     @Override
-    public void updatePayStatusById(Long invoiceId, boolean payStatus) throws DAOException {
-        setPayStatus(invoiceId, payStatus, UPDATE_INVOICE_PAY_STATUS);
+    public void updatePayStatusById(Long id, boolean payStatus) throws DAOException {
+        setPayStatus(id, payStatus, UPDATE_INVOICE_PAY_STATUS);
     }
 
     @Override

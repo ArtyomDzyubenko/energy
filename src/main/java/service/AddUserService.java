@@ -5,18 +5,22 @@ import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
 import model.User;
+import validator.ServiceParametersValidator;
 import validator.UserValidator;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.addUserServiceAllowedInputParameters;
 
 public class AddUserService extends AbstractService {
     private static AddUserService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private AddUserService() throws DAOException{}
+    private AddUserService() throws DAOException{
+        init();
+    }
 
     public static AddUserService getInstance() throws DAOException {
         if (instance==null) {
@@ -28,8 +32,10 @@ public class AddUserService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, addUserServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             User user = getUser(parameters);
 
@@ -80,5 +86,16 @@ public class AddUserService extends AbstractService {
         user.setPersonalAccount(userPersonalAccount);
 
         return user;
+    }
+
+    private void init() {
+        allowedParameters.add(USER_ID);
+        allowedParameters.add(USER_LOGIN);
+        allowedParameters.add(USER_PASSWORD);
+        allowedParameters.add(USER_FIRST_NAME);
+        allowedParameters.add(USER_LAST_NAME);
+        allowedParameters.add(USER_PHONE);
+        allowedParameters.add(USER_EMAIL);
+        allowedParameters.add(USER_PERSONAL_ACCOUNT);
     }
 }

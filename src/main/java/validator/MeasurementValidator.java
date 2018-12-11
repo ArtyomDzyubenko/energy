@@ -2,7 +2,6 @@ package validator;
 
 import exception.DAOException;
 import exception.ValidationException;
-import util.Localization;
 import java.sql.Timestamp;
 
 public class MeasurementValidator extends AbstractValidator {
@@ -19,17 +18,20 @@ public class MeasurementValidator extends AbstractValidator {
     }
 
     public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
-        String fieldName = Localization.getLocalization().getString("measurementId");
+        String fieldName = getErrorLocalization("measurementId");
+
         return validateLongField(id, fieldName, allowEmpty);
     }
 
     public Timestamp validateDate(String date, boolean allowEmpty) throws ValidationException, DAOException {
-        String fieldName = Localization.getLocalization().getString("date");
+        String fieldName = getErrorLocalization("date");
+
         return validateDateTimeField(date, fieldName, allowEmpty);
     }
 
     public Double validateValue(String value, boolean allowEmpty) throws ValidationException, DAOException {
-        String fieldName = Localization.getLocalization().getString("value");
+        String fieldName = getErrorLocalization("value");
+
         return validateDoubleField(value, fieldName, allowEmpty);
     }
 }

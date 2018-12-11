@@ -10,7 +10,7 @@ public class Invoice {
     private Long userId;
     private boolean paid;
     private String secretKey;
-    private MeterEntity meter = new MeterEntity();
+    private Meter meter = new Meter();
     private Measurement startValue = new Measurement();
     private Measurement endValue = new Measurement();
 
@@ -24,7 +24,7 @@ public class Invoice {
         this.date = date;
     }
 
-    public void setMeter(MeterEntity meter) {
+    public void setMeter(Meter meter) {
         this.meter = meter;
     }
 
@@ -64,7 +64,7 @@ public class Invoice {
         return date;
     }
 
-    public MeterEntity getMeter() {
+    public Meter getMeter() {
         return meter;
     }
 

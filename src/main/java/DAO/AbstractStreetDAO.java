@@ -23,11 +23,10 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
 
     List<Street> getStreets(Long id, String query) throws DAOException {
         List<Street> streets = new ArrayList<>();
-
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if ((id != null) && !id.equals(LONG_ZERO)){
+            if (id != null){
                 preparedStatement.setLong(1, id);
             }
 

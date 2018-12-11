@@ -2,7 +2,7 @@ package DAO;
 
 import exception.DAOException;
 import model.Measurement;
-import model.MeterEntity;
+import model.Meter;
 import service.AuthService;
 import util.Encryption;
 import java.sql.Connection;
@@ -26,11 +26,10 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
     public abstract void addMeasurement(Measurement measurement) throws DAOException;
     public abstract void editMeasurement(Measurement measurement) throws DAOException;
     public abstract void deleteMeasurementById(Long id) throws DAOException;
-    public abstract void addMeasurements(List<MeterEntity> meters) throws DAOException;
+    public abstract void addMeasurements(List<Meter> meters) throws DAOException;
 
     List<Measurement> getMeasurements(Long id, String query) throws DAOException {
         List<Measurement> measurements = new ArrayList<>();
-
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
@@ -79,11 +78,11 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
         }
     }
 
-    void addMeasurementsFromMeters(List<MeterEntity> meters, String query) throws DAOException{
+    void addMeasurementsFromMeters(List<Meter> meters, String query) throws DAOException{
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            for (MeterEntity meter : meters) {
+            for (Meter meter : meters) {
                 Long meterId = getMeterIdByMeterNumber(meter.getNumber(), connection);
 
                 if (!meterId.equals(LONG_ZERO)) {

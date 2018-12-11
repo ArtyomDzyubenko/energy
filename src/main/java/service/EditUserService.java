@@ -5,18 +5,22 @@ import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
 import model.User;
-import validator.UserValidator;
+import validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.editUserServiceAllowedInputParameters;
 
 public class EditUserService extends AbstractService {
     private static EditUserService instance;
+    List<String> allowedParameters = new ArrayList<>();
 
-    private EditUserService() throws DAOException{}
+    private EditUserService() throws DAOException{
+        init();
+    }
 
     public static synchronized EditUserService getInstance() throws DAOException {
         if (instance==null) {
@@ -28,8 +32,10 @@ public class EditUserService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, editUserServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Long userId = getUserId(parameters);
             User user = userDAO.getUserById(userId).get(0);
@@ -45,5 +51,9 @@ public class EditUserService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(USER_ID);
     }
 }

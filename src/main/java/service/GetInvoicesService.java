@@ -5,21 +5,23 @@ import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
 import model.Invoice;
-import validator.UserValidator;
-
+import validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
 import static util.Constants.INVOICES_JSP;
-import static util.ServicesAllowedInputParametersLists.getInvoicesServiceAllowedInputParameters;
 
 public class GetInvoicesService extends AbstractService {
     private static GetInvoicesService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private GetInvoicesService() throws DAOException{}
+    private GetInvoicesService() throws DAOException{
+        init();
+    }
 
     public static synchronized GetInvoicesService getInstance() throws DAOException {
         if (instance==null){
@@ -31,11 +33,12 @@ public class GetInvoicesService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, getInvoicesServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Long userId = getUserId(parameters);
-
             String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
             parametersValidator.validateSecretKey(userId.toString(), authUserSessionId, parameters.get(SECRET_KEY)[0]);
             List<Invoice> invoices = invoiceDAO.getInvoicesByUserId(userId);
@@ -53,5 +56,10 @@ public class GetInvoicesService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(USER_ID);
+        allowedParameters.add(SECRET_KEY);
     }
 }

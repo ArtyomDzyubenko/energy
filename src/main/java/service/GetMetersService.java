@@ -4,22 +4,26 @@ import exception.DAOException;
 import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
-import model.MeterEntity;
+import model.Meter;
 import model.MeterReader;
 import model.Resource;
+import validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
 import static util.Constants.METERS_JSP;
-import static util.ServicesAllowedInputParametersLists.getMetersServiceAllowedInputParameters;
 
 public class GetMetersService extends AbstractService {
     private static GetMetersService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private GetMetersService() throws DAOException { }
+    private GetMetersService() throws DAOException {
+        init();
+    }
 
     public static synchronized GetMetersService getInstance() throws DAOException {
         if (instance==null){
@@ -31,8 +35,10 @@ public class GetMetersService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, getMetersServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Long addressId = getAddressId(parameters);
             Long userId = getUserId(parameters);
@@ -41,7 +47,7 @@ public class GetMetersService extends AbstractService {
             String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
             parametersValidator.validateSecretKey(addressId.toString(), authUserSessionId, sKey);
 
-            List<MeterEntity> meters = meterDAO.getMetersByAddressId(addressId);
+            List<Meter> meters = meterDAO.getMetersByAddressId(addressId);
             List<Resource> resources = resourceDAO.getAll();
             List<MeterReader> readers = meterReaderDAO.getAll();
 
@@ -61,5 +67,11 @@ public class GetMetersService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(ADDRESS_ID);
+        allowedParameters.add(USER_ID);
+        allowedParameters.add(SECRET_KEY);
     }
 }

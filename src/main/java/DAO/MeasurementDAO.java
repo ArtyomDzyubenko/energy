@@ -2,9 +2,8 @@ package DAO;
 
 import exception.DAOException;
 import model.Measurement;
-import model.MeterEntity;
+import model.Meter;
 import java.util.List;
-
 
 public class MeasurementDAO extends AbstractMeasurementDAO {
     private static final String GET_MEASUREMENTS_BY_METER_ID = "select *\n" +
@@ -15,12 +14,11 @@ public class MeasurementDAO extends AbstractMeasurementDAO {
             "where id = ?;";
     private static final String INSERT_MEASUREMENT_BY_METER_ID = "insert into measurements(dateTime, value, meterId)\n" +
             "values(?, ?, ?);";
+    private static final String INSERT_MEASUREMENT_BY_METER_NUMBER = "insert into measurements(dateTime, value, meterId)\n" +
+            "values(?, ?, ?);";
     private static final String UPDATE_MEASUREMENT = "update measurements\n" +
             "set dateTime = ?, value = ?\n" +
             "where id = ?;";
-    private static final String INSERT_MEASUREMENT_BY_METER_NUMBER = "insert into measurements(dateTime, value, meterId)\n" +
-            "values(?, ?, ?);";
-
     private static final String DELETE_MEASUREMENT = "delete from measurements where id=?;";
     private static MeasurementDAO instance;
 
@@ -50,6 +48,11 @@ public class MeasurementDAO extends AbstractMeasurementDAO {
     }
 
     @Override
+    public void addMeasurements(List<Meter> meters) throws DAOException {
+        addMeasurementsFromMeters(meters, INSERT_MEASUREMENT_BY_METER_NUMBER);
+    }
+
+    @Override
     public void editMeasurement(Measurement measurement) throws DAOException {
         addOrEditMeasurement(measurement, UPDATE_MEASUREMENT);
     }
@@ -58,10 +61,4 @@ public class MeasurementDAO extends AbstractMeasurementDAO {
     public void deleteMeasurementById(Long id) throws DAOException {
         deleteEntityById(id, DELETE_MEASUREMENT);
     }
-
-    @Override
-    public void addMeasurements(List<MeterEntity> meters) throws DAOException {
-        addMeasurementsFromMeters(meters, INSERT_MEASUREMENT_BY_METER_NUMBER);
-    }
-
 }

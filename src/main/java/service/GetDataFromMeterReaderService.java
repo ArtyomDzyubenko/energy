@@ -4,22 +4,26 @@ import exception.DAOException;
 import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
-import model.MeterEntity;
+import model.Meter;
 import model.MeterReader;
 import util.MeterReaderSocket;
 import validator.MeterReaderValidator;
+import validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.getDataFromMeterReaderServiceAllowedInputParameters;
 
 public class GetDataFromMeterReaderService extends AbstractService {
     private static GetDataFromMeterReaderService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private GetDataFromMeterReaderService() throws DAOException{}
+    private GetDataFromMeterReaderService() throws DAOException{
+        init();
+    }
 
     public static synchronized GetDataFromMeterReaderService getInstance() throws DAOException {
         if (instance==null){
@@ -31,17 +35,18 @@ public class GetDataFromMeterReaderService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
             MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, getDataFromMeterReaderServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             String meterReaderIdString = parameters.get(METER_READER_ID)[0];
             Long meterReaderId = meterReaderValidator.validateId(meterReaderIdString, !allowEmpty);
 
             MeterReader meterReader = meterReaderDAO.getMeterReaderById(meterReaderId).get(0);
             MeterReaderSocket socket = MeterReaderSocket.getInstance();
-            List<MeterEntity> meters = socket.getMetersFromMeterReader(meterReader.getIPAddress(), meterReader.getPort());
+            List<Meter> meters = socket.getMetersFromMeterReader(meterReader.getIPAddress(), meterReader.getPort());
             measurementDAO.addMeasurements(meters);
 
             request.setAttribute(METERS_ATTRIBUTE_NAME, meters);
@@ -55,5 +60,9 @@ public class GetDataFromMeterReaderService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(METER_READER_ID);
     }
 }

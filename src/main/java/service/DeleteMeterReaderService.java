@@ -3,20 +3,23 @@ package service;
 import exception.DAOException;
 import exception.ServiceException;
 import exception.ValidationException;
-import validator.MeterReaderValidator;
-
+import validator.ServiceParametersValidator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.METER_READERS_URL_LAST_STATE;
 import static util.Constants.METER_READER_ID;
-import static util.ServicesAllowedInputParametersLists.deleteMeterReaderServiceAllowedInputParameters;
 
 public class DeleteMeterReaderService extends AbstractService {
     private static DeleteMeterReaderService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private DeleteMeterReaderService() throws DAOException {}
+    private DeleteMeterReaderService() throws DAOException {
+        init();
+    }
 
     public static synchronized DeleteMeterReaderService getInstance() throws DAOException {
         if (instance==null){
@@ -28,8 +31,10 @@ public class DeleteMeterReaderService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, deleteMeterReaderServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Long meterReaderId = getMeterReaderId(parameters);
 
@@ -43,5 +48,9 @@ public class DeleteMeterReaderService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(METER_READER_ID);
     }
 }

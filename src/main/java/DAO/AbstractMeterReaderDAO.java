@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import static util.Constants.*;
 
 public abstract class AbstractMeterReaderDAO extends AbstractDAO {
@@ -22,11 +21,10 @@ public abstract class AbstractMeterReaderDAO extends AbstractDAO {
 
     List<MeterReader> getMeterReaders(Long id, String query) throws DAOException {
         List<MeterReader> meterReaders = new ArrayList<>();
-
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if((id!=null) && !id.equals(LONG_ZERO)){
+            if(id != null){
                 preparedStatement.setLong(1, id);
             }
 

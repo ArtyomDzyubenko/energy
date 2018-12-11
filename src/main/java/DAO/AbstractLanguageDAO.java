@@ -23,7 +23,7 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            if((id != null) && !id.equals(LONG_ZERO)){
+            if(id != null){
                 preparedStatement.setLong(1, id);
             }
 

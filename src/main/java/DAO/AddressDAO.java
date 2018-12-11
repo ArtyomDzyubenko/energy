@@ -4,8 +4,6 @@ import exception.DAOException;
 import model.Address;
 import java.util.List;
 
-import static util.Constants.LONG_ZERO;
-
 public class AddressDAO extends AbstractAddressDAO {
     private static final String DELETE_ADDRESS = "delete from addresses where id = ?;";
     private static final String GET_ADDRESSES = "select *\n" +
@@ -19,14 +17,12 @@ public class AddressDAO extends AbstractAddressDAO {
             "where id = ?;";
     private static final String INSERT_ADDRESS_BY_USER_ID =  "insert into addresses(building, flat, streetId, userId)\n" +
             "values(?, ?, ?, ?);";
-    private static final String UPDATE_ADDRESS_BY_ADDRESS_ID = "update addresses\n" +
+    private static final String UPDATE_ADDRESS_BY_ID = "update addresses\n" +
             "set building = ?, flat = ?, streetId = ?, userId=?\n" +
             "where id = ?;";
     private static AddressDAO instance;
 
-    private AddressDAO() throws DAOException {
-        streetDAO = StreetDAO.getInstance();
-    }
+    private AddressDAO() throws DAOException {}
 
     public static synchronized AddressDAO getInstance() throws DAOException {
         if (instance==null){
@@ -37,23 +33,23 @@ public class AddressDAO extends AbstractAddressDAO {
     }
 
     @Override
-    public List<Address> getAddressesByUserId(Long userId) throws DAOException {
-        return getAddressById(userId, GET_ADDRESSES_BY_USER_ID);
+    public List<Address> getAddressesByUserId(Long id) throws DAOException {
+        return getAddressById(id, GET_ADDRESSES_BY_USER_ID);
     }
 
     @Override
-    public List<Address> getAddressById(Long addressId) throws DAOException {
-        return getAddressById(addressId, GET_ADDRESS_BY_ID);
+    public List<Address> getAddressById(Long id) throws DAOException {
+        return getAddressById(id, GET_ADDRESS_BY_ID);
     }
 
     @Override
     public List<Address> getAll() throws DAOException {
-        return getAddressById(LONG_ZERO, GET_ADDRESSES);
+        return getAddressById(null, GET_ADDRESSES);
     }
 
     @Override
-    public void deleteAddressById(Long addressId) throws DAOException {
-        deleteEntityById(addressId, DELETE_ADDRESS);
+    public void deleteAddressById(Long id) throws DAOException {
+        deleteEntityById(id, DELETE_ADDRESS);
     }
 
     @Override
@@ -63,6 +59,6 @@ public class AddressDAO extends AbstractAddressDAO {
 
     @Override
     public void editAddress(Address address) throws DAOException {
-        addOrEditAddress(address, UPDATE_ADDRESS_BY_ADDRESS_ID);
+        addOrEditAddress(address, UPDATE_ADDRESS_BY_ID);
     }
 }

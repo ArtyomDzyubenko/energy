@@ -3,19 +3,23 @@ package service;
 import exception.DAOException;
 import exception.ServiceException;
 import exception.ValidationException;
-import validator.MeasurementValidator;
+import validator.ServiceParametersValidator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.MEASUREMENTS_URL_LAST_STATE;
 import static util.Constants.MEASUREMENT_ID;
-import static util.ServicesAllowedInputParametersLists.deleteMeasurementServiceAllowedInputParameters;
 
 public class DeleteMeasurementService extends AbstractService {
     private static DeleteMeasurementService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private DeleteMeasurementService() throws DAOException {}
+    private DeleteMeasurementService() throws DAOException {
+        init();
+    }
 
     public static synchronized DeleteMeasurementService getInstance() throws DAOException {
         if (instance==null){
@@ -27,8 +31,10 @@ public class DeleteMeasurementService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, deleteMeasurementServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Long measurementId = getMeasurementId(parameters);
 
@@ -42,5 +48,9 @@ public class DeleteMeasurementService extends AbstractService {
         } catch (ValidationException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private void init() {
+        allowedParameters.add(MEASUREMENT_ID);
     }
 }

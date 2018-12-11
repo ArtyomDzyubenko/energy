@@ -19,12 +19,13 @@ public final class ConnectionPool {
     private static final List<Connection> availableConnections = new ArrayList<>();
     private static ConnectionPool instance;
 
-    private ConnectionPool(){}
+    private ConnectionPool() throws DAOException {
+        init();
+    }
 
     public static synchronized ConnectionPool getInstance() throws DAOException {
         if (instance==null){
             instance = new ConnectionPool();
-            init();
         }
 
         return instance;
@@ -33,11 +34,10 @@ public final class ConnectionPool {
     public Connection getConnection() throws DAOException {
         if(availableConnections.isEmpty()){
             String message = "Database connection error!";
-
             logger.error(message);
+
             throw new DAOException(message);
-        }
-        else {
+        } else {
             return availableConnections.remove(availableConnections.size() - 1);
         }
     }

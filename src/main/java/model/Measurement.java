@@ -1,6 +1,8 @@
 package model;
 
 import java.sql.Timestamp;
+import static util.Constants.DATE_TIME_DELIMITER;
+import static util.Constants.SPACE;
 
 public class Measurement {
     private Long id;
@@ -33,7 +35,7 @@ public class Measurement {
     }
 
     public void setDateTime(Timestamp dateTime) {
-        setLocalDateTimeString(dateTime.toString().replace(" ", "T"));
+        setLocalDateTimeString(dateTime.toString().replace(SPACE, DATE_TIME_DELIMITER));
         this.dateTime = dateTime;
     }
 

@@ -1,7 +1,7 @@
 package DAO;
 
 import exception.DAOException;
-import model.MeterEntity;
+import model.Meter;
 import java.util.List;
 
 public class MeterDAO extends AbstractMeterDAO {
@@ -20,13 +20,9 @@ public class MeterDAO extends AbstractMeterDAO {
             "set number = ?, resourceId = ?, meterReaderId = ?, addressId=?\n" +
             "where id = ?;";
     private static final String DELETE_METER = "delete from meters where id = ?;";
-
-    private static ResourceDAO resourceDAO;
     private static MeterDAO instance;
 
-    private MeterDAO() throws DAOException {
-        resourceDAO = ResourceDAO.getInstance();
-    }
+    private MeterDAO() throws DAOException {}
 
     public static synchronized MeterDAO getInstance() throws DAOException {
         if (instance==null){
@@ -37,22 +33,22 @@ public class MeterDAO extends AbstractMeterDAO {
     }
 
     @Override
-    public List<MeterEntity> getMetersByAddressId(Long id) throws DAOException {
+    public List<Meter> getMetersByAddressId(Long id) throws DAOException {
         return getMeters(id, GET_METERS_BY_ADDRESS_ID);
     }
 
     @Override
-    public List<MeterEntity> getMeter(Long id) throws DAOException {
+    public List<Meter> getMeter(Long id) throws DAOException {
         return getMeters(id, GET_METER_BY_ID);
     }
 
     @Override
-    public void addMeterByAddressId(MeterEntity meter) throws DAOException {
+    public void addMeterByAddressId(Meter meter) throws DAOException {
         addOrEditMeter(meter, INSERT_METER_BY_ADDRESS_ID);
     }
 
     @Override
-    public void editMeter(MeterEntity meter) throws DAOException {
+    public void editMeter(Meter meter) throws DAOException {
         addOrEditMeter(meter, UPDATE_METER_BY_ID);
     }
 

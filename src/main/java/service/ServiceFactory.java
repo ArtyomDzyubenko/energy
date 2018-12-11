@@ -3,7 +3,6 @@ package service;
 import exception.DAOException;
 import exception.ServiceException;
 import org.apache.log4j.Logger;
-import util.Localization;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -35,7 +34,8 @@ public class ServiceFactory {
             service.execute(request, response);
         } else {
             logger.error(serviceRequest);
-            String errorMessage = Localization.getLocalization().getString("incorrectRequest");
+            String errorMessage = LanguageService.getInstance().getLocalization().getString("incorrectRequest");
+
             throw new ServiceException(errorMessage);
         }
     }
@@ -78,7 +78,7 @@ public class ServiceFactory {
         serviceMap.put(GET_DATA_FROM_METER_READER, GetDataFromMeterReaderService.getInstance());
 
         serviceMap.put(AUTH, AuthService.getInstance());
-        serviceMap.put(SWITCH_LANGUAGE, SwitchLanguageService.getInstance());
+        serviceMap.put(SWITCH_LANGUAGE, LanguageService.getInstance());
 
         serviceMap.put(REGISTER_USER, RegisterUserService.getInstance());
 

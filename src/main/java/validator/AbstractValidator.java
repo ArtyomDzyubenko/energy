@@ -2,7 +2,7 @@ package validator;
 
 import exception.DAOException;
 import exception.ValidationException;
-import util.Localization;
+import service.LanguageService;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -34,8 +34,8 @@ abstract class AbstractValidator {
             return field;
         } else {
             concat.setLength(0);
-            String errorMessage = concat.append(Localization.getLocalization()
-                    .getString("incorrectSymbols")).append(" ").append(fieldName).toString();
+            String errorMessage = concat.append(getErrorLocalization("incorrectSymbols")).append(" ").append(fieldName).toString();
+            
             throw new ValidationException(errorMessage);
         }
     }
@@ -52,6 +52,7 @@ abstract class AbstractValidator {
         } catch (NumberFormatException e){
             concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
+
             throw new ValidationException(errorMessage);
         }
 
@@ -72,6 +73,7 @@ abstract class AbstractValidator {
         } catch (NumberFormatException e){
             concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
+            
             throw new ValidationException(errorMessage);
         }
 
@@ -92,6 +94,7 @@ abstract class AbstractValidator {
         } catch (NumberFormatException e){
             concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
+            
             throw new ValidationException(errorMessage);
         }
 
@@ -111,12 +114,17 @@ abstract class AbstractValidator {
             out = Timestamp.valueOf(field);
         } catch (IllegalArgumentException e){
             concat.setLength(0);
-            String errorMessage = concat.append(Localization.getLocalization().getString("incorrectDateTimeFormat"))
+            String errorMessage = concat.append(getErrorLocalization("incorrectDateTimeFormat"))
                     .append(" ").append(fieldName).toString();
+            
             throw new ValidationException(errorMessage);
         }
 
         return out;
+    }
+
+    String getErrorLocalization(String key) throws DAOException {
+        return LanguageService.getInstance().getLocalization().getString(key);
     }
 
     private boolean checkForEmptyField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
@@ -124,8 +132,9 @@ abstract class AbstractValidator {
             return true;
         } else if (field.isEmpty()) {
             concat.setLength(0);
-            String errorMessage = concat.append(Localization.getLocalization().getString("emptyNotAllowed"))
+            String errorMessage = concat.append(getErrorLocalization("emptyNotAllowed"))
                     .append(" ").append(fieldName).toString();
+
             throw new ValidationException(errorMessage);
         }
 
@@ -135,8 +144,9 @@ abstract class AbstractValidator {
     private void checkFieldLength(String field, String fieldName, int length) throws ValidationException, DAOException {
         if (field.length() > length) {
             concat.setLength(0);
-            String errorMessage = concat.append(Localization.getLocalization().getString("stringLengthError"))
+            String errorMessage = concat.append(getErrorLocalization("stringLengthError"))
                     .append(" ").append(length).append(" : ").append(fieldName).toString();
+
             throw new ValidationException(errorMessage);
         }
     }
@@ -147,15 +157,15 @@ abstract class AbstractValidator {
                 || (value instanceof Integer && value.intValue() < 0)) {
 
             concat.setLength(0);
-            String errorMessage = concat.append(Localization.getLocalization().getString("negativeValueError"))
+            String errorMessage = concat.append(getErrorLocalization("negativeValueError"))
                     .append(" ").append(fieldName).toString();
+
             throw new ValidationException(errorMessage);
         }
     }
 
     private String getValueNotANumberErrorString(String fieldName) throws DAOException {
-        return concat.append(Localization.getLocalization().getString("valueNotANumberError"))
-                .append(" ").append(fieldName).toString();
+        return concat.append(getErrorLocalization("valueNotANumberError")).append(" ").append(fieldName).toString();
     }
 }
 

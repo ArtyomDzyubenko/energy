@@ -4,7 +4,6 @@ import exception.DAOException;
 import exception.ServiceException;
 import java.io.IOException;
 import java.util.List;
-
 import model.Street;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

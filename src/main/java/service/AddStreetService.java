@@ -5,17 +5,22 @@ import exception.ServiceException;
 import exception.ValidationException;
 import java.io.IOException;
 import model.Street;
+import validator.ServiceParametersValidator;
 import validator.StreetValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static util.Constants.*;
-import static util.ServicesAllowedInputParametersLists.addStreetServiceAllowedInputParameters;
 
 public class AddStreetService extends AbstractService {
     private static AddStreetService instance;
+    private List<String> allowedParameters = new ArrayList<>();
 
-    private AddStreetService() throws DAOException{}
+    private AddStreetService() throws DAOException{
+        init();
+    }
 
     public static synchronized AddStreetService getInstance() throws DAOException {
         if (instance==null){
@@ -27,8 +32,10 @@ public class AddStreetService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
             Map<String, String[]> parameters = request.getParameterMap();
-            parametersValidator.validate(parameters, addStreetServiceAllowedInputParameters);
+            parametersValidator.validate(parameters, allowedParameters);
 
             Street street = getStreet(parameters);
 
@@ -62,5 +69,10 @@ public class AddStreetService extends AbstractService {
         street.setName(streetName);
 
         return street;
+    }
+
+    private void init() {
+        allowedParameters.add(STREET_ID);
+        allowedParameters.add(STREET_NAME);
     }
 }

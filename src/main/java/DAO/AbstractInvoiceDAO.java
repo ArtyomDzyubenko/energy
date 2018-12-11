@@ -3,7 +3,7 @@ package DAO;
 import exception.DAOException;
 import model.Invoice;
 import model.Measurement;
-import model.MeterEntity;
+import model.Meter;
 import service.AuthService;
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,12 +18,11 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
 
     public abstract List<Invoice> getInvoicesByUserId(Long id) throws DAOException;
     public abstract void addInvoiceByUserId(Invoice invoice) throws DAOException;
-    public abstract void deleteInvoiceById(Long id) throws DAOException;
     public abstract void updatePayStatusById(Long id, boolean status) throws DAOException;
+    public abstract void deleteInvoiceById(Long id) throws DAOException;
 
     List<Invoice> getInvoice(Long id, String query) throws DAOException {
         List<Invoice> invoices = new ArrayList<>();
-
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
@@ -35,12 +34,12 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
                 Long invoiceId = resultSet.getLong(ID);
                 invoice.setId(invoiceId);
                 invoice.setDate(resultSet.getDate(INVOICE_DATE).toLocalDate());
-                List<MeterEntity> meters = meterDAO.getMeter(resultSet.getLong(INVOICE_METER_ID));
+                List<Meter> meters = meterDAO.getMeter(resultSet.getLong(INVOICE_METER_ID));
 
                 if(!meters.isEmpty()){
                     invoice.setMeter(meters.get(0));
                 } else {
-                    invoice.setMeter(new MeterEntity());
+                    invoice.setMeter(new Meter());
                 }
 
                 Long startMeasurementId = resultSet.getLong(INVOICE_START_MEASUREMENT_ID);
