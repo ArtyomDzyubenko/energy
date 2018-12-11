@@ -12,6 +12,8 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import static com.epam.energy.util.Constants.EMPTY_STRING;
+import static com.epam.energy.util.Constants.INT_ZERO;
 
 public final class MeterReaderSocket {
     private static final int MAX_STRINGS_FOR_ITERATION = 30;
@@ -109,13 +111,13 @@ public final class MeterReaderSocket {
     }
 
     private String read(InputStream stream) throws IOException {
-        String out = Constants.EMPTY_STRING;
+        String out = EMPTY_STRING;
         byte[] buffer = new byte[READ_BUFFER_SIZE];
 
         int readByteCount = stream.read(buffer);
 
         if(readByteCount > 0){
-            out = new String(buffer, 0, readByteCount).trim().replace(Constants.SPACE, Constants.EMPTY_STRING);
+            out = new String(buffer, 0, readByteCount).trim().replace(Constants.SPACE, EMPTY_STRING);
         }
 
         return out;
@@ -181,10 +183,11 @@ public final class MeterReaderSocket {
                     .substring(START_RECORDS_NUMBER_STRING_POSITION, END_RECORDS_NUMBER_STRING_POSITION);
             stringBuilder.setLength(0);
             stringBuilder.append(input).reverse();
+
             return Integer.parseInt(stringBuilder.toString(), 16);
         }
 
-        return 0;
+        return INT_ZERO;
     }
 
     private boolean isDataStringValid(String dataString){

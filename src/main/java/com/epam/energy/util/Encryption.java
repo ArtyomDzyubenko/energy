@@ -1,7 +1,6 @@
 //https://gist.github.com/stonegao/5299984
 
 package com.epam.energy.util;
-
 import org.apache.log4j.Logger;
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
@@ -13,6 +12,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
+import static com.epam.energy.util.Constants.EMPTY_STRING;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Encryption {
@@ -53,7 +53,7 @@ public final class Encryption {
             logger.error(e.getMessage());
         }
 
-        return null;
+        return EMPTY_STRING;
     }
 
     public static String decrypt(String input) {
@@ -81,6 +81,6 @@ public final class Encryption {
             logger.error(e.getMessage());
         }
 
-        return null;
+        return EMPTY_STRING;
     }
 }

@@ -1,7 +1,7 @@
 package com.epam.energy.util;
 
 public final class Constants {
-    //RESOURCE BUNDLES NAMES
+    //RESOURCE BUNDLES
     public static final String localizationBundleName = "Locale";
     public static final String errorBundleName = "DAOError";
 
@@ -102,7 +102,7 @@ public final class Constants {
     public static final String LANGUAGE_CODE = "code";
     public static final String LANGUAGE_COUNTRY = "country";
 
-    //REQUEST ATTRIBUTES NAMES
+    //REQUEST ATTRIBUTES
     public static final String USER_ATTRIBUTE_NAME = "user";
     public static final String USERS_ATTRIBUTE_NAME = "users";
 
