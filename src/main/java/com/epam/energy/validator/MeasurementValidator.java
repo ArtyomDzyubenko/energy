@@ -10,7 +10,7 @@ public class MeasurementValidator extends AbstractValidator {
     private MeasurementValidator() {}
 
     public static synchronized MeasurementValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new MeasurementValidator();
         }
 

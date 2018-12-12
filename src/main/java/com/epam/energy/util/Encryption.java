@@ -29,7 +29,7 @@ public final class Encryption {
     private static final String NEW_STRING = "\n";
     private static final String NEW_LINE = "%0A";
 
-    private Encryption(){}
+    private Encryption() {}
 
     public static String encrypt(String input) {
         try {

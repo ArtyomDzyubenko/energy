@@ -24,8 +24,8 @@ public abstract class AbstractResourceDAO extends AbstractDAO {
         List<Resource> resources = new ArrayList<>();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if (id != null){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            if (id != null) {
                 preparedStatement.setLong(1, id);
             }
 
@@ -38,7 +38,7 @@ public abstract class AbstractResourceDAO extends AbstractDAO {
                 resource.setCost(resultSet.getDouble(RESOURCE_COST));
                 resources.add(resource);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);

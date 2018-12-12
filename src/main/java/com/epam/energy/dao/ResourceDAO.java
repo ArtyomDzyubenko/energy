@@ -23,7 +23,7 @@ public class ResourceDAO extends AbstractResourceDAO {
     private ResourceDAO() throws DAOException { }
 
     public static synchronized ResourceDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new ResourceDAO();
         }
 

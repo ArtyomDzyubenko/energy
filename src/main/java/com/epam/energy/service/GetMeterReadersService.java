@@ -17,7 +17,7 @@ public class GetMeterReadersService extends AbstractService {
     private GetMeterReadersService() throws DAOException{ }
 
     public static synchronized GetMeterReadersService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new GetMeterReadersService();
         }
 
@@ -29,7 +29,7 @@ public class GetMeterReadersService extends AbstractService {
             List<MeterReader> readers = meterReaderDAO.getAll();
 
             saveLastServiceURL(METER_READERS_URL_LAST_STATE, request);
-            request.setAttribute(METER_READERS_ATTRIBUTE_NAME, readers);
+            request.setAttribute(METER_READERS_ATTRIBUTE, readers);
             request.getRequestDispatcher(METER_READERS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

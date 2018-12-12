@@ -25,7 +25,7 @@ public class AddMeasurementService extends AbstractService {
     }
 
     public static synchronized AddMeasurementService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new AddMeasurementService();
         }
 
@@ -74,7 +74,7 @@ public class AddMeasurementService extends AbstractService {
         Measurement measurement = new Measurement();
         measurement.setId(measurementId);
 
-        if (parameters.containsKey(MEASUREMENT_LOCAL_DATE_TIME_STRING)){
+        if (parameters.containsKey(MEASUREMENT_LOCAL_DATE_TIME_STRING)) {
             dateTimeString = parameters.get(MEASUREMENT_LOCAL_DATE_TIME_STRING)[0];
         } else if (parameters.containsKey(MEASUREMENT_DATE_TIME)) {
             dateTimeString = parameters.get(MEASUREMENT_DATE_TIME)[0];

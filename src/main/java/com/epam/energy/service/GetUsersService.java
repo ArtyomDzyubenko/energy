@@ -16,7 +16,7 @@ public class GetUsersService extends AbstractService {
     private GetUsersService() throws DAOException {}
 
     public static synchronized GetUsersService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new GetUsersService();
         }
 
@@ -25,15 +25,15 @@ public class GetUsersService extends AbstractService {
 
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            User authUser = (User) request.getSession().getAttribute(AUTH_USER);
+            User authUser = (User) request.getSession().getAttribute(AUTHORIZED_USER);
             List<User> users;
 
             if (authUser.isAdmin()) {
                 users = userDAO.getAll();
-                request.setAttribute(USERS_ATTRIBUTE_NAME, users);
+                request.setAttribute(USERS_ATTRIBUTE, users);
             } else {
                 users = userDAO.getUserById(authUser.getId());
-                request.setAttribute(USERS_ATTRIBUTE_NAME, users);
+                request.setAttribute(USERS_ATTRIBUTE, users);
             }
 
             saveLastServiceURL(USERS_URL_LAST_STATE, request);

@@ -6,7 +6,7 @@ public class MeterReader {
     private String IPAddress;
     private Integer port;
 
-    public MeterReader(){}
+    public MeterReader() {}
 
     public void setId(Long id) {
         this.id = id;

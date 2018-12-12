@@ -24,7 +24,7 @@ public class RegisterUserService extends AbstractService {
     }
 
     public static synchronized RegisterUserService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new RegisterUserService();
         }
 

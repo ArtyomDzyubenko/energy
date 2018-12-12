@@ -5,7 +5,7 @@ public class Resource {
     private String name;
     private Double cost;
 
-    public Resource(){}
+    public Resource() {}
 
     public void setId(Long id) {
         this.id = id;

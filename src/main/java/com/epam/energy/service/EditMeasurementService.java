@@ -24,7 +24,7 @@ public class EditMeasurementService extends AbstractService {
     }
 
     public static synchronized EditMeasurementService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new EditMeasurementService();
         }
 
@@ -42,7 +42,7 @@ public class EditMeasurementService extends AbstractService {
             Measurement measurement = measurementDAO.getMeasurementById(measurementId).get(0);
 
             request.setAttribute(MEASUREMENT_ID, measurementId);
-            request.setAttribute(MEASUREMENT_ATTRIBUTE_NAME, measurement);
+            request.setAttribute(MEASUREMENT_ATTRIBUTE, measurement);
             request.getRequestDispatcher(MEASUREMENTS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

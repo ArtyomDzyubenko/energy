@@ -19,7 +19,7 @@ abstract class AbstractDAO {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);

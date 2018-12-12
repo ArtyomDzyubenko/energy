@@ -23,7 +23,7 @@ public class AddUserService extends AbstractService {
     }
 
     public static AddUserService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new AddUserService();
         }
 
@@ -39,7 +39,7 @@ public class AddUserService extends AbstractService {
 
             User user = getUser(parameters);
 
-            if(user.getId().equals(LONG_ZERO)) {
+            if (user.getId().equals(LONG_ZERO)) {
                 userDAO.addUser(user);
             } else {
                 userDAO.editUser(user);

@@ -25,11 +25,16 @@ public class AddressDAO extends AbstractAddressDAO {
     private AddressDAO() throws DAOException {}
 
     public static synchronized AddressDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new AddressDAO();
         }
 
         return instance;
+    }
+
+    @Override
+    public List<Address> getAll() throws DAOException {
+        return getAddressById(null, GET_ADDRESSES);
     }
 
     @Override
@@ -40,11 +45,6 @@ public class AddressDAO extends AbstractAddressDAO {
     @Override
     public List<Address> getAddressById(Long id) throws DAOException {
         return getAddressById(id, GET_ADDRESS_BY_ID);
-    }
-
-    @Override
-    public List<Address> getAll() throws DAOException {
-        return getAddressById(null, GET_ADDRESSES);
     }
 
     @Override

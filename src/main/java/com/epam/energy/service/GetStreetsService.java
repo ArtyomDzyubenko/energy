@@ -17,7 +17,7 @@ public class GetStreetsService extends AbstractService {
     private GetStreetsService() throws DAOException {}
 
     public static synchronized GetStreetsService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new GetStreetsService();
         }
 
@@ -29,7 +29,7 @@ public class GetStreetsService extends AbstractService {
             List<Street> streets = streetDAO.getAll();
 
             saveLastServiceURL(STREETS_URL_LAST_STATE, request);
-            request.setAttribute(STREETS_ATTRIBUTE_NAME, streets);
+            request.setAttribute(STREETS_ATTRIBUTE, streets);
             request.getRequestDispatcher(STREETS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

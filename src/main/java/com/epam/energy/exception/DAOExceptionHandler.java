@@ -9,10 +9,10 @@ import static com.epam.energy.util.Constants.EMPTY_STRING;
 public class DAOExceptionHandler {
     private static DAOExceptionHandler instance;
 
-    private DAOExceptionHandler(){}
+    private DAOExceptionHandler() {}
 
-    public static synchronized DAOExceptionHandler getInstance(){
-        if (instance==null){
+    public static synchronized DAOExceptionHandler getInstance() {
+        if (instance == null) {
             instance = new DAOExceptionHandler();
         }
 
@@ -26,15 +26,15 @@ public class DAOExceptionHandler {
 
         String errorMessage = EMPTY_STRING;
 
-        while (errorKeys.hasMoreElements()){
+        while (errorKeys.hasMoreElements()) {
             String key = errorKeys.nextElement();
 
-            if (exceptionMessage.contains(key)){
+            if (exceptionMessage.contains(key)) {
                 errorMessage = localization.getString(key);
             }
         }
 
-        if (!errorMessage.isEmpty()){
+        if (!errorMessage.isEmpty()) {
             throw new DAOException(errorMessage);
         } else {
             throw new DAOException(e);

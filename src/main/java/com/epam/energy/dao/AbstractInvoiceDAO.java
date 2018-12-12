@@ -26,7 +26,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
         List<Invoice> invoices = new ArrayList<>();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -37,7 +37,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
                 invoice.setDate(resultSet.getDate(INVOICE_DATE).toLocalDate());
                 List<Meter> meters = meterDAO.getMeter(resultSet.getLong(INVOICE_METER_ID));
 
-                if(!meters.isEmpty()){
+                if (!meters.isEmpty()) {
                     invoice.setMeter(meters.get(0));
                 } else {
                     invoice.setMeter(new Meter());
@@ -46,7 +46,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
                 Long startMeasurementId = resultSet.getLong(INVOICE_START_MEASUREMENT_ID);
                 List<Measurement> startMeasurements = measurementDAO.getMeasurementById(startMeasurementId);
 
-                if(!startMeasurements.isEmpty()){
+                if (!startMeasurements.isEmpty()) {
                     invoice.setStartValue(startMeasurements.get(0));
                 } else {
                     invoice.setStartValue(new Measurement());
@@ -55,7 +55,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
                 Long endMeasurementId = resultSet.getLong(INVOICE_END_MEASUREMENT_ID);
                 List<Measurement> endMeasurements = measurementDAO.getMeasurementById(endMeasurementId);
 
-                if(!endMeasurements.isEmpty()){
+                if (!endMeasurements.isEmpty()) {
                     invoice.setEndValue(endMeasurements.get(0));
                 } else {
                     invoice.setEndValue(new Measurement());
@@ -81,7 +81,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
     void addInvoice(Invoice invoice, String query) throws DAOException{
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDate(1, Date.valueOf(invoice.getDate()));
             preparedStatement.setLong(2, invoice.getMeter().getId());
             preparedStatement.setLong(3, invoice.getStartValue().getId());
@@ -91,7 +91,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
             preparedStatement.setLong(7, invoice.getUserId());
             preparedStatement.setBoolean(8, invoice.isPaid());
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
@@ -105,7 +105,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
             preparedStatement.setLong(2, id);
             preparedStatement.setBoolean(1, payStatus);
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);

@@ -36,13 +36,13 @@ public class AuthFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         HttpServletResponse response = (HttpServletResponse)servletResponse;
 
-        User authUser = (User)request.getSession().getAttribute(AUTH_USER);
+        User authUser = (User)request.getSession().getAttribute(AUTHORIZED_USER);
 
         String action = request.getServletPath();
 
         if (action.startsWith(RESOURCES_DIR))
             filterChain.doFilter(servletRequest, servletResponse);
-        else if (servicesAllowedForAllUsers.contains(action)){
+        else if (servicesAllowedForAllUsers.contains(action)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else if (authUser!=null && authUser.isAdmin()) {
             filterChain.doFilter(servletRequest, servletResponse);

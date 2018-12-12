@@ -24,7 +24,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
         List<Meter> meters = new ArrayList<>();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -38,7 +38,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
                 AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
                 List<Resource> resources = resourceDAO.getResourcesByMeterId(meterId);
 
-                if(!resources.isEmpty()){
+                if (!resources.isEmpty()) {
                     meter.setResource(resources.get(0));
                 } else{
                     meter.setResource(new Resource());
@@ -49,7 +49,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
                 meter.setSecretKey(Encryption.encrypt(meterId.toString() + authUserSessionId));
                 meters.add(meter);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);
@@ -65,7 +65,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
             preparedStatement.setInt(1, meter.getNumber());
             preparedStatement.setLong(2, meter.getResource().getId());
 
-            if (!meter.getMeterReaderId().equals(LONG_ZERO)){
+            if (!meter.getMeterReaderId().equals(LONG_ZERO)) {
                 preparedStatement.setLong(3, meter.getMeterReaderId());
             } else {
                 preparedStatement.setNull(3, Types.BIGINT);
@@ -79,7 +79,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
             }
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);

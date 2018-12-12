@@ -23,7 +23,7 @@ public class AddMeterReaderService extends AbstractService {
     }
 
     public static synchronized  AddMeterReaderService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new AddMeterReaderService();
         }
 
@@ -39,7 +39,7 @@ public class AddMeterReaderService extends AbstractService {
 
             MeterReader meterReader = getMeterReader(parameters);
 
-            if(meterReader.getId().equals(LONG_ZERO)) {
+            if (meterReader.getId().equals(LONG_ZERO)) {
                 meterReaderDAO.addMeterReader(meterReader);
             } else {
                 meterReaderDAO.editMeterReader(meterReader);
@@ -58,11 +58,21 @@ public class AddMeterReaderService extends AbstractService {
     private MeterReader getMeterReader(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
 
+        String meterReaderIdString = parameters.get(METER_READER_ID)[0];
+        String meterReaderNumberString = parameters.get(METER_READER_NUMBER)[0];
+        String meterReaderIPAddressString = parameters.get(METER_READER_IP_ADDRESS)[0];
+        String meterReaderPortString = parameters.get(METER_READER_PORT)[0];
+
+        Long meterReaderId = meterReaderValidator.validateId(meterReaderIdString, allowEmpty);
+        Integer meterReaderNumber = meterReaderValidator.validateNumber(meterReaderNumberString, !allowEmpty);
+        String meterReaderIPAddress = meterReaderValidator.validateIPAddress(meterReaderIPAddressString, !allowEmpty);
+        Integer meterReaderPort = meterReaderValidator.validatePort(meterReaderPortString, !allowEmpty);
+
         MeterReader meterReader = new MeterReader();
-        meterReader.setId(meterReaderValidator.validateId(parameters.get(METER_READER_ID)[0], allowEmpty));
-        meterReader.setNumber(meterReaderValidator.validateNumber(parameters.get(METER_READER_NUMBER)[0], !allowEmpty));
-        meterReader.setIPAddress(meterReaderValidator.validateIPAddress(parameters.get(METER_READER_IP_ADDRESS)[0], !allowEmpty));
-        meterReader.setPort(meterReaderValidator.validatePort(parameters.get(METER_READER_PORT)[0], !allowEmpty));
+        meterReader.setId(meterReaderId);
+        meterReader.setNumber(meterReaderNumber);
+        meterReader.setIPAddress(meterReaderIPAddress);
+        meterReader.setPort(meterReaderPort);
 
         return meterReader;
     }

@@ -32,7 +32,7 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
         List<Measurement> measurements = new ArrayList<>();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -48,7 +48,7 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
                 measurement.setSecretKey(Encryption.encrypt(measurementId.toString() + authUserSessionId));
                 measurements.add(measurement);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);
@@ -71,7 +71,7 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
             }
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
@@ -92,7 +92,7 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
                     preparedStatement.executeUpdate();
                 }
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);
@@ -107,7 +107,7 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
             if (resultSet.next()) {
                 return resultSet.getLong(ID);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         }
 

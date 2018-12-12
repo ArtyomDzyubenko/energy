@@ -20,7 +20,7 @@ public class InvoiceDAO extends AbstractInvoiceDAO {
     private InvoiceDAO() throws DAOException {}
 
     public static synchronized InvoiceDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new InvoiceDAO();
         }
 

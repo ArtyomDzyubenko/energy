@@ -28,7 +28,7 @@ public class EditAddressService extends AbstractService {
     }
 
     public static synchronized EditAddressService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new EditAddressService();
         }
 
@@ -53,9 +53,9 @@ public class EditAddressService extends AbstractService {
             List<User> users = userDAO.getAll();
 
             request.setAttribute(USER_ID, userId);
-            request.setAttribute(ADDRESS_ATTRIBUTE_NAME, address);
-            request.setAttribute(STREETS_ATTRIBUTE_NAME, streets);
-            request.setAttribute(USERS_ATTRIBUTE_NAME, users);
+            request.setAttribute(ADDRESS_ATTRIBUTE, address);
+            request.setAttribute(STREETS_ATTRIBUTE, streets);
+            request.setAttribute(USERS_ATTRIBUTE, users);
             request.getRequestDispatcher(ADDRESSES_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

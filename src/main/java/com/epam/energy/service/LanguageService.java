@@ -8,6 +8,7 @@ import com.epam.energy.model.Language;
 import com.epam.energy.validator.ServiceParametersValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.jstl.core.Config;
 import java.util.*;
 import static com.epam.energy.util.Constants.*;
 import static com.epam.energy.util.Constants.LAST_URL;
@@ -15,8 +16,8 @@ import static com.epam.energy.util.Constants.LAST_URL;
 public class LanguageService extends AbstractService {
     private static LanguageService instance;
     private List<String> allowedParameters = new ArrayList<>();
-    private ResourceBundle localizationBundle = ResourceBundle.getBundle(localizationBundleName);
-    private ResourceBundle errorBundle = ResourceBundle.getBundle(errorBundleName);
+    private ResourceBundle localizationBundle = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);
+    private ResourceBundle errorBundle = ResourceBundle.getBundle(DAO_ERROR_BUNDLE_NAME);
 
     private LanguageService() throws DAOException {
         init();
@@ -37,10 +38,7 @@ public class LanguageService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long languageId = Long.parseLong(request.getParameter(LANGUAGE_ID));
-            Language language = languageDAO.getLanguageById(languageId).get(0);
-            Locale locale = new Locale(language.getCode(), language.getCountry());
-            switchLocale(locale);
+            switchLocale(parameters, request);
 
             response.sendRedirect((String) request.getSession().getAttribute(LAST_URL));
         } catch (IOException e) {
@@ -52,10 +50,14 @@ public class LanguageService extends AbstractService {
         }
     }
 
-    private void switchLocale(Locale locale){
+    private void switchLocale(Map<String, String[]> parameters, HttpServletRequest request) throws DAOException {
+        Long languageId = Long.parseLong(parameters.get(LANGUAGE_ID)[0]);
+        Language language = languageDAO.getLanguageById(languageId).get(0);
+        Locale locale = new Locale(language.getCode(), language.getCountry());
         Locale.setDefault(locale);
-        localizationBundle = ResourceBundle.getBundle(localizationBundleName);
-        errorBundle = ResourceBundle.getBundle(errorBundleName);
+        localizationBundle = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);
+        errorBundle = ResourceBundle.getBundle(DAO_ERROR_BUNDLE_NAME);
+        Config.set(request.getSession(), Config.FMT_LOCALE, locale);
     }
 
     public ResourceBundle getLocalization() {

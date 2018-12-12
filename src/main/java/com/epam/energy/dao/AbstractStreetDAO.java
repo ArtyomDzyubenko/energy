@@ -25,8 +25,8 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
         List<Street> streets = new ArrayList<>();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if (id != null){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            if (id != null) {
                 preparedStatement.setLong(1, id);
             }
 
@@ -38,7 +38,7 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
                 street.setName(resultSet.getString(STREET_NAME));
                 streets.add(street);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);
@@ -58,7 +58,7 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
             }
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);

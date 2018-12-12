@@ -28,7 +28,7 @@ public class EditMeterService extends AbstractService {
     }
 
     public static synchronized EditMeterService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new EditMeterService();
         }
 
@@ -52,12 +52,12 @@ public class EditMeterService extends AbstractService {
             List<MeterReader> readers = meterReaderDAO.getAll();
             Meter meter = meterDAO.getMeter(meterId).get(0);
 
-            request.setAttribute(ADDRESSES_ATTRIBUTE_NAME, addresses);
+            request.setAttribute(ADDRESSES_ATTRIBUTE, addresses);
             request.setAttribute(METER_READER_ID, meterId);
             request.setAttribute(ADDRESS_ID, addressId);
-            request.setAttribute(METER_ATTRIBUTE_NAME, meter);
-            request.setAttribute(RESOURCES_ATTRIBUTE_NAME, resources);
-            request.setAttribute(METER_READERS_ATTRIBUTE_NAME, readers);
+            request.setAttribute(METER_ATTRIBUTE, meter);
+            request.setAttribute(RESOURCES_ATTRIBUTE, resources);
+            request.setAttribute(METER_READERS_ATTRIBUTE, readers);
             request.getRequestDispatcher(METERS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

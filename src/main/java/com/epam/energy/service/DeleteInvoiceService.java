@@ -22,7 +22,7 @@ public class DeleteInvoiceService extends AbstractService {
     }
 
     public static synchronized DeleteInvoiceService getInstance() throws DAOException {
-        if(instance==null){
+        if (instance == null) {
             instance = new DeleteInvoiceService();
         }
 

@@ -32,7 +32,7 @@ public class UserDAO extends AbstractUserDAO {
     private UserDAO() throws DAOException { }
 
     public static synchronized UserDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new UserDAO();
         }
 
@@ -41,7 +41,7 @@ public class UserDAO extends AbstractUserDAO {
 
     @Override
     public List<User> getAll() throws DAOException {
-        return getUsers(LONG_ZERO, GET_USERS);
+        return getUsers(null, GET_USERS);
     }
 
     @Override

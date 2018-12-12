@@ -10,7 +10,7 @@ public class AddressValidator extends AbstractValidator {
     private AddressValidator() { }
 
     public static synchronized AddressValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new AddressValidator();
         }
 
@@ -26,12 +26,12 @@ public class AddressValidator extends AbstractValidator {
     public String validateBuilding(String building, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("building");
         
-        return validateStringField(building, BUILDING_STRING_MAX_LENGTH, fieldName, allowEmpty);
+        return validateStringField(building, ADDRESS_BUILDING_STRING_MAX_LENGTH, fieldName, allowEmpty);
     }
 
     public String validateFlat(String flat, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("flat");
         
-        return validateStringField(flat, FLAT_STRING_MAX_LENGTH, fieldName, allowEmpty);
+        return validateStringField(flat, ADDRESS_FLAT_STRING_MAX_LENGTH, fieldName, allowEmpty);
     }
 }

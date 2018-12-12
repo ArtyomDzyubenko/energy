@@ -14,7 +14,7 @@ public class ShowRegisterUserFormService extends AbstractService {
     private ShowRegisterUserFormService() throws DAOException {}
 
     public static synchronized ShowRegisterUserFormService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new ShowRegisterUserFormService();
         }
 

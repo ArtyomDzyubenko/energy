@@ -8,7 +8,7 @@ public class ServiceException extends Exception {
     public ServiceException(IOException e) {super(e.getMessage());}
     public ServiceException(ValidationException e) {super(e.getMessage());}
     public ServiceException(ServletException e) {super(e);}
-    public ServiceException(String message){
+    public ServiceException(String message) {
         super(message);
     }
 }

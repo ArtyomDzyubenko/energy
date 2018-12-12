@@ -26,7 +26,7 @@ public class GetMetersService extends AbstractService {
     }
 
     public static synchronized GetMetersService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new GetMetersService();
         }
 
@@ -54,9 +54,9 @@ public class GetMetersService extends AbstractService {
             saveLastServiceURL(METERS_URL_LAST_STATE, request);
             request.setAttribute(USER_ID, userId);
             request.setAttribute(ADDRESS_ID, addressId);
-            request.setAttribute(METERS_ATTRIBUTE_NAME, meters);
-            request.setAttribute(RESOURCES_ATTRIBUTE_NAME, resources);
-            request.setAttribute(METER_READERS_ATTRIBUTE_NAME, readers);
+            request.setAttribute(METERS_ATTRIBUTE, meters);
+            request.setAttribute(RESOURCES_ATTRIBUTE, resources);
+            request.setAttribute(METER_READERS_ATTRIBUTE, readers);
             request.getRequestDispatcher(METERS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

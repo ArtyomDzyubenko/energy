@@ -23,7 +23,7 @@ public class AddMeterService extends AbstractService {
     }
 
     public static synchronized AddMeterService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new AddMeterService();
         }
 
@@ -78,7 +78,7 @@ public class AddMeterService extends AbstractService {
         meter.getResource().setId(resourceId);
         Long addressId;
 
-        if(parameters.containsKey(TRANSFER_ADDRESS_ID)){
+        if (parameters.containsKey(TRANSFER_ADDRESS_ID)) {
             addressIdString = parameters.get(TRANSFER_ADDRESS_ID)[0];
             addressId = addressValidator.validateId(addressIdString, !allowEmpty);
             meter.setAddressId(addressId);
@@ -91,7 +91,7 @@ public class AddMeterService extends AbstractService {
         return meter;
     }
 
-    private void init(){
+    private void init() {
         allowedParameters.add(METER_ID);
         allowedParameters.add(METER_NUMBER);
         allowedParameters.add(METER_READER_ID);

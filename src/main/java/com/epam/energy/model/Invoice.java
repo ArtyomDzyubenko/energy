@@ -14,7 +14,7 @@ public class Invoice {
     private Measurement startValue = new Measurement();
     private Measurement endValue = new Measurement();
 
-    public Invoice(){}
+    public Invoice() {}
 
     public void setId(Long id) {
         this.id = id;

@@ -25,7 +25,7 @@ public class MeterDAO extends AbstractMeterDAO {
     private MeterDAO() throws DAOException {}
 
     public static synchronized MeterDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new MeterDAO();
         }
 

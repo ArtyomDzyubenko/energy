@@ -6,7 +6,7 @@ public class Language {
     private String code;
     private String country;
 
-    public Language(){}
+    public Language() {}
 
     public void setId(Long id) {
         this.id = id;

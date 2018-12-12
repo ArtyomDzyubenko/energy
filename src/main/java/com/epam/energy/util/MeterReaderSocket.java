@@ -11,11 +11,11 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import static com.epam.energy.util.Constants.EMPTY_STRING;
 import static com.epam.energy.util.Constants.INT_ZERO;
 
 public final class MeterReaderSocket {
+    private static MeterReaderSocket instance;
     private static final int MAX_STRINGS_FOR_ITERATION = 30;
     private static final int SOCKET_TIMEOUT = 5000; //milliseconds
     private static final int READ_STRINGS_NUMBER_BUFFER_SIZE = 16;
@@ -31,23 +31,21 @@ public final class MeterReaderSocket {
     private static final String MEMORY_ADDRESS_STRING_FORMAT = "%1$02X";
     private static final int START_RECORDS_NUMBER_STRING_POSITION = 8;
     private static final int END_RECORDS_NUMBER_STRING_POSITION = 12;
-    private static MeterReaderSocket socket;
-    private Checksum checksum = Checksum.getInstance();
     private StringBuilder stringBuilder = new StringBuilder();
+    private Checksum checksum = Checksum.getInstance();
     private MeterReaderParser parser = MeterReaderParser.getInstance();
-    private ResourceBundle localization = LanguageService.getInstance().getLocalization();
 
-    private MeterReaderSocket() throws DAOException {}
+    private MeterReaderSocket() {}
 
-    public static synchronized MeterReaderSocket getInstance() throws DAOException {
-        if(socket ==null){
-            socket = new MeterReaderSocket();
+    public static synchronized MeterReaderSocket getInstance() {
+        if (instance == null) {
+            instance = new MeterReaderSocket();
         }
 
-        return socket;
+        return instance;
     }
 
-    public List<Meter> getMetersFromMeterReader(String IPAddress, int port) throws IOException {
+    public List<Meter> getMetersFromMeterReader(String IPAddress, int port) throws IOException, DAOException {
         List<String> data = getDataFromMeterReader(IPAddress, port);
         List<Meter> meters = new ArrayList<>();
 
@@ -64,7 +62,7 @@ public final class MeterReaderSocket {
         return meters;
     }
 
-    private List<String> getDataFromMeterReader(String IPAddress, int port) throws IOException {
+    private List<String> getDataFromMeterReader(String IPAddress, int port) throws IOException, DAOException {
         List<String> out = new ArrayList<>();
 
         try(Socket socket = new Socket(IPAddress, port)) {
@@ -72,8 +70,8 @@ public final class MeterReaderSocket {
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();
 
-            if (!checkConnectionBusy(outputStream, inputStream)){
-                throw new IOException(localization.getString("connectionBusy"));
+            if (!checkConnectionBusy(outputStream, inputStream)) {
+                throw new IOException(getErrorLocalization("connectionBusy"));
             }
 
             List<String> commandsList = makeReadDataCommandsList(getRecordsNumber(outputStream, inputStream));
@@ -89,9 +87,9 @@ public final class MeterReaderSocket {
                     }
                 }
             }
-        } catch (ConnectException e){
-            throw new IOException(localization.getString("connectionFailed"));
-        } catch (SocketTimeoutException e){
+        } catch (ConnectException e) {
+            throw new IOException(getErrorLocalization("connectionFailed"));
+        } catch (SocketTimeoutException e) {
             return out;
         }
 
@@ -116,14 +114,14 @@ public final class MeterReaderSocket {
 
         int readByteCount = stream.read(buffer);
 
-        if(readByteCount > 0){
+        if (readByteCount > 0) {
             out = new String(buffer, 0, readByteCount).trim().replace(Constants.SPACE, EMPTY_STRING);
         }
 
         return out;
     }
 
-    private List<String> makeReadDataCommandsList(int recordsNumbers){
+    private List<String> makeReadDataCommandsList(int recordsNumbers) {
         int memoryAddress = 0;
 
         MeterReaderParser parser = MeterReaderParser.getInstance();
@@ -131,7 +129,7 @@ public final class MeterReaderSocket {
         StringBuilder checksum = new StringBuilder();
         List<String> commands = new ArrayList<>();
 
-        for (int recordNumber = 0; recordNumber < recordsNumbers; recordNumber++){
+        for (int recordNumber = 0; recordNumber < recordsNumbers; recordNumber++) {
             out.setLength(0);
             String byteNumberString = out.append(String.format(BYTE_NUMBER_STRING_FORMAT, recordNumber)).reverse().toString();
             out.setLength(0);
@@ -162,7 +160,7 @@ public final class MeterReaderSocket {
         return commands;
     }
 
-    private int calculateChecksum(byte[] bytes){
+    private int calculateChecksum(byte[] bytes) {
         for (int position : bytes) {
             checksum.update(position);
         }
@@ -190,8 +188,8 @@ public final class MeterReaderSocket {
         return INT_ZERO;
     }
 
-    private boolean isDataStringValid(String dataString){
-        if ((dataString.length() != DATA_STRING_LENGTH) || (!dataString.startsWith(DATA_HEADER))){
+    private boolean isDataStringValid(String dataString) {
+        if ((dataString.length() != DATA_STRING_LENGTH) || (!dataString.startsWith(DATA_HEADER))) {
             return false;
         }
 
@@ -201,5 +199,9 @@ public final class MeterReaderSocket {
         String originalChecksum = parser.getChecksum(dataString);
 
         return calculatedChecksum.equals(originalChecksum);
+    }
+
+    private String getErrorLocalization(String key) throws DAOException {
+        return LanguageService.getInstance().getLocalization().getString(key);
     }
 }

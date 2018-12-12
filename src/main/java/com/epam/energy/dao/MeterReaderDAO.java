@@ -20,7 +20,7 @@ public class MeterReaderDAO extends AbstractMeterReaderDAO {
     private MeterReaderDAO() throws DAOException {}
 
     public static synchronized MeterReaderDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new MeterReaderDAO();
         }
 

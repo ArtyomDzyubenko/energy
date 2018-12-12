@@ -26,7 +26,7 @@ public class GetDataFromMeterReaderService extends AbstractService {
     }
 
     public static synchronized GetDataFromMeterReaderService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new GetDataFromMeterReaderService();
         }
 
@@ -49,7 +49,7 @@ public class GetDataFromMeterReaderService extends AbstractService {
             List<Meter> meters = socket.getMetersFromMeterReader(meterReader.getIPAddress(), meterReader.getPort());
             measurementDAO.addMeasurements(meters);
 
-            request.setAttribute(METERS_ATTRIBUTE_NAME, meters);
+            request.setAttribute(METERS_ATTRIBUTE, meters);
             request.getRequestDispatcher(METER_READER_DATA).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

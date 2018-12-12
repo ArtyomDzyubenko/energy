@@ -8,7 +8,7 @@ public class Address {
     private Long userId;
     private String secretKey;
 
-    public Address(){}
+    public Address() {}
 
     public void setId(Long id) {
         this.id = id;

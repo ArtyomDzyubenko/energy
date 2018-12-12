@@ -22,7 +22,7 @@ public class DeleteAddressService extends AbstractService {
     }
 
     public static synchronized DeleteAddressService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new DeleteAddressService();
         }
 

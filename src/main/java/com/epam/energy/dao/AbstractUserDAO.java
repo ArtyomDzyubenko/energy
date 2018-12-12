@@ -26,8 +26,8 @@ public abstract class AbstractUserDAO extends AbstractDAO {
 
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if((id != null) && !id.equals(LONG_ZERO)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            if (id != null) {
                 preparedStatement.setLong(1, id);
             }
 
@@ -36,7 +36,7 @@ public abstract class AbstractUserDAO extends AbstractDAO {
             while (resultSet.next()) {
                 users.add(getUserFromResultSet(resultSet));
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);
@@ -50,7 +50,7 @@ public abstract class AbstractUserDAO extends AbstractDAO {
 
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, Encryption.encrypt(password));
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -58,7 +58,7 @@ public abstract class AbstractUserDAO extends AbstractDAO {
             if (resultSet.next()) {
                 user = getUserFromResultSet(resultSet);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);
@@ -75,25 +75,25 @@ public abstract class AbstractUserDAO extends AbstractDAO {
             preparedStatement.setString(2, Encryption.encrypt(user.getPassword()));
             preparedStatement.setString(3, user.getFirstName());
 
-            if(!user.getLastName().equals(EMPTY_STRING)){
+            if (!user.getLastName().equals(EMPTY_STRING)) {
                 preparedStatement.setString(4, user.getLastName());
             } else {
                 preparedStatement.setNull(4, Types.VARCHAR);
             }
 
-            if(!user.getPhone().equals(LONG_ZERO)){
+            if (!user.getPhone().equals(LONG_ZERO)) {
                 preparedStatement.setLong(5, user.getPhone());
             } else {
                 preparedStatement.setNull(5, Types.BIGINT);
             }
 
-            if(!user.getEmail().equals(EMPTY_STRING)){
+            if (!user.getEmail().equals(EMPTY_STRING)) {
                 preparedStatement.setString(6, user.getEmail());
             } else {
                 preparedStatement.setNull(6, Types.VARCHAR);
             }
 
-            if(!user.getPersonalAccount().equals(0)){
+            if (!user.getPersonalAccount().equals(0)) {
                 preparedStatement.setInt(7, user.getPersonalAccount());
             } else {
                 preparedStatement.setNull(7, Types.INTEGER);
@@ -104,7 +104,7 @@ public abstract class AbstractUserDAO extends AbstractDAO {
             }
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
@@ -130,12 +130,12 @@ public abstract class AbstractUserDAO extends AbstractDAO {
                 preparedStatement.setNull(4, Types.VARCHAR);
             }
 
-            if (!user.getId().equals(LONG_ZERO)){
+            if (!user.getId().equals(LONG_ZERO)) {
                 preparedStatement.setLong(5, user.getId());
             }
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);

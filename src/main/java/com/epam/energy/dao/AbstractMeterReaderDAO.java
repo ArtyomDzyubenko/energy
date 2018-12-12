@@ -23,8 +23,8 @@ public abstract class AbstractMeterReaderDAO extends AbstractDAO {
         List<MeterReader> meterReaders = new ArrayList<>();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
-            if(id != null){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            if (id != null) {
                 preparedStatement.setLong(1, id);
             }
 
@@ -38,7 +38,7 @@ public abstract class AbstractMeterReaderDAO extends AbstractDAO {
                 meterReader.setPort(resultSet.getInt(METER_READER_PORT));
                 meterReaders.add(meterReader);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);

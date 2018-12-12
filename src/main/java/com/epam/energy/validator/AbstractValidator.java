@@ -12,7 +12,7 @@ abstract class AbstractValidator {
     StringBuilder concat = new StringBuilder();
 
     String validateStringField(String field, int length, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
-        if(checkForEmptyField(field, fieldName, allowEmpty)){
+        if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return EMPTY_STRING;
         }
 
@@ -22,7 +22,7 @@ abstract class AbstractValidator {
     }
 
     String validateStringField(String field, int length, String regex, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
-        if(checkForEmptyField(field, fieldName, allowEmpty)){
+        if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return EMPTY_STRING;
         }
 
@@ -30,7 +30,7 @@ abstract class AbstractValidator {
 
         boolean match = Pattern.compile(regex).matcher(field).matches();
 
-        if (match){
+        if (match) {
             return field;
         } else {
             concat.setLength(0);
@@ -41,7 +41,7 @@ abstract class AbstractValidator {
     }
 
     Long validateLongField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
-        if(checkForEmptyField(field, fieldName, allowEmpty)){
+        if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return LONG_ZERO;
         }
 
@@ -49,7 +49,7 @@ abstract class AbstractValidator {
 
         try {
             out = Long.parseLong(field);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
 
@@ -62,7 +62,7 @@ abstract class AbstractValidator {
     }
 
     Integer validateIntField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
-        if(checkForEmptyField(field, fieldName, allowEmpty)){
+        if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return INT_ZERO;
         }
 
@@ -70,7 +70,7 @@ abstract class AbstractValidator {
 
         try {
             out = Integer.parseInt(field);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
             
@@ -83,7 +83,7 @@ abstract class AbstractValidator {
     }
 
     Double validateDoubleField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
-        if(checkForEmptyField(field, fieldName, allowEmpty)){
+        if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return DOUBLE_ZERO;
         }
 
@@ -91,7 +91,7 @@ abstract class AbstractValidator {
 
         try {
             out = Double.parseDouble(field);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
             
@@ -104,7 +104,7 @@ abstract class AbstractValidator {
     }
 
     Timestamp validateDateTimeField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
-        if(checkForEmptyField(field, fieldName, allowEmpty)){
+        if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return new Timestamp(new Date().getTime());
         }
 
@@ -112,7 +112,7 @@ abstract class AbstractValidator {
 
         try {
             out = Timestamp.valueOf(field);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             concat.setLength(0);
             String errorMessage = concat.append(getErrorLocalization("incorrectDateTimeFormat"))
                     .append(" ").append(fieldName).toString();
@@ -128,7 +128,7 @@ abstract class AbstractValidator {
     }
 
     private boolean checkForEmptyField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
-        if(field.isEmpty() && allowEmpty){
+        if (field.isEmpty() && allowEmpty) {
             return true;
         } else if (field.isEmpty()) {
             concat.setLength(0);

@@ -10,7 +10,7 @@ public class StreetValidator extends AbstractValidator {
     private StreetValidator() {}
 
     public static synchronized StreetValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new StreetValidator();
         }
 

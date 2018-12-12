@@ -5,10 +5,10 @@ package com.epam.energy.util;
 final class Checksum implements java.util.zip.Checksum {
     private static Checksum instance;
 
-    private Checksum(){}
+    private Checksum() {}
 
     public static Checksum getInstance() {
-        if (instance == null){
+        if (instance == null) {
             instance = new Checksum();
         }
 

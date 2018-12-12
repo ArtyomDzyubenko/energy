@@ -9,7 +9,7 @@ public class MeterValidator extends AbstractValidator {
     private MeterValidator() {}
 
     public static synchronized MeterValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new MeterValidator();
         }
 

@@ -25,7 +25,7 @@ public class MeasurementDAO extends AbstractMeasurementDAO {
     private MeasurementDAO() throws DAOException { }
 
     public static synchronized MeasurementDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new MeasurementDAO();
         }
 

@@ -23,7 +23,7 @@ public class EditUserService extends AbstractService {
     }
 
     public static synchronized EditUserService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new EditUserService();
         }
 
@@ -40,7 +40,7 @@ public class EditUserService extends AbstractService {
             Long userId = getUserId(parameters);
             User user = userDAO.getUserById(userId).get(0);
 
-            request.setAttribute(USER_ATTRIBUTE_NAME, user);
+            request.setAttribute(USER_ATTRIBUTE, user);
             request.getRequestDispatcher(USERS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

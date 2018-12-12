@@ -23,7 +23,7 @@ public class GetMeasurementsService extends AbstractService {
     }
 
     public static synchronized GetMeasurementsService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new GetMeasurementsService();
         }
 
@@ -50,7 +50,7 @@ public class GetMeasurementsService extends AbstractService {
             request.setAttribute(METER_ID, meterId);
             request.setAttribute(ADDRESS_ID, addressId);
             request.setAttribute(USER_ID, userId);
-            request.setAttribute(MEASUREMENTS_ATTRIBUTE_NAME, measurements);
+            request.setAttribute(MEASUREMENTS_ATTRIBUTE, measurements);
             request.getRequestDispatcher(MEASUREMENTS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

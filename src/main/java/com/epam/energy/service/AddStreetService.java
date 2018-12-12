@@ -23,7 +23,7 @@ public class AddStreetService extends AbstractService {
     }
 
     public static synchronized AddStreetService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new AddStreetService();
         }
 

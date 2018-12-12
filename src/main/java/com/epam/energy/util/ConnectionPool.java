@@ -24,7 +24,7 @@ public final class ConnectionPool {
     }
 
     public static synchronized ConnectionPool getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new ConnectionPool();
         }
 
@@ -32,7 +32,7 @@ public final class ConnectionPool {
     }
 
     public Connection getConnection() throws DAOException {
-        if(availableConnections.isEmpty()){
+        if (availableConnections.isEmpty()) {
             String message = "Database connection error!";
             logger.error(message);
 
@@ -54,7 +54,7 @@ public final class ConnectionPool {
                 Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
                 availableConnections.add(connection);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         }
     }

@@ -20,23 +20,22 @@ public class ServiceFactory {
     }
 
     public static synchronized ServiceFactory getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new ServiceFactory();
         }
 
         return instance;
     }
 
-    public void executeService(String serviceRequest, HttpServletRequest request, HttpServletResponse response) throws ServiceException, DAOException {
+    public void executeService(String serviceRequest, HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         AbstractService service = serviceMap.get(serviceRequest);
 
         if (service!=null) {
             service.execute(request, response);
         } else {
             logger.error(serviceRequest);
-            String errorMessage = LanguageService.getInstance().getLocalization().getString("incorrectRequest");
 
-            throw new ServiceException(errorMessage);
+            throw new ServiceException("Incorrect request!");
         }
     }
 

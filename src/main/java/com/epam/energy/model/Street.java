@@ -4,7 +4,7 @@ public class Street {
     private Long id;
     private String name;
 
-    public Street(){}
+    public Street() {}
 
     public void setId(Long id) {
         this.id = id;

@@ -21,7 +21,7 @@ public class DeleteMeterService extends AbstractService {
     }
 
     public static synchronized DeleteMeterService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new DeleteMeterService();
         }
 

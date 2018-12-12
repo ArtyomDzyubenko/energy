@@ -17,7 +17,7 @@ public class GetResourcesService extends AbstractService {
     private GetResourcesService() throws DAOException {};
 
     public static synchronized GetResourcesService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new GetResourcesService();
         }
 
@@ -29,7 +29,7 @@ public class GetResourcesService extends AbstractService {
             List<Resource> resources = resourceDAO.getAll();
 
             saveLastServiceURL(RESOURCES_URL_LAST_STATE, request);
-            request.setAttribute(RESOURCES_ATTRIBUTE_NAME, resources);
+            request.setAttribute(RESOURCES_ATTRIBUTE, resources);
             request.getRequestDispatcher(RESOURCES_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

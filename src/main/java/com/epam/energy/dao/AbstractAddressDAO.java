@@ -26,7 +26,7 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
         List<Address> addresses = new ArrayList<>();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             if (id != null) {
                 preparedStatement.setLong(1, id);
             }
@@ -52,7 +52,7 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
                 address.setSecretKey(Encryption.encrypt(addressId.toString() + authUserSessionId));
                 addresses.add(address);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);
@@ -67,7 +67,7 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, address.getBuilding());
 
-            if(!address.getFlat().equals(EMPTY_STRING)){
+            if (!address.getFlat().equals(EMPTY_STRING)) {
                 preparedStatement.setString(2, address.getFlat());
             } else{
                 preparedStatement.setNull(2, Types.VARCHAR);
@@ -83,7 +83,7 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
             }
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);

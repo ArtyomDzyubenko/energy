@@ -14,7 +14,7 @@ public class LogOutService extends AbstractService {
     private LogOutService() throws DAOException {}
 
     public static synchronized LogOutService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new LogOutService();
         }
 

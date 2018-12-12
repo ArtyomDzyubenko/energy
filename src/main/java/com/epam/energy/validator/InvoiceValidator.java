@@ -2,7 +2,6 @@ package com.epam.energy.validator;
 
 import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ValidationException;
-
 import java.sql.Timestamp;
 
 public class InvoiceValidator extends AbstractValidator {
@@ -11,7 +10,7 @@ public class InvoiceValidator extends AbstractValidator {
     private InvoiceValidator() {}
 
     public static synchronized InvoiceValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new InvoiceValidator();
         }
 
@@ -25,7 +24,7 @@ public class InvoiceValidator extends AbstractValidator {
     }
 
     public Double validateConsumption(double consumption) throws ValidationException, DAOException {
-        if (consumption <= 0){
+        if (consumption <= 0) {
             concat.setLength(0);
             String errorMessage = concat.append(getErrorLocalization("negativeValueError")).append(" ")
                     .append(getErrorLocalization("consumption")).toString();
@@ -37,7 +36,7 @@ public class InvoiceValidator extends AbstractValidator {
     }
 
     public Double validatePrice(double price) throws ValidationException, DAOException {
-        if (price <= 0){
+        if (price <= 0) {
             concat.setLength(0);
             String errorMessage = concat.append(getErrorLocalization("negativeValueError")).append(" ")
                     .append(getErrorLocalization("price")).toString();
@@ -49,7 +48,7 @@ public class InvoiceValidator extends AbstractValidator {
     }
 
     public void validateDateTimePeriod(Timestamp start, Timestamp end) throws ValidationException, DAOException {
-        if (start.getTime() > end.getTime()){
+        if (start.getTime() > end.getTime()) {
             throw new ValidationException(getErrorLocalization("incorrectDateTimePeriod"));
         }
     }

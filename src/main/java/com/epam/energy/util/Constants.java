@@ -2,8 +2,8 @@ package com.epam.energy.util;
 
 public final class Constants {
     //RESOURCE BUNDLES
-    public static final String localizationBundleName = "Locale";
-    public static final String errorBundleName = "DAOError";
+    public static final String LOCALIZATION_BUNDLE_NAME = "Locale";
+    public static final String DAO_ERROR_BUNDLE_NAME = "DAOError";
 
     //COMMON
     public static final String EMPTY_STRING = "";
@@ -12,22 +12,22 @@ public final class Constants {
     public static final Long LONG_ZERO = 0L;
     public static final Integer INT_ZERO = 0;
     public static final Double DOUBLE_ZERO = 0.0;
-    public static final String AUTH_USER = "authUser";
+    public static final String AUTHORIZED_USER = "authUser";
     public static final String SECRET_KEY = "sKey";
     public static final String GET_METHOD = "GET";
     public static final String POST_METHOD = "POST";
 
     //VALIDATION
     public static final int STRING_MAX_LENGTH = 32;
-    public static final int BUILDING_STRING_MAX_LENGTH = 4;
-    public static final int FLAT_STRING_MAX_LENGTH = 4;
+    public static final int ADDRESS_BUILDING_STRING_MAX_LENGTH = 4;
+    public static final int ADDRESS_FLAT_STRING_MAX_LENGTH = 4;
     public static final int IP_ADDRESS_STRING_MAX_LENGTH = 15;
-    public static final int MIN_PORT_NUMBER = 1;
-    public static final int MAX_PORT_NUMBER = 65535;
+    public static final int MIN_TCP_PORT_NUMBER = 1;
+    public static final int MAX_TCP_PORT_NUMBER = 65535;
     public static final Long MIN_PHONE_NUMBER = 7000000000L;
     public static final Long MAX_PHONE_NUMBER = 7999999999L;
     public static final String EMAIL_REGEX = "([.[^@\\s]]+)@([.[^@\\s]]+)\\.([a-z]+)";
-    public static final String IP_ADDRESS_REGEX = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+    public static final String IP_ADDRESS_REGEX = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.) {3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
     public static final String USER_FIRST_LAST_NAME_REGEX = "[a-zA-Zа-яА-ЯЁё]+";
     public static final String USER_LOGIN_REGEX = "[a-zA-Z0-9]+";
 
@@ -103,32 +103,32 @@ public final class Constants {
     public static final String LANGUAGE_COUNTRY = "country";
 
     //REQUEST ATTRIBUTES
-    public static final String USER_ATTRIBUTE_NAME = "user";
-    public static final String USERS_ATTRIBUTE_NAME = "users";
+    public static final String USER_ATTRIBUTE = "user";
+    public static final String USERS_ATTRIBUTE = "users";
 
-    public static final String ADDRESS_ATTRIBUTE_NAME = "address";
-    public static final String ADDRESSES_ATTRIBUTE_NAME = "addresses";
+    public static final String ADDRESS_ATTRIBUTE = "address";
+    public static final String ADDRESSES_ATTRIBUTE = "addresses";
 
-    public static final String STREET_ATTRIBUTE_NAME = "street";
-    public static final String STREETS_ATTRIBUTE_NAME = "streets";
+    public static final String STREET_ATTRIBUTE = "street";
+    public static final String STREETS_ATTRIBUTE = "streets";
 
-    public static final String INVOICES_ATTRIBUTE_NAME = "invoices";
+    public static final String INVOICES_ATTRIBUTE = "invoices";
 
-    public static final String METER_ATTRIBUTE_NAME = "meter";
-    public static final String METERS_ATTRIBUTE_NAME = "meters";
+    public static final String METER_ATTRIBUTE = "meter";
+    public static final String METERS_ATTRIBUTE = "meters";
 
-    public static final String METER_READER_ATTRIBUTE_NAME = "meterReader";
-    public static final String METER_READERS_ATTRIBUTE_NAME = "meterReaders";
+    public static final String METER_READER_ATTRIBUTE = "meterReader";
+    public static final String METER_READERS_ATTRIBUTE = "meterReaders";
 
-    public static final String MEASUREMENT_ATTRIBUTE_NAME = "measurement";
-    public static final String MEASUREMENTS_ATTRIBUTE_NAME = "measurements";
+    public static final String MEASUREMENT_ATTRIBUTE = "measurement";
+    public static final String MEASUREMENTS_ATTRIBUTE = "measurements";
 
-    public static final String RESOURCES_ATTRIBUTE_NAME = "resources";
-    public static final String RESOURCE_ATTRIBUTE_NAME = "resource";
+    public static final String RESOURCES_ATTRIBUTE = "resources";
+    public static final String RESOURCE_ATTRIBUTE = "resource";
 
-    public static final String LANGUAGES_ATTRIBUTE_NAME = "languages";
+    public static final String LANGUAGES_ATTRIBUTE = "languages";
 
-    public static final String ERROR_MESSAGE_ATTRIBUTE_NAME = "errorMessage";
+    public static final String ERROR_MESSAGE_ATTRIBUTE = "errorMessage";
 
     //SERVICES
     public static final String AUTH = "/auth";
@@ -189,5 +189,5 @@ public final class Constants {
     public static final String STREETS_URL_LAST_STATE = "streetsURL";
     public static final String METER_READERS_URL_LAST_STATE = "meterReadersURL";
 
-    private Constants(){}
+    private Constants() {}
 }

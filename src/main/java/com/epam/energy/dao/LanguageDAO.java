@@ -12,7 +12,7 @@ public class LanguageDAO extends AbstractLanguageDAO {
     private LanguageDAO() throws DAOException {}
 
     public static synchronized LanguageDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new LanguageDAO();
         }
 
@@ -24,6 +24,7 @@ public class LanguageDAO extends AbstractLanguageDAO {
         return getLanguages(null, GET_LANGUAGES);
     }
 
+    @Override
     public List<Language> getLanguageById(Long id) throws DAOException {
         return getLanguages(id, GET_LANGUAGE_BY_ID);
     }

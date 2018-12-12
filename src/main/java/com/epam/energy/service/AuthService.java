@@ -28,7 +28,7 @@ public class AuthService extends AbstractService {
     }
 
     public static synchronized AuthService getInstance() throws DAOException {
-        if(instance==null){
+        if (instance == null) {
             instance = new AuthService();
         }
 
@@ -45,8 +45,8 @@ public class AuthService extends AbstractService {
             User authUser = getAuthUser(parameters);
             loadLanguages();
 
-            request.getSession().setAttribute(AUTH_USER, authUser);
-            request.getSession().setAttribute(LANGUAGES_ATTRIBUTE_NAME, languages);
+            request.getSession().setAttribute(AUTHORIZED_USER, authUser);
+            request.getSession().setAttribute(LANGUAGES_ATTRIBUTE, languages);
 
             if (authUser.getId() != null) {
                 authUserSessionId = request.getSession().getId();

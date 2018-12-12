@@ -23,7 +23,7 @@ public class AddResourceService extends AbstractService {
     }
 
     public static synchronized AddResourceService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new AddResourceService();
         }
 

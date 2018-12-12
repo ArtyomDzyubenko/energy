@@ -25,7 +25,7 @@ public class AddAddressService extends AbstractService {
     }
 
     public static synchronized AddAddressService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new AddAddressService();
         }
 
@@ -41,7 +41,7 @@ public class AddAddressService extends AbstractService {
 
             Address address = getAddress(parameters);
 
-            if (address.getId().equals(LONG_ZERO)){
+            if (address.getId().equals(LONG_ZERO)) {
                 addressDAO.addAddressByUserId(address);
             } else {
                 addressDAO.editAddress(address);

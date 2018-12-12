@@ -27,7 +27,7 @@ public class AddInvoiceService extends AbstractService {
     }
 
     public static synchronized AddInvoiceService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
            instance = new AddInvoiceService();
         }
 

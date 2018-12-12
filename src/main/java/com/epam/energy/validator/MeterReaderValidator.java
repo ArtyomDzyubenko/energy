@@ -10,7 +10,7 @@ public class MeterReaderValidator extends AbstractValidator {
     private MeterReaderValidator() {}
 
     public static synchronized MeterReaderValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new MeterReaderValidator();
         }
 
@@ -38,10 +38,10 @@ public class MeterReaderValidator extends AbstractValidator {
     public Integer validatePort(String number, boolean allowEmpty) throws ValidationException, DAOException {
         Integer out = validateIntField(number, getErrorLocalization("port"), allowEmpty);
 
-        if (out < MIN_PORT_NUMBER || out > MAX_PORT_NUMBER){
+        if (out < MIN_TCP_PORT_NUMBER || out > MAX_TCP_PORT_NUMBER) {
             concat.setLength(0);
             String errorMessage = concat.append(getErrorLocalization("outOfRange")).append(" ")
-                    .append(MIN_PORT_NUMBER).append(" - ").append(MAX_PORT_NUMBER).append(" : ")
+                    .append(MIN_TCP_PORT_NUMBER).append(" - ").append(MAX_TCP_PORT_NUMBER).append(" : ")
                     .append(getErrorLocalization("port")).toString();
 
             throw new ValidationException(errorMessage);

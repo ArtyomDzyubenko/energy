@@ -24,7 +24,7 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            if(id != null){
+            if (id != null) {
                 preparedStatement.setLong(1, id);
             }
 
@@ -38,7 +38,7 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
                 language.setCountry(resultSet.getString(LANGUAGE_COUNTRY));
                 languages.add(language);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new DAOException(e);
         } finally {
             pool.releaseConnection(connection);

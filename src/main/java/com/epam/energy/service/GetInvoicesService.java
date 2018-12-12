@@ -24,7 +24,7 @@ public class GetInvoicesService extends AbstractService {
     }
 
     public static synchronized GetInvoicesService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new GetInvoicesService();
         }
 
@@ -45,7 +45,7 @@ public class GetInvoicesService extends AbstractService {
 
             saveLastServiceURL(INVOICES_URL_LAST_STATE, request);
             request.setAttribute(USER_ID, userId);
-            request.setAttribute(INVOICES_ATTRIBUTE_NAME, invoices);
+            request.setAttribute(INVOICES_ATTRIBUTE, invoices);
             request.getRequestDispatcher(INVOICES_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

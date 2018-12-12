@@ -22,10 +22,14 @@
             <tr class="form">
                 <td class="form"><fmt:message key="date"/></td>
                 <c:if test="${measurement.id != null}">
-                    <td class="form"><input type="datetime-local" name="dateTime" value="${measurement.localDateTimeString}" step="2" min="2000-01-01T00:00:01" max="2100-01-01T00:00:01"/></td>
+                    <td class="form">
+                        <input type="datetime-local" name="dateTime" value="${measurement.localDateTimeString}" step="2" min="2000-01-01T00:00:01" max="2100-01-01T00:00:01"/>
+                    </td>
                 </c:if>
                 <c:if test="${measurement.id == null}">
-                    <td class="form"><input type="datetime-local" name="dateTime" value="${measurement.dateTime}" step="2" min="2000-01-01T00:00:01" max="2100-01-01T00:00:01"/></td>
+                    <td class="form">
+                        <input type="datetime-local" name="dateTime" value="${measurement.dateTime}" step="2" min="2000-01-01T00:00:01" max="2100-01-01T00:00:01"/>
+                    </td>
                 </c:if>
             </tr>
             <tr class="form">

@@ -10,7 +10,7 @@ public class ResourceValidator extends AbstractValidator {
     private ResourceValidator() {}
 
     public static synchronized ResourceValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new ResourceValidator();
         }
 

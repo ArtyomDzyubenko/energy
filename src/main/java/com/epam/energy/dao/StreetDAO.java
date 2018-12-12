@@ -23,7 +23,7 @@ public class StreetDAO extends AbstractStreetDAO {
     private StreetDAO() throws DAOException {}
 
     public static synchronized StreetDAO getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new StreetDAO();
         }
 

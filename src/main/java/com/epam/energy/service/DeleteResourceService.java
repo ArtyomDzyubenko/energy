@@ -23,7 +23,7 @@ public class DeleteResourceService extends AbstractService {
     }
 
     public static synchronized DeleteResourceService getInstance() throws DAOException {
-        if (instance==null){
+        if (instance == null) {
             instance = new DeleteResourceService();
         }
 

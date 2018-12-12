@@ -24,7 +24,7 @@ public class EditResourceService extends AbstractService {
     }
 
     public static synchronized EditResourceService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new EditResourceService();
         }
 
@@ -43,7 +43,7 @@ public class EditResourceService extends AbstractService {
             Long resourceId = resourceValidator.validateId(resourceIdString, !allowEmpty);
             Resource resource = resourceDAO.getResourceById(resourceId).get(0);
 
-            request.setAttribute(RESOURCE_ATTRIBUTE_NAME, resource);
+            request.setAttribute(RESOURCE_ATTRIBUTE, resource);
             request.getRequestDispatcher(RESOURCES_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);

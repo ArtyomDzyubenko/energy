@@ -24,13 +24,13 @@ abstract public class AbstractService {
 
     AbstractService() throws DAOException { }
 
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {}
+    public abstract void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
 
-    void saveLastServiceURL(String URL, HttpServletRequest request){
+    void saveLastServiceURL(String URL, HttpServletRequest request) {
         String queryString = request.getQueryString();
         String lastURL;
 
-        if (queryString!=null){
+        if (queryString != null) {
             lastURL = request.getRequestURI() + "?" + queryString;
         } else {
             lastURL = request.getRequestURI();
@@ -40,8 +40,8 @@ abstract public class AbstractService {
         request.getSession().setAttribute(URL, lastURL);
     }
 
-    String getLastServiceURL(String URL, HttpServletRequest request){
-        return (String) request.getSession().getAttribute(URL);
+    String getLastServiceURL(String URL, HttpServletRequest request) {
+        return (String)request.getSession().getAttribute(URL);
     }
 
     Long getAddressId(Map<String, String[]> parameters) throws ValidationException, DAOException {

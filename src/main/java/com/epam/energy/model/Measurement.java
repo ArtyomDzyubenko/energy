@@ -12,7 +12,7 @@ public class Measurement {
     private Long meterId;
     private String secretKey;
 
-    public Measurement(){}
+    public Measurement() {}
 
     public void setId(Long id) {
         this.id = id;

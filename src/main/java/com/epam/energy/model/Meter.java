@@ -10,7 +10,7 @@ public class Meter {
     private Long addressId;
     private String secretKey;
 
-    public Meter(){}
+    public Meter() {}
 
     public void setId(Long id) {
         this.id = id;

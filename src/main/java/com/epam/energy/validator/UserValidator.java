@@ -10,7 +10,7 @@ public class UserValidator extends AbstractValidator {
     private UserValidator() {}
 
     public static synchronized UserValidator getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new UserValidator();
         }
 
@@ -51,7 +51,7 @@ public class UserValidator extends AbstractValidator {
         String fieldName = getErrorLocalization("phone");
         Long out = validateLongField(phone, fieldName, allowEmpty);
 
-        if (out < MIN_PHONE_NUMBER || out > MAX_PHONE_NUMBER ){
+        if (out < MIN_PHONE_NUMBER || out > MAX_PHONE_NUMBER ) {
             concat.setLength(0);
             String errorMessage = concat.append(getErrorLocalization("outOfRange")).append(" ")
                     .append(MIN_PHONE_NUMBER).append(" - ").append(MAX_PHONE_NUMBER).append(" : ")

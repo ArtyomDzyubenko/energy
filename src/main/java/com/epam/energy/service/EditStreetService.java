@@ -24,7 +24,7 @@ public class EditStreetService extends AbstractService {
     }
 
     public static synchronized EditStreetService getInstance() throws DAOException {
-        if (instance==null) {
+        if (instance == null) {
             instance = new EditStreetService();
         }
 
@@ -44,7 +44,7 @@ public class EditStreetService extends AbstractService {
 
             Street street = streetDAO.getStreetById(streetId).get(0);
 
-            request.setAttribute(STREET_ATTRIBUTE_NAME, street);
+            request.setAttribute(STREET_ATTRIBUTE, street);
             request.getRequestDispatcher(STREETS_JSP).forward(request, response);
         } catch (ServletException e) {
             throw new ServiceException(e);
