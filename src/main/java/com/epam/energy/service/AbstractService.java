@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
 
-abstract public class AbstractService {
+public abstract class AbstractService {
     AbstractAddressDAO addressDAO = AddressDAO.getInstance();
     AbstractInvoiceDAO invoiceDAO = InvoiceDAO.getInstance();
     AbstractLanguageDAO languageDAO = LanguageDAO.getInstance();
