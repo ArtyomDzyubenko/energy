@@ -1,7 +1,5 @@
 package com.epam.energy.controller;
 
-import com.epam.energy.exception.DAOException;
-import com.epam.energy.exception.ServiceException;
 import com.epam.energy.service.ServiceFactory;
 import org.apache.log4j.Logger;
 import javax.servlet.ServletException;
