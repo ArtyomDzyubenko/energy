@@ -20,7 +20,6 @@ public final class MeterReaderParser {
     private static final int END_MEASUREMENT_STRING_POSITION = 34;
     private static final int OFFSET = 946684800;        //in input stream, time starts from 2000-01-01, but EPOCH time starts from 1970-01-01
     private static final StringBuilder stringBuilder = new StringBuilder();
-
     private static MeterReaderParser instance;
 
     private MeterReaderParser() {}
