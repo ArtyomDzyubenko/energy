@@ -3,7 +3,6 @@ package com.epam.energy.dao;
 import com.epam.energy.exception.DAOException;
 import com.epam.energy.model.User;
 import java.util.List;
-import static com.epam.energy.util.Constants.LONG_ZERO;
 
 public class UserDAO extends AbstractUserDAO {
     private static final String GET_USER_BY_ID = "select *\n" +

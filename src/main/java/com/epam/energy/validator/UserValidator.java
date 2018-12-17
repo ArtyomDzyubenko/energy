@@ -56,6 +56,7 @@ public class UserValidator extends AbstractValidator {
             String errorMessage = concat.append(getErrorLocalization("outOfRange")).append(" ")
                     .append(MIN_PHONE_NUMBER).append(" - ").append(MAX_PHONE_NUMBER).append(" : ")
                     .append(getErrorLocalization("phone")).toString();
+
             throw new ValidationException(errorMessage);
         }
 

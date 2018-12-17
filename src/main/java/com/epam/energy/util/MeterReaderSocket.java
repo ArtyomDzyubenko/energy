@@ -81,7 +81,7 @@ public final class MeterReaderSocket {
                 write(outputStream, command.getBytes());
                 commandCounter++;
 
-                if ((commandCounter % MAX_STRINGS_FOR_ITERATION == 0) || commandCounter == commandsList.size()) {
+                if ((commandCounter % MAX_STRINGS_FOR_ITERATION == 0) || (commandCounter == commandsList.size())) {
                     for (int i = 0; i < MAX_STRINGS_FOR_ITERATION; i++) {
                         out.add(read(inputStream));
                     }
