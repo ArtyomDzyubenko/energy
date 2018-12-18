@@ -9,6 +9,7 @@ public class EncodingFilter implements Filter {
     private static final String ENCODING_INIT_PARAM_NAME = "encoding";
     private static String encoding;
 
+    @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException{
         String contentType = req.getContentType();
         if (contentType != null && contentType.startsWith(FILTERABLE_CONTENT_TYPE)) {
@@ -24,5 +25,10 @@ public class EncodingFilter implements Filter {
         if (encoding == null) {
             encoding = ENCODING_DEFAULT;
         }
+    }
+
+    @Override
+    public void destroy() {
+        //standard destroy method
     }
 }
