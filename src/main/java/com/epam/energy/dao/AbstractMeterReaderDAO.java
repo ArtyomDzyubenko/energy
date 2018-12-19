@@ -31,12 +31,7 @@ public abstract class AbstractMeterReaderDAO extends AbstractDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                MeterReader meterReader = new MeterReader();
-                meterReader.setId(resultSet.getLong(ID));
-                meterReader.setNumber(resultSet.getInt(METER_READER_NUMBER));
-                meterReader.setIPAddress(resultSet.getString(METER_READER_IP_ADDRESS));
-                meterReader.setPort(resultSet.getInt(METER_READER_PORT));
-                meterReaders.add(meterReader);
+                meterReaders.add(getMeterReaderFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -51,19 +46,32 @@ public abstract class AbstractMeterReaderDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, meterReader.getNumber());
-            preparedStatement.setString(2, meterReader.getIPAddress());
-            preparedStatement.setInt(3, meterReader.getPort());
-
-            if (!meterReader.getId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(4, meterReader.getId());
-            }
-
+            setMeterReaderToPreparedStatement(meterReader, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
+        }
+    }
+
+    private MeterReader getMeterReaderFromResultSet(ResultSet resultSet) throws SQLException {
+        MeterReader meterReader = new MeterReader();
+        meterReader.setId(resultSet.getLong(ID));
+        meterReader.setNumber(resultSet.getInt(METER_READER_NUMBER));
+        meterReader.setIPAddress(resultSet.getString(METER_READER_IP_ADDRESS));
+        meterReader.setPort(resultSet.getInt(METER_READER_PORT));
+
+        return meterReader;
+    }
+
+    private void setMeterReaderToPreparedStatement(MeterReader meterReader, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setInt(1, meterReader.getNumber());
+        preparedStatement.setString(2, meterReader.getIPAddress());
+        preparedStatement.setInt(3, meterReader.getPort());
+
+        if (!meterReader.getId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(4, meterReader.getId());
         }
     }
 }

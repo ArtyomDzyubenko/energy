@@ -31,43 +31,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Invoice invoice = new Invoice();
-                Long invoiceId = resultSet.getLong(ID);
-                invoice.setId(invoiceId);
-                invoice.setDate(resultSet.getDate(INVOICE_DATE).toLocalDate());
-                List<Meter> meters = meterDAO.getMeter(resultSet.getLong(INVOICE_METER_ID));
-
-                if (!meters.isEmpty()) {
-                    invoice.setMeter(meters.get(0));
-                } else {
-                    invoice.setMeter(new Meter());
-                }
-
-                Long startMeasurementId = resultSet.getLong(INVOICE_START_MEASUREMENT_ID);
-                List<Measurement> startMeasurements = measurementDAO.getMeasurementById(startMeasurementId);
-
-                if (!startMeasurements.isEmpty()) {
-                    invoice.setStartValue(startMeasurements.get(0));
-                } else {
-                    invoice.setStartValue(new Measurement());
-                }
-
-                Long endMeasurementId = resultSet.getLong(INVOICE_END_MEASUREMENT_ID);
-                List<Measurement> endMeasurements = measurementDAO.getMeasurementById(endMeasurementId);
-
-                if (!endMeasurements.isEmpty()) {
-                    invoice.setEndValue(endMeasurements.get(0));
-                } else {
-                    invoice.setEndValue(new Measurement());
-                }
-
-                String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-                invoice.setConsumption(resultSet.getDouble(INVOICE_CONSUMPTION));
-                invoice.setPrice(resultSet.getDouble(INVOICE_PRICE));
-                invoice.setUserId(resultSet.getLong(INVOICE_USER_ID));
-                invoice.setPaid(resultSet.getBoolean(INVOICE_IS_PAID));
-                invoice.setSecretKey(invoiceId + authUserSessionId);
-                invoices.add(invoice);
+                invoices.add(getInvoiceFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
@@ -82,14 +46,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setDate(1, Date.valueOf(invoice.getDate()));
-            preparedStatement.setLong(2, invoice.getMeter().getId());
-            preparedStatement.setLong(3, invoice.getStartValue().getId());
-            preparedStatement.setLong(4, invoice.getEndValue().getId());
-            preparedStatement.setDouble(5, invoice.getConsumption());
-            preparedStatement.setDouble(6, invoice.getPrice());
-            preparedStatement.setLong(7, invoice.getUserId());
-            preparedStatement.setBoolean(8, invoice.isPaid());
+            setInvoiceToPreparedStatement(invoice, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
@@ -110,5 +67,58 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
         } finally {
             pool.releaseConnection(connection);
         }
+    }
+
+    private Invoice getInvoiceFromResultSet(ResultSet resultSet) throws SQLException, DAOException {
+        Invoice invoice = new Invoice();
+
+        Long invoiceId = resultSet.getLong(ID);
+        invoice.setId(invoiceId);
+        invoice.setDate(resultSet.getDate(INVOICE_DATE).toLocalDate());
+        List<Meter> meters = meterDAO.getMeter(resultSet.getLong(INVOICE_METER_ID));
+
+        if (!meters.isEmpty()) {
+            invoice.setMeter(meters.get(0));
+        } else {
+            invoice.setMeter(new Meter());
+        }
+
+        Long startMeasurementId = resultSet.getLong(INVOICE_START_MEASUREMENT_ID);
+        List<Measurement> startMeasurements = measurementDAO.getMeasurementById(startMeasurementId);
+
+        if (!startMeasurements.isEmpty()) {
+            invoice.setStartValue(startMeasurements.get(0));
+        } else {
+            invoice.setStartValue(new Measurement());
+        }
+
+        Long endMeasurementId = resultSet.getLong(INVOICE_END_MEASUREMENT_ID);
+        List<Measurement> endMeasurements = measurementDAO.getMeasurementById(endMeasurementId);
+
+        if (!endMeasurements.isEmpty()) {
+            invoice.setEndValue(endMeasurements.get(0));
+        } else {
+            invoice.setEndValue(new Measurement());
+        }
+
+        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
+        invoice.setConsumption(resultSet.getDouble(INVOICE_CONSUMPTION));
+        invoice.setPrice(resultSet.getDouble(INVOICE_PRICE));
+        invoice.setUserId(resultSet.getLong(INVOICE_USER_ID));
+        invoice.setPaid(resultSet.getBoolean(INVOICE_IS_PAID));
+        invoice.setSecretKey(invoiceId + authUserSessionId);
+
+        return invoice;
+    }
+
+    private void setInvoiceToPreparedStatement(Invoice invoice, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setDate(1, Date.valueOf(invoice.getDate()));
+        preparedStatement.setLong(2, invoice.getMeter().getId());
+        preparedStatement.setLong(3, invoice.getStartValue().getId());
+        preparedStatement.setLong(4, invoice.getEndValue().getId());
+        preparedStatement.setDouble(5, invoice.getConsumption());
+        preparedStatement.setDouble(6, invoice.getPrice());
+        preparedStatement.setLong(7, invoice.getUserId());
+        preparedStatement.setBoolean(8, invoice.isPaid());
     }
 }

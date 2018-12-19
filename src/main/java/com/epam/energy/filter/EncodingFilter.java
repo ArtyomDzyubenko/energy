@@ -10,16 +10,6 @@ public class EncodingFilter implements Filter {
     private static String encoding;
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException{
-        String contentType = req.getContentType();
-        if (contentType != null && contentType.startsWith(FILTERABLE_CONTENT_TYPE)) {
-            req.setCharacterEncoding(encoding);
-        }
-
-        chain.doFilter(req, resp);
-    }
-
-    @Override
     public void init(FilterConfig config) {
         encoding = config.getInitParameter(ENCODING_INIT_PARAM_NAME);
 
@@ -29,7 +19,12 @@ public class EncodingFilter implements Filter {
     }
 
     @Override
-    public void destroy() {
-        //standard destroy method
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException{
+        String contentType = req.getContentType();
+        if (contentType != null && contentType.startsWith(FILTERABLE_CONTENT_TYPE)) {
+            req.setCharacterEncoding(encoding);
+        }
+
+        chain.doFilter(req, resp);
     }
 }

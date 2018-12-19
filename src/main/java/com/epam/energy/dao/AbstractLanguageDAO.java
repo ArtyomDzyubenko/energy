@@ -31,12 +31,7 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Language language = new Language();
-                language.setId(resultSet.getLong(ID));
-                language.setName(resultSet.getString(LANGUAGE_NAME));
-                language.setCode(resultSet.getString(LANGUAGE_CODE));
-                language.setCountry(resultSet.getString(LANGUAGE_COUNTRY));
-                languages.add(language);
+                languages.add(getLanguageFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -45,5 +40,15 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
         }
 
         return languages;
+    }
+
+    private Language getLanguageFromResultSet(ResultSet resultSet) throws SQLException {
+        Language language = new Language();
+        language.setId(resultSet.getLong(ID));
+        language.setName(resultSet.getString(LANGUAGE_NAME));
+        language.setCode(resultSet.getString(LANGUAGE_CODE));
+        language.setCountry(resultSet.getString(LANGUAGE_COUNTRY));
+
+        return language;
     }
 }

@@ -133,8 +133,7 @@ public final class MeterReaderSocket {
             out.setLength(0);
             String byteNumberString = out.append(String.format(BYTE_NUMBER_STRING_FORMAT, recordNumber)).reverse().toString();
             out.setLength(0);
-            String memoryAddressString = out.append(String.format(MEMORY_ADDRESS_STRING_FORMAT, memoryAddress))
-                    .reverse().toString(); //"%1$02X", "%1$04X" save significant zeros
+            String memoryAddressString = out.append(String.format(MEMORY_ADDRESS_STRING_FORMAT, memoryAddress)).reverse().toString(); //"%1$02X", "%1$04X" save significant zeros
 
             memoryAddress++;
 

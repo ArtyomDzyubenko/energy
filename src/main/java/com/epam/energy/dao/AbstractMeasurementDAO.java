@@ -36,17 +36,8 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-
             while (resultSet.next()) {
-                Measurement measurement = new Measurement();
-                Long measurementId = resultSet.getLong(ID);
-                measurement.setId(measurementId);
-                measurement.setDateTime(resultSet.getTimestamp(MEASUREMENT_DATE_TIME));
-                measurement.setValue(resultSet.getDouble(MEASUREMENT_VALUE));
-                measurement.setMeterId(resultSet.getLong(METER_ID));
-                measurement.setSecretKey(Encryption.encrypt(measurementId.toString() + authUserSessionId));
-                measurements.add(measurement);
+                measurements.add(getMeasurementFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -61,15 +52,7 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setTimestamp(1, measurement.getDateTime());
-            preparedStatement.setDouble(2, measurement.getValue());
-
-            if (!measurement.getMeterId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(3, measurement.getMeterId());
-            } else {
-                preparedStatement.setLong(3, measurement.getId());
-            }
-
+            setMeasurementToPreparedStatement(measurement, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
@@ -112,5 +95,29 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
         }
 
         return LONG_ZERO;
+    }
+
+    private Measurement getMeasurementFromResultSet(ResultSet resultSet) throws DAOException, SQLException {
+        Measurement measurement = new Measurement();
+        Long measurementId = resultSet.getLong(ID);
+        measurement.setId(measurementId);
+        measurement.setDateTime(resultSet.getTimestamp(MEASUREMENT_DATE_TIME));
+        measurement.setValue(resultSet.getDouble(MEASUREMENT_VALUE));
+        measurement.setMeterId(resultSet.getLong(METER_ID));
+        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
+        measurement.setSecretKey(Encryption.encrypt(measurementId.toString() + authUserSessionId));
+
+        return measurement;
+    }
+
+    private void setMeasurementToPreparedStatement(Measurement measurement, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setTimestamp(1, measurement.getDateTime());
+        preparedStatement.setDouble(2, measurement.getValue());
+
+        if (!measurement.getMeterId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(3, measurement.getMeterId());
+        } else {
+            preparedStatement.setLong(3, measurement.getId());
+        }
     }
 }

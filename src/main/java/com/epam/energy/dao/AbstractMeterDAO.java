@@ -29,25 +29,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Meter meter = new Meter();
-                Long meterId = resultSet.getLong(ID);
-                meter.setId(meterId);
-                meter.setNumber(resultSet.getInt(METER_NUMBER));
-                meter.setMeterReaderId(resultSet.getLong(METER_READER_ID));
-                meter.setMeterReaderNumber(resultSet.getInt(METER_READER_NUMBER));
-                AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
-                List<Resource> resources = resourceDAO.getResourcesByMeterId(meterId);
-
-                if (!resources.isEmpty()) {
-                    meter.setResource(resources.get(0));
-                } else{
-                    meter.setResource(new Resource());
-                }
-
-                String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-                meter.setAddressId(resultSet.getLong(ADDRESS_ID));
-                meter.setSecretKey(Encryption.encrypt(meterId.toString() + authUserSessionId));
-                meters.add(meter);
+                meters.add(getMeterFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -62,27 +44,53 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, meter.getNumber());
-            preparedStatement.setLong(2, meter.getResource().getId());
-
-            if (!meter.getMeterReaderId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(3, meter.getMeterReaderId());
-            } else {
-                preparedStatement.setNull(3, Types.BIGINT);
-            }
-
-            if (meter.getId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(4, meter.getAddressId());
-            } else {
-                preparedStatement.setLong(4, meter.getAddressId());
-                preparedStatement.setLong(5, meter.getId());
-            }
-
+            setMeterToPreparedStatement(meter, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
+        }
+    }
+
+    private Meter getMeterFromResultSet(ResultSet resultSet) throws SQLException, DAOException {
+        Meter meter = new Meter();
+        Long meterId = resultSet.getLong(ID);
+        meter.setId(meterId);
+        meter.setNumber(resultSet.getInt(METER_NUMBER));
+        meter.setMeterReaderId(resultSet.getLong(METER_READER_ID));
+        meter.setMeterReaderNumber(resultSet.getInt(METER_READER_NUMBER));
+        AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
+        List<Resource> resources = resourceDAO.getResourcesByMeterId(meterId);
+
+        if (!resources.isEmpty()) {
+            meter.setResource(resources.get(0));
+        } else{
+            meter.setResource(new Resource());
+        }
+
+        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
+        meter.setAddressId(resultSet.getLong(ADDRESS_ID));
+        meter.setSecretKey(Encryption.encrypt(meterId.toString() + authUserSessionId));
+
+        return meter;
+    }
+
+    private void setMeterToPreparedStatement(Meter meter, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setInt(1, meter.getNumber());
+        preparedStatement.setLong(2, meter.getResource().getId());
+
+        if (!meter.getMeterReaderId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(3, meter.getMeterReaderId());
+        } else {
+            preparedStatement.setNull(3, Types.BIGINT);
+        }
+
+        if (meter.getId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(4, meter.getAddressId());
+        } else {
+            preparedStatement.setLong(4, meter.getAddressId());
+            preparedStatement.setLong(5, meter.getId());
         }
     }
 }

@@ -71,38 +71,7 @@ public abstract class AbstractUserDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, user.getLogin());
-            preparedStatement.setString(2, Encryption.encrypt(user.getPassword()));
-            preparedStatement.setString(3, user.getFirstName());
-
-            if (!user.getLastName().equals(EMPTY_STRING)) {
-                preparedStatement.setString(4, user.getLastName());
-            } else {
-                preparedStatement.setNull(4, Types.VARCHAR);
-            }
-
-            if (!user.getPhone().equals(LONG_ZERO)) {
-                preparedStatement.setLong(5, user.getPhone());
-            } else {
-                preparedStatement.setNull(5, Types.BIGINT);
-            }
-
-            if (!user.getEmail().equals(EMPTY_STRING)) {
-                preparedStatement.setString(6, user.getEmail());
-            } else {
-                preparedStatement.setNull(6, Types.VARCHAR);
-            }
-
-            if (!user.getPersonalAccount().equals(0)) {
-                preparedStatement.setInt(7, user.getPersonalAccount());
-            } else {
-                preparedStatement.setNull(7, Types.INTEGER);
-            }
-
-            if (!user.getId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(8, user.getId());
-            }
-
+            setUserToPreparedStatement(user, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
@@ -115,25 +84,7 @@ public abstract class AbstractUserDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, user.getLogin());
-            preparedStatement.setString(2, Encryption.encrypt(user.getPassword()));
-
-            if (!user.getPhone().equals(LONG_ZERO)) {
-                preparedStatement.setLong(3, user.getPhone());
-            } else {
-                preparedStatement.setNull(3, Types.BIGINT);
-            }
-
-            if (!user.getEmail().equals(EMPTY_STRING)) {
-                preparedStatement.setString(4, user.getEmail());
-            } else {
-                preparedStatement.setNull(4, Types.VARCHAR);
-            }
-
-            if (!user.getId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(5, user.getId());
-            }
-
+            setRegisteredUserToPreparedStatement(user, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
@@ -158,5 +109,60 @@ public abstract class AbstractUserDAO extends AbstractDAO {
         user.setSecretKey(Encryption.encrypt(id + authUserSessionId));
 
         return user;
+    }
+
+    private void setUserToPreparedStatement(User user, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, user.getLogin());
+        preparedStatement.setString(2, Encryption.encrypt(user.getPassword()));
+        preparedStatement.setString(3, user.getFirstName());
+
+        if (!user.getLastName().equals(EMPTY_STRING)) {
+            preparedStatement.setString(4, user.getLastName());
+        } else {
+            preparedStatement.setNull(4, Types.VARCHAR);
+        }
+
+        if (!user.getPhone().equals(LONG_ZERO)) {
+            preparedStatement.setLong(5, user.getPhone());
+        } else {
+            preparedStatement.setNull(5, Types.BIGINT);
+        }
+
+        if (!user.getEmail().equals(EMPTY_STRING)) {
+            preparedStatement.setString(6, user.getEmail());
+        } else {
+            preparedStatement.setNull(6, Types.VARCHAR);
+        }
+
+        if (!user.getPersonalAccount().equals(0)) {
+            preparedStatement.setInt(7, user.getPersonalAccount());
+        } else {
+            preparedStatement.setNull(7, Types.INTEGER);
+        }
+
+        if (!user.getId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(8, user.getId());
+        }
+    }
+
+    private void setRegisteredUserToPreparedStatement(User user, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, user.getLogin());
+        preparedStatement.setString(2, Encryption.encrypt(user.getPassword()));
+
+        if (!user.getPhone().equals(LONG_ZERO)) {
+            preparedStatement.setLong(3, user.getPhone());
+        } else {
+            preparedStatement.setNull(3, Types.BIGINT);
+        }
+
+        if (!user.getEmail().equals(EMPTY_STRING)) {
+            preparedStatement.setString(4, user.getEmail());
+        } else {
+            preparedStatement.setNull(4, Types.VARCHAR);
+        }
+
+        if (!user.getId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(5, user.getId());
+        }
     }
 }

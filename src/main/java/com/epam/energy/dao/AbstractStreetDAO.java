@@ -33,10 +33,7 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Street street = new Street();
-                street.setId(resultSet.getLong(ID));
-                street.setName(resultSet.getString(STREET_NAME));
-                streets.add(street);
+                streets.add(getStreetFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -51,17 +48,28 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, street.getName());
-
-            if (!street.getId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(2, street.getId());
-            }
-
+            setStreetToPreparedStatement(street, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
+        }
+    }
+
+    private Street getStreetFromResultSet(ResultSet resultSet) throws SQLException {
+        Street street = new Street();
+        street.setId(resultSet.getLong(ID));
+        street.setName(resultSet.getString(STREET_NAME));
+
+        return street;
+    }
+
+    private void setStreetToPreparedStatement(Street street, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, street.getName());
+
+        if (!street.getId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(2, street.getId());
         }
     }
 }

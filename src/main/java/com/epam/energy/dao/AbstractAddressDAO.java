@@ -34,23 +34,7 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Address address = new Address();
-                Long addressId = resultSet.getLong(ID);
-                address.setId(addressId);
-                address.setBuilding(resultSet.getString(ADDRESS_BUILDING));
-                address.setFlat(resultSet.getString(ADDRESS_FLAT));
-                List<Street> streets = streetDAO.getStreetByAddressId(addressId);
-
-                if (!streets.isEmpty()) {
-                    address.setStreet(streets.get(0));
-                } else {
-                    address.setStreet(new Street());
-                }
-
-                address.setUserId(resultSet.getLong(USER_ID));
-                String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-                address.setSecretKey(Encryption.encrypt(addressId.toString() + authUserSessionId));
-                addresses.add(address);
+                addresses.add(getAddressFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -65,28 +49,53 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, address.getBuilding());
-
-            if (!address.getFlat().equals(EMPTY_STRING)) {
-                preparedStatement.setString(2, address.getFlat());
-            } else{
-                preparedStatement.setNull(2, Types.VARCHAR);
-            }
-
-            preparedStatement.setLong(3, address.getStreet().getId());
-
-            if (address.getId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(4, address.getUserId());
-            } else {
-                preparedStatement.setLong(4, address.getUserId());
-                preparedStatement.setLong(5, address.getId());
-            }
-
+            setAddressToPreparedStatement(address, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
+        }
+    }
+
+    private Address getAddressFromResultSet(ResultSet resultSet) throws SQLException, DAOException {
+        Address address = new Address();
+
+        Long addressId = resultSet.getLong(ID);
+        address.setId(addressId);
+        address.setBuilding(resultSet.getString(ADDRESS_BUILDING));
+        address.setFlat(resultSet.getString(ADDRESS_FLAT));
+        List<Street> streets = streetDAO.getStreetByAddressId(addressId);
+
+        if (!streets.isEmpty()) {
+            address.setStreet(streets.get(0));
+        } else {
+            address.setStreet(new Street());
+        }
+
+        address.setUserId(resultSet.getLong(USER_ID));
+        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
+        address.setSecretKey(Encryption.encrypt(addressId.toString() + authUserSessionId));
+
+        return address;
+    }
+
+    private void setAddressToPreparedStatement(Address address, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, address.getBuilding());
+
+        if (!address.getFlat().equals(EMPTY_STRING)) {
+            preparedStatement.setString(2, address.getFlat());
+        } else{
+            preparedStatement.setNull(2, Types.VARCHAR);
+        }
+
+        preparedStatement.setLong(3, address.getStreet().getId());
+
+        if (address.getId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(4, address.getUserId());
+        } else {
+            preparedStatement.setLong(4, address.getUserId());
+            preparedStatement.setLong(5, address.getId());
         }
     }
 }

@@ -38,16 +38,16 @@ public class AuthFilter implements Filter {
 
         User authUser = (User)request.getSession().getAttribute(AUTHORIZED_USER);
 
-        String action = request.getServletPath();
+        String serviceRequest = request.getServletPath();
 
-        if (action.startsWith(RESOURCES_DIR))
+        if (serviceRequest.startsWith(RESOURCES_DIR))
             filterChain.doFilter(servletRequest, servletResponse);
-        else if (servicesAllowedForAllUsers.contains(action)) {
+        else if (servicesAllowedForAllUsers.contains(serviceRequest)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else if (authUser!=null && authUser.isAdmin()) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else if (authUser!=null && !authUser.isAdmin()) {
-            if (servicesAllowedForUser.contains(action)) {
+            if (servicesAllowedForUser.contains(serviceRequest)) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {
                 throw new SecurityException("Access denied!");

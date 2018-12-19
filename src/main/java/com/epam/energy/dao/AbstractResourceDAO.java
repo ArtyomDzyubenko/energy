@@ -32,11 +32,7 @@ public abstract class AbstractResourceDAO extends AbstractDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Resource resource = new Resource();
-                resource.setId(resultSet.getLong(ID));
-                resource.setName(resultSet.getString(RESOURCE_NAME));
-                resource.setCost(resultSet.getDouble(RESOURCE_COST));
-                resources.add(resource);
+                resources.add(getResourceFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -51,18 +47,30 @@ public abstract class AbstractResourceDAO extends AbstractDAO {
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, resource.getName());
-            preparedStatement.setDouble(2, resource.getCost());
-
-            if (!resource.getId().equals(LONG_ZERO)) {
-                preparedStatement.setLong(3, resource.getId());
-            }
-
+            setResourceToPreparedStatement(resource, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
         } finally {
             pool.releaseConnection(connection);
+        }
+    }
+
+    private Resource getResourceFromResultSet(ResultSet resultSet) throws SQLException {
+        Resource resource = new Resource();
+        resource.setId(resultSet.getLong(ID));
+        resource.setName(resultSet.getString(RESOURCE_NAME));
+        resource.setCost(resultSet.getDouble(RESOURCE_COST));
+
+        return resource;
+    }
+
+    private void setResourceToPreparedStatement(Resource resource, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, resource.getName());
+        preparedStatement.setDouble(2, resource.getCost());
+
+        if (!resource.getId().equals(LONG_ZERO)) {
+            preparedStatement.setLong(3, resource.getId());
         }
     }
 }

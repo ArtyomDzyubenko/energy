@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 public final class MeterReaderParser {
+    private static MeterReaderParser instance;
     private static final int DATA_STRING_START_POSITION = 0;
     private static final int DATA_STRING_END_POSITION = 34;
     private static final int CHECKSUM_STRING_START_POSITION = 34;
@@ -20,7 +21,6 @@ public final class MeterReaderParser {
     private static final int END_MEASUREMENT_STRING_POSITION = 34;
     private static final int OFFSET = 946684800;        //in input stream, time starts from 2000-01-01, but EPOCH time starts from 1970-01-01
     private static final StringBuilder stringBuilder = new StringBuilder();
-    private static MeterReaderParser instance;
 
     private MeterReaderParser() {}
 
