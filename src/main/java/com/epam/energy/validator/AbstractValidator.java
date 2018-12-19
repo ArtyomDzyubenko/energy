@@ -167,6 +167,8 @@ abstract class AbstractValidator {
     private String getValueNotANumberErrorString(String fieldName) throws DAOException {
         return concat.append(getErrorLocalization("valueNotANumberError")).append(" ").append(fieldName).toString();
     }
+
+
 }
 
 

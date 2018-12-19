@@ -27,7 +27,7 @@ public final class Constants {
     public static final Long MIN_PHONE_NUMBER = 7000000000L;
     public static final Long MAX_PHONE_NUMBER = 7999999999L;
     public static final String EMAIL_REGEX = "([.[^@\\s]]+)@([.[^@\\s]]+)\\.([a-z]+)";
-    public static final String IP_ADDRESS_REGEX = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.) {3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+    public static final String IP_ADDRESS_REGEX = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
     public static final String USER_FIRST_LAST_NAME_REGEX = "[a-zA-Zа-яА-ЯЁё]+";
     public static final String USER_LOGIN_REGEX = "[a-zA-Z0-9]+";
 
