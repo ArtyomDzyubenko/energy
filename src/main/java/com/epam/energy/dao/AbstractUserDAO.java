@@ -23,7 +23,6 @@ public abstract class AbstractUserDAO extends AbstractDAO {
 
     List<User> getUsers(Long id, String query) throws DAOException {
         List<User> users = new ArrayList<>();
-
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {

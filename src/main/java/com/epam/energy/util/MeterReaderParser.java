@@ -68,8 +68,7 @@ public final class MeterReaderParser {
         bytes[0] = (byte)((bytes[0] >>> 1) & 0b01111111);
 
         stringBuilder.setLength(0);
-        String result = stringBuilder.append(byteToBinaryString(bytes[0]))
-                .append(byteToBinaryString(bytes[1]))
+        String result = stringBuilder.append(byteToBinaryString(bytes[0])).append(byteToBinaryString(bytes[1]))
                 .append(byteToBinaryString(bytes[2]))
                 .append(byteToBinaryString(bytes[3])).toString();
 

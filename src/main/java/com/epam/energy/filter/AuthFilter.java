@@ -6,30 +6,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static com.epam.energy.util.Constants.*;
 
 public class AuthFilter implements Filter {
-    private static List<String> servicesAllowedForAllUsers = new ArrayList<>();
+    private static List<String> servicesAllowedForGuest = new ArrayList<>();
     private static List<String> servicesAllowedForUser = new ArrayList<>();
 
-    static {
-        servicesAllowedForAllUsers.add(AUTH);
-        servicesAllowedForAllUsers.add(REGISTER_USER);
-        servicesAllowedForAllUsers.add(SHOW_REGISTER_USER_FORM);
-        servicesAllowedForAllUsers.add(INDEX_JSP);
-
-        servicesAllowedForUser.add(AUTH);
-        servicesAllowedForUser.add(LOGOUT);
-        servicesAllowedForUser.add(SHOW_USERS);
-        servicesAllowedForUser.add(EDIT_USER);
-        servicesAllowedForUser.add(ADD_USER);
-        servicesAllowedForUser.add(SHOW_ADDRESSES);
-        servicesAllowedForUser.add(SHOW_METERS);
-        servicesAllowedForUser.add(SHOW_INVOICES);
-        servicesAllowedForUser.add(SHOW_MEASUREMENTS);
-        servicesAllowedForUser.add(PAY_INVOICE);
-        servicesAllowedForUser.add(SWITCH_LANGUAGE);
+    @Override
+    public void init(FilterConfig filterConfig) {
+        servicesAllowedForGuest.addAll(Arrays.asList(AUTH, REGISTER_USER, SHOW_REGISTER_USER_FORM, INDEX_JSP));
+        servicesAllowedForUser.addAll(Arrays.asList(AUTH, LOGOUT, SHOW_USERS, EDIT_USER, ADD_USER, SHOW_ADDRESSES,
+                SHOW_METERS, SHOW_INVOICES, SHOW_MEASUREMENTS, PAY_INVOICE, SWITCH_LANGUAGE));
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException, SecurityException {
@@ -42,7 +31,7 @@ public class AuthFilter implements Filter {
 
         if (serviceRequest.startsWith(RESOURCES_DIR))
             filterChain.doFilter(servletRequest, servletResponse);
-        else if (servicesAllowedForAllUsers.contains(serviceRequest)) {
+        else if (servicesAllowedForGuest.contains(serviceRequest)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else if (authUser!=null && authUser.isAdmin()) {
             filterChain.doFilter(servletRequest, servletResponse);

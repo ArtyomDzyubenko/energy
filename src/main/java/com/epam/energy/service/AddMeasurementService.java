@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -32,6 +33,7 @@ public class AddMeasurementService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -61,14 +63,11 @@ public class AddMeasurementService extends AbstractService {
         MeasurementValidator measurementValidator = MeasurementValidator.getInstance();
         MeterValidator meterValidator = MeterValidator.getInstance();
 
-        String measurementIdString = parameters.get(MEASUREMENT_ID)[0];
-        String measurementValueString = parameters.get(MEASUREMENT_VALUE)[0];
-        String meterIdString = parameters.get(METER_ID)[0];
         String dateTimeString = EMPTY_STRING;
 
-        Long  measurementId = measurementValidator.validateId(measurementIdString, allowEmpty);
-        Double measurementValue = measurementValidator.validateValue(measurementValueString, !allowEmpty);
-        Long meterId = meterValidator.validateId(meterIdString, allowEmpty);
+        Long  measurementId = measurementValidator.validateId(parameters.get(MEASUREMENT_ID)[0], allowEmpty);
+        Double measurementValue = measurementValidator.validateValue(parameters.get(MEASUREMENT_VALUE)[0], !allowEmpty);
+        Long meterId = meterValidator.validateId(parameters.get(METER_ID)[0], allowEmpty);
         Timestamp dateTime;
 
         Measurement measurement = new Measurement();
@@ -91,9 +90,6 @@ public class AddMeasurementService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(MEASUREMENT_ID);
-        allowedParameters.add(MEASUREMENT_DATE_TIME);
-        allowedParameters.add(MEASUREMENT_VALUE);
-        allowedParameters.add(METER_ID);
+        allowedParameters.addAll(Arrays.asList(MEASUREMENT_ID, MEASUREMENT_DATE_TIME, MEASUREMENT_VALUE, METER_ID));
     }
 }

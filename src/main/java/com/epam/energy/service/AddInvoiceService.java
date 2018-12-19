@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -34,6 +35,7 @@ public class AddInvoiceService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -65,17 +67,11 @@ public class AddInvoiceService extends AbstractService {
         InvoiceValidator invoiceValidator = InvoiceValidator.getInstance();
         AddressValidator addressValidator = AddressValidator.getInstance();
 
-        String invoiceIdString = parameters.get(INVOICE_ID)[0];
-        String userIdString = parameters.get(USER_ID)[0];
-        String startValueIdString = parameters.get(MEASUREMENT_START_VALUE)[0];
-        String endValueIdString = parameters.get(MEASUREMENT_END_VALUE)[0];
-        String addressIdString = parameters.get(ADDRESS_ID)[0];
-
-        Long invoiceId = invoiceValidator.validateId(invoiceIdString, allowEmpty);
-        Long userId = userValidator.validateId(userIdString, !allowEmpty);
-        Long startValueId = measurementValidator.validateId(startValueIdString, !allowEmpty);
-        Long endValueId = measurementValidator.validateId(endValueIdString, !allowEmpty);
-        Long addressId = addressValidator.validateId(addressIdString, !allowEmpty);
+        Long invoiceId = invoiceValidator.validateId(parameters.get(INVOICE_ID)[0], allowEmpty);
+        Long userId = userValidator.validateId(parameters.get(USER_ID)[0], !allowEmpty);
+        Long startValueId = measurementValidator.validateId(parameters.get(MEASUREMENT_START_VALUE)[0], !allowEmpty);
+        Long endValueId = measurementValidator.validateId(parameters.get(MEASUREMENT_END_VALUE)[0], !allowEmpty);
+        Long addressId = addressValidator.validateId(parameters.get(ADDRESS_ID)[0], !allowEmpty);
 
         Meter meter = meterDAO.getMetersByAddressId(addressId).get(0);
         Measurement startMeasurement = measurementDAO.getMeasurementById(startValueId).get(0);
@@ -100,12 +96,6 @@ public class AddInvoiceService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(MEASUREMENT_START_VALUE);
-        allowedParameters.add(MEASUREMENT_END_VALUE);
-        allowedParameters.add(USER_ID);
-        allowedParameters.add(MEASUREMENT_START_VALUE);
-        allowedParameters.add(METER_ID);
-        allowedParameters.add(INVOICE_ID);
-        allowedParameters.add(ADDRESS_ID);
+        allowedParameters.addAll(Arrays.asList(MEASUREMENT_START_VALUE, MEASUREMENT_END_VALUE, USER_ID, METER_ID, INVOICE_ID, ADDRESS_ID));
     }
 }

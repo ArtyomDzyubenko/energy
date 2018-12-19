@@ -3,7 +3,7 @@ package com.epam.energy.validator;
 import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ValidationException;
 
-public class MeterValidator extends AbstractValidator {
+public class MeterValidator extends Validator {
     private static MeterValidator instance;
 
     private MeterValidator() {}

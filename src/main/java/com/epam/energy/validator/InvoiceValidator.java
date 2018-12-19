@@ -4,7 +4,7 @@ import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ValidationException;
 import java.sql.Timestamp;
 
-public class InvoiceValidator extends AbstractValidator {
+public class InvoiceValidator extends Validator {
     private static InvoiceValidator instance;
 
     private InvoiceValidator() {}

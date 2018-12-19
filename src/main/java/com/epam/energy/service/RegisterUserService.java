@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -31,6 +32,7 @@ public class RegisterUserService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -69,16 +71,11 @@ public class RegisterUserService extends AbstractService {
     private User getRegisteredUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
         UserValidator userValidator = UserValidator.getInstance();
 
-        String userLoginString = parameters.get(USER_LOGIN)[0];
-        String userPasswordString = parameters.get(USER_PASSWORD)[0];
-        String userPhoneString = parameters.get(USER_PHONE)[0];
-        String userEmailString = parameters.get(USER_EMAIL)[0];
-
         Long userId = getUserId(parameters);
-        String userLogin = userValidator.validateLogin(userLoginString, !allowEmpty);
-        String userPassword = userValidator.validatePassword(userPasswordString, !allowEmpty);
-        Long userPhone = userValidator.validatePhone(userPhoneString, allowEmpty);
-        String userEmail = userValidator.validateEmail(userEmailString, allowEmpty);
+        String userLogin = getUserLogin(parameters);
+        String userPassword = getUserPassword(parameters);
+        Long userPhone = userValidator.validatePhone(parameters.get(USER_PHONE)[0], allowEmpty);
+        String userEmail = userValidator.validateEmail(parameters.get(USER_EMAIL)[0], allowEmpty);
 
         User user = new User();
         user.setId(userId);
@@ -92,10 +89,6 @@ public class RegisterUserService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(USER_ID);
-        allowedParameters.add(USER_LOGIN);
-        allowedParameters.add(USER_PASSWORD);
-        allowedParameters.add(USER_PHONE);
-        allowedParameters.add(USER_EMAIL);
+        allowedParameters.addAll(Arrays.asList(USER_ID, USER_LOGIN, USER_PASSWORD, USER_PHONE, USER_EMAIL));
     }
 }

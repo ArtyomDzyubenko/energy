@@ -23,6 +23,7 @@ public class GetUsersService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             User authUser = (User) request.getSession().getAttribute(AUTHORIZED_USER);

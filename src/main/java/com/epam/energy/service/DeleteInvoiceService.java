@@ -29,6 +29,7 @@ public class DeleteInvoiceService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();

@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -30,6 +31,7 @@ public class AddStreetService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -58,11 +60,8 @@ public class AddStreetService extends AbstractService {
     private Street getStreet(Map<String, String[]> parameters) throws ValidationException, DAOException {
         StreetValidator streetValidator = StreetValidator.getInstance();
 
-        String streetIdString = parameters.get(STREET_ID)[0];
-        String streetNameString = parameters.get(STREET_NAME)[0];
-
-        Long streetId = streetValidator.validateId(streetIdString, allowEmpty);
-        String streetName = streetValidator.validateName(streetNameString, !allowEmpty);
+        Long streetId = streetValidator.validateId(parameters.get(STREET_ID)[0], allowEmpty);
+        String streetName = streetValidator.validateName(parameters.get(STREET_NAME)[0], !allowEmpty);
 
         Street street = new Street();
         street.setId(streetId);
@@ -72,7 +71,6 @@ public class AddStreetService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(STREET_ID);
-        allowedParameters.add(STREET_NAME);
+        allowedParameters.addAll(Arrays.asList(STREET_ID, STREET_NAME));
     }
 }

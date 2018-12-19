@@ -29,15 +29,18 @@ public class PayInvoiceService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
+            boolean paid = true;
+
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
             Long invoiceId = getInvoiceId(parameters);
-            invoiceDAO.updatePayStatusById(invoiceId, true);
+            invoiceDAO.updatePayStatusById(invoiceId, paid);
 
             response.sendRedirect(getLastServiceURL(INVOICES_URL_LAST_STATE, request));
         } catch (IOException e) {

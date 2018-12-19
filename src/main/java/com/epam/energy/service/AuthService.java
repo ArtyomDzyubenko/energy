@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -35,6 +36,7 @@ public class AuthService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -73,10 +75,8 @@ public class AuthService extends AbstractService {
     private User getAuthUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
         UserValidator userValidator = UserValidator.getInstance();
 
-        String userLoginString = parameters.get(USER_LOGIN)[0];
-        String userPasswordString = parameters.get(USER_PASSWORD)[0];
-        String userLogin = userValidator.validateLogin(userLoginString, !allowEmpty);
-        String userPassword = userValidator.validatePassword(userPasswordString, !allowEmpty);
+        String userLogin = userValidator.validateLogin(parameters.get(USER_LOGIN)[0], !allowEmpty);
+        String userPassword = userValidator.validatePassword(parameters.get(USER_PASSWORD)[0], !allowEmpty);
 
         return userDAO.getUserByLoginAndPassword(userLogin, userPassword);
     }
@@ -86,7 +86,6 @@ public class AuthService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(USER_LOGIN);
-        allowedParameters.add(USER_PASSWORD);
+        allowedParameters.addAll(Arrays.asList(USER_LOGIN, USER_PASSWORD));
     }
 }

@@ -24,6 +24,7 @@ public class GetStreetsService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             List<Street> streets = streetDAO.getAll();

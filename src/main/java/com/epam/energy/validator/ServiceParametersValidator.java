@@ -6,7 +6,7 @@ import com.epam.energy.util.Encryption;
 import java.util.List;
 import java.util.Map;
 
-public class ServiceParametersValidator extends AbstractValidator {
+public class ServiceParametersValidator extends Validator {
     private StringBuilder concat = new StringBuilder();
     private static ServiceParametersValidator instance;
 

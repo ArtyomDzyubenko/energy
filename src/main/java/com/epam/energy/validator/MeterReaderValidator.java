@@ -4,7 +4,7 @@ import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ValidationException;
 import static com.epam.energy.util.Constants.*;
 
-public class MeterReaderValidator extends AbstractValidator {
+public class MeterReaderValidator extends Validator {
     private static MeterReaderValidator instance;
 
     private MeterReaderValidator() {}

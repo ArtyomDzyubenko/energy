@@ -71,7 +71,6 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
 
     private Invoice getInvoiceFromResultSet(ResultSet resultSet) throws SQLException, DAOException {
         Invoice invoice = new Invoice();
-
         Long invoiceId = resultSet.getLong(ID);
         invoice.setId(invoiceId);
         invoice.setDate(resultSet.getDate(INVOICE_DATE).toLocalDate());

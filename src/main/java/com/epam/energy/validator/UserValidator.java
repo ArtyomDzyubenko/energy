@@ -4,7 +4,7 @@ import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ValidationException;
 import static com.epam.energy.util.Constants.*;
 
-public class UserValidator extends AbstractValidator {
+public class UserValidator extends Validator {
     private static UserValidator instance;
 
     private UserValidator() {}

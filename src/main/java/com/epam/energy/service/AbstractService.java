@@ -85,4 +85,16 @@ public abstract class AbstractService {
 
         return meterReaderValidator.validateId(meterReaderIdString, allowEmpty);
     }
+
+    String getUserLogin(Map<String, String[]> parameters) throws ValidationException, DAOException {
+        UserValidator userValidator = UserValidator.getInstance();
+
+        return userValidator.validateLogin(parameters.get(USER_LOGIN)[0], !allowEmpty);
+    }
+
+    String getUserPassword(Map<String, String[]> parameters) throws ValidationException, DAOException {
+        UserValidator userValidator = UserValidator.getInstance();
+
+        return userValidator.validatePassword(parameters.get(USER_PASSWORD)[0], !allowEmpty);
+    }
 }

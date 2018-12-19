@@ -11,9 +11,7 @@ import com.epam.energy.validator.StreetValidator;
 import com.epam.energy.validator.UserValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import static com.epam.energy.util.Constants.*;
 
 public class AddAddressService extends AbstractService {
@@ -32,6 +30,7 @@ public class AddAddressService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -62,16 +61,11 @@ public class AddAddressService extends AbstractService {
         StreetValidator streetValidator = StreetValidator.getInstance();
         UserValidator userValidator = UserValidator.getInstance();
 
-        String addressBuildingString = parameters.get(ADDRESS_BUILDING)[0];
-        String addressFlatString = parameters.get(ADDRESS_FLAT)[0];
-        String addressStreetIdString = parameters.get(STREET_ID)[0];
-        String userIdString;
-
         try {
             Long addressId = getAddressId(parameters);
-            String addressBuilding = addressValidator.validateBuilding(addressBuildingString, !allowEmpty);
-            String addressFlat = addressValidator.validateFlat(addressFlatString, allowEmpty);
-            Long addressStreetId = streetValidator.validateId(addressStreetIdString, !allowEmpty);
+            String addressBuilding = addressValidator.validateBuilding(parameters.get(ADDRESS_BUILDING)[0], !allowEmpty);
+            String addressFlat = addressValidator.validateFlat(parameters.get(ADDRESS_FLAT)[0], allowEmpty);
+            Long addressStreetId = streetValidator.validateId(parameters.get(STREET_ID)[0], !allowEmpty);
             Long userId;
 
             Address address = new Address();
@@ -81,12 +75,10 @@ public class AddAddressService extends AbstractService {
             address.getStreet().setId(addressStreetId);
 
             if (parameters.containsKey(TRANSFER_USER_ID)) {
-                userIdString = parameters.get(TRANSFER_USER_ID)[0];
-                userId = userValidator.validateId(userIdString, !allowEmpty);
+                userId = userValidator.validateId(parameters.get(TRANSFER_USER_ID)[0], !allowEmpty);
                 address.setUserId(userId);
             } else if (parameters.containsKey(USER_ID)) {
-                userIdString = parameters.get(USER_ID)[0];
-                userId = userValidator.validateId(userIdString, !allowEmpty);
+                userId = userValidator.validateId(parameters.get(USER_ID)[0], !allowEmpty);
                 address.setUserId(userId);
             }
 
@@ -99,11 +91,6 @@ public class AddAddressService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(ADDRESS_ID);
-        allowedParameters.add(ADDRESS_BUILDING);
-        allowedParameters.add(ADDRESS_FLAT);
-        allowedParameters.add(USER_ID);
-        allowedParameters.add(STREET_ID);
-        allowedParameters.add(TRANSFER_USER_ID);
+        allowedParameters.addAll(Arrays.asList(ADDRESS_ID, ADDRESS_BUILDING, ADDRESS_FLAT, USER_ID, STREET_ID, TRANSFER_USER_ID));
     }
 }

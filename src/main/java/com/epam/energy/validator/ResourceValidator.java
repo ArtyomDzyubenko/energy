@@ -4,7 +4,7 @@ import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ValidationException;
 import static com.epam.energy.util.Constants.STRING_MAX_LENGTH;
 
-public class ResourceValidator extends AbstractValidator {
+public class ResourceValidator extends Validator {
     private static ResourceValidator instance;
 
     private ResourceValidator() {}

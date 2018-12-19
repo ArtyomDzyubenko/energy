@@ -4,7 +4,7 @@ import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ValidationException;
 import java.sql.Timestamp;
 
-public class MeasurementValidator extends AbstractValidator {
+public class MeasurementValidator extends Validator {
     private static MeasurementValidator instance;
 
     private MeasurementValidator() {}

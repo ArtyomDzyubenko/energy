@@ -20,7 +20,6 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
 
     List<Language> getLanguages(Long id, String query) throws DAOException {
         List<Language> languages = new ArrayList<>();
-
         Connection connection = pool.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {

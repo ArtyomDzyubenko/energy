@@ -21,6 +21,7 @@ public class ShowRegisterUserFormService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             request.getRequestDispatcher(REGISTER_USER_JSP).forward(request, response);

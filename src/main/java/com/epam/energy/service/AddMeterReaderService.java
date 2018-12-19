@@ -10,6 +10,7 @@ import com.epam.energy.validator.ServiceParametersValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -30,6 +31,7 @@ public class AddMeterReaderService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -58,15 +60,10 @@ public class AddMeterReaderService extends AbstractService {
     private MeterReader getMeterReader(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
 
-        String meterReaderIdString = parameters.get(METER_READER_ID)[0];
-        String meterReaderNumberString = parameters.get(METER_READER_NUMBER)[0];
-        String meterReaderIPAddressString = parameters.get(METER_READER_IP_ADDRESS)[0];
-        String meterReaderPortString = parameters.get(METER_READER_PORT)[0];
-
-        Long meterReaderId = meterReaderValidator.validateId(meterReaderIdString, allowEmpty);
-        Integer meterReaderNumber = meterReaderValidator.validateNumber(meterReaderNumberString, !allowEmpty);
-        String meterReaderIPAddress = meterReaderValidator.validateIPAddress(meterReaderIPAddressString, !allowEmpty);
-        Integer meterReaderPort = meterReaderValidator.validatePort(meterReaderPortString, !allowEmpty);
+        Long meterReaderId = meterReaderValidator.validateId(parameters.get(METER_READER_ID)[0], allowEmpty);
+        Integer meterReaderNumber = meterReaderValidator.validateNumber(parameters.get(METER_READER_NUMBER)[0], !allowEmpty);
+        String meterReaderIPAddress = meterReaderValidator.validateIPAddress(parameters.get(METER_READER_IP_ADDRESS)[0], !allowEmpty);
+        Integer meterReaderPort = meterReaderValidator.validatePort(parameters.get(METER_READER_PORT)[0], !allowEmpty);
 
         MeterReader meterReader = new MeterReader();
         meterReader.setId(meterReaderId);
@@ -78,9 +75,6 @@ public class AddMeterReaderService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(METER_READER_ID);
-        allowedParameters.add(METER_READER_NUMBER);
-        allowedParameters.add(METER_READER_IP_ADDRESS);
-        allowedParameters.add(METER_READER_PORT);
+        allowedParameters.addAll(Arrays.asList(METER_READER_ID, METER_READER_NUMBER, METER_READER_IP_ADDRESS, METER_READER_PORT));
     }
 }

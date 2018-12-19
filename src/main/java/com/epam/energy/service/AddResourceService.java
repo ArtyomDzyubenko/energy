@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -30,6 +31,7 @@ public class AddResourceService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -58,13 +60,9 @@ public class AddResourceService extends AbstractService {
     private Resource getResource(Map<String, String[]> parameters) throws ValidationException, DAOException {
         ResourceValidator resourceValidator = ResourceValidator.getInstance();
 
-        String resourceIdString = parameters.get(RESOURCE_ID)[0];
-        String resourceNameString = parameters.get(RESOURCE_NAME)[0];
-        String resourceCostString = parameters.get(RESOURCE_COST)[0];
-
-        Long resourceId = resourceValidator.validateId(resourceIdString, allowEmpty);
-        String resourceName = resourceValidator.validateName(resourceNameString, !allowEmpty);
-        Double resourceCost = resourceValidator.validateCost(resourceCostString, !allowEmpty);
+        Long resourceId = resourceValidator.validateId(parameters.get(RESOURCE_ID)[0], allowEmpty);
+        String resourceName = resourceValidator.validateName(parameters.get(RESOURCE_NAME)[0], !allowEmpty);
+        Double resourceCost = resourceValidator.validateCost(parameters.get(RESOURCE_COST)[0], !allowEmpty);
 
         Resource resource = new Resource();
         resource.setId(resourceId);
@@ -75,8 +73,6 @@ public class AddResourceService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(RESOURCE_ID);
-        allowedParameters.add(RESOURCE_NAME);
-        allowedParameters.add(RESOURCE_COST);
+        allowedParameters.addAll(Arrays.asList(RESOURCE_ID, RESOURCE_NAME, RESOURCE_COST));
     }
 }

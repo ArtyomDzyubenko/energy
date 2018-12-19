@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -30,6 +31,7 @@ public class AddMeterService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -61,15 +63,10 @@ public class AddMeterService extends AbstractService {
         AddressValidator addressValidator = AddressValidator.getInstance();
         ResourceValidator resourceValidator = ResourceValidator.getInstance();
 
-        String meterNumberString = parameters.get(METER_NUMBER)[0];
-        String meterReaderIdString = parameters.get(METER_READER_ID)[0];
-        String resourceIdString = parameters.get(RESOURCE_ID)[0];
-        String addressIdString;
-
         Long meterId = getMeterId(parameters);
-        Integer meterNumber = meterValidator.validateNumber(meterNumberString, !allowEmpty);
-        Long meterReaderId = meterReaderValidator.validateId(meterReaderIdString, !allowEmpty);
-        Long resourceId = resourceValidator.validateId(resourceIdString, !allowEmpty);
+        Integer meterNumber = meterValidator.validateNumber(parameters.get(METER_NUMBER)[0], !allowEmpty);
+        Long meterReaderId = meterReaderValidator.validateId(parameters.get(METER_READER_ID)[0], !allowEmpty);
+        Long resourceId = resourceValidator.validateId(parameters.get(RESOURCE_ID)[0], !allowEmpty);
 
         Meter meter = new Meter();
         meter.setId(meterId);
@@ -79,12 +76,10 @@ public class AddMeterService extends AbstractService {
         Long addressId;
 
         if (parameters.containsKey(TRANSFER_ADDRESS_ID)) {
-            addressIdString = parameters.get(TRANSFER_ADDRESS_ID)[0];
-            addressId = addressValidator.validateId(addressIdString, !allowEmpty);
+            addressId = addressValidator.validateId(parameters.get(TRANSFER_ADDRESS_ID)[0], !allowEmpty);
             meter.setAddressId(addressId);
         } else if (parameters.containsKey(ADDRESS_ID)) {
-            addressIdString = parameters.get(ADDRESS_ID)[0];
-            addressId = addressValidator.validateId(addressIdString, !allowEmpty);
+            addressId = addressValidator.validateId(parameters.get(ADDRESS_ID)[0], !allowEmpty);
             meter.setAddressId(addressId);
         }
 
@@ -92,11 +87,6 @@ public class AddMeterService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(METER_ID);
-        allowedParameters.add(METER_NUMBER);
-        allowedParameters.add(METER_READER_ID);
-        allowedParameters.add(RESOURCE_ID);
-        allowedParameters.add(ADDRESS_ID);
-        allowedParameters.add(TRANSFER_ADDRESS_ID);
+        allowedParameters.addAll(Arrays.asList(METER_ID, METER_NUMBER, METER_READER_ID, RESOURCE_ID, ADDRESS_ID, TRANSFER_ADDRESS_ID));
     }
 }

@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -31,6 +32,7 @@ public class GetInvoicesService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -59,7 +61,6 @@ public class GetInvoicesService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(USER_ID);
-        allowedParameters.add(SECRET_KEY);
+        allowedParameters.addAll(Arrays.asList(USER_ID, SECRET_KEY));
     }
 }

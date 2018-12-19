@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 import static com.epam.energy.util.Constants.*;
 
-abstract class AbstractValidator {
+class Validator {
     StringBuilder concat = new StringBuilder();
 
     String validateStringField(String field, int length, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
@@ -123,10 +123,6 @@ abstract class AbstractValidator {
         return out;
     }
 
-    String getErrorLocalization(String key) throws DAOException {
-        return LanguageService.getInstance().getLocalization().getString(key);
-    }
-
     private boolean checkForEmptyField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
         if (field.isEmpty() && allowEmpty) {
             return true;
@@ -168,7 +164,9 @@ abstract class AbstractValidator {
         return concat.append(getErrorLocalization("valueNotANumberError")).append(" ").append(fieldName).toString();
     }
 
-
+    String getErrorLocalization(String key) throws DAOException {
+        return LanguageService.getInstance().getLocalization().getString(key);
+    }
 }
 
 

@@ -60,7 +60,6 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
 
     private Address getAddressFromResultSet(ResultSet resultSet) throws SQLException, DAOException {
         Address address = new Address();
-
         Long addressId = resultSet.getLong(ID);
         address.setId(addressId);
         address.setBuilding(resultSet.getString(ADDRESS_BUILDING));

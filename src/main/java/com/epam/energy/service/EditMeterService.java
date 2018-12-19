@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;
@@ -35,6 +36,7 @@ public class EditMeterService extends AbstractService {
         return instance;
     }
 
+    @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
@@ -71,7 +73,6 @@ public class EditMeterService extends AbstractService {
     }
 
     private void init() {
-        allowedParameters.add(METER_ID);
-        allowedParameters.add(ADDRESS_ID);
+        allowedParameters.addAll(Arrays.asList(METER_ID, ADDRESS_ID));
     }
 }
