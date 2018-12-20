@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.epam.energy.util.Constants.*;
 
-
 public abstract class AbstractInvoiceDAO extends AbstractDAO{
     private AbstractMeterDAO meterDAO = MeterDAO.getInstance();
     private AbstractMeasurementDAO measurementDAO = MeasurementDAO.getInstance();

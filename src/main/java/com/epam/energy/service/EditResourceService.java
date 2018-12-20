@@ -5,7 +5,6 @@ import com.epam.energy.exception.ServiceException;
 import com.epam.energy.exception.ValidationException;
 import java.io.IOException;
 import com.epam.energy.model.Resource;
-import com.epam.energy.validator.ResourceValidator;
 import com.epam.energy.validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

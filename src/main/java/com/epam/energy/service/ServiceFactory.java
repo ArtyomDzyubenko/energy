@@ -5,7 +5,6 @@ import com.epam.energy.exception.ServiceException;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static com.epam.energy.util.Constants.*;

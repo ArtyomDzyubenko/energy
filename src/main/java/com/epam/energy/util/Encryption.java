@@ -1,6 +1,7 @@
 //https://gist.github.com/stonegao/5299984
 
 package com.epam.energy.util;
+
 import org.apache.log4j.Logger;
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;

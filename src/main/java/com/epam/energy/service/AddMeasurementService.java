@@ -6,7 +6,6 @@ import com.epam.energy.exception.ValidationException;
 import java.io.IOException;
 import com.epam.energy.model.Measurement;
 import com.epam.energy.validator.MeasurementValidator;
-import com.epam.energy.validator.MeterValidator;
 import com.epam.energy.validator.ServiceParametersValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

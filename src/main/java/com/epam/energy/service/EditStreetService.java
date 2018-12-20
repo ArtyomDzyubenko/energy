@@ -6,7 +6,6 @@ import com.epam.energy.exception.ValidationException;
 import java.io.IOException;
 import com.epam.energy.model.Street;
 import com.epam.energy.validator.ServiceParametersValidator;
-import com.epam.energy.validator.StreetValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

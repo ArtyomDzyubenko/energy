@@ -7,7 +7,6 @@ import java.io.IOException;
 import com.epam.energy.model.Meter;
 import com.epam.energy.model.MeterReader;
 import com.epam.energy.util.MeterReaderSocket;
-import com.epam.energy.validator.MeterReaderValidator;
 import com.epam.energy.validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

@@ -4,7 +4,6 @@ import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ServiceException;
 import com.epam.energy.exception.ValidationException;
 import com.epam.energy.validator.ServiceParametersValidator;
-import com.epam.energy.validator.StreetValidator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

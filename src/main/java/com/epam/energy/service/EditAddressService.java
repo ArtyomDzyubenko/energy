@@ -7,7 +7,6 @@ import com.epam.energy.model.Address;
 import com.epam.energy.model.Street;
 import com.epam.energy.model.User;
 import com.epam.energy.validator.ServiceParametersValidator;
-import com.epam.energy.validator.UserValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

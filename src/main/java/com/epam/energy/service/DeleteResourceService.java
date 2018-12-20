@@ -3,7 +3,6 @@ package com.epam.energy.service;
 import com.epam.energy.exception.DAOException;
 import com.epam.energy.exception.ServiceException;
 import com.epam.energy.exception.ValidationException;
-import com.epam.energy.validator.ResourceValidator;
 import com.epam.energy.validator.ServiceParametersValidator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;

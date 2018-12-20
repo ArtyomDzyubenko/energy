@@ -18,7 +18,7 @@ public class AddressDAO extends AbstractAddressDAO {
     private static final String INSERT_ADDRESS_BY_USER_ID =  "insert into addresses(building, flat, streetId, userId)\n" +
             "values(?, ?, ?, ?);";
     private static final String UPDATE_ADDRESS_BY_ID = "update addresses\n" +
-            "set building = ?, flat = ?, streetId = ?, userId=?\n" +
+            "set building = ?, flat = ?, streetId = ?, userId = ?\n" +
             "where id = ?;";
     private static AddressDAO instance;
 
