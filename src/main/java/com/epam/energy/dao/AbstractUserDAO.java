@@ -104,8 +104,8 @@ public abstract class AbstractUserDAO extends AbstractDAO {
         user.setEmail(resultSet.getString(USER_EMAIL));
         user.setPersonalAccount(resultSet.getInt(USER_PERSONAL_ACCOUNT));
         user.setAdmin(resultSet.getBoolean(USER_IS_ADMIN));
-        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-        user.setSecretKey(Encryption.encrypt(id + authUserSessionId));
+        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
+        user.setSecretKey(Encryption.encrypt(id + authorizedUserSessionId));
 
         return user;
     }

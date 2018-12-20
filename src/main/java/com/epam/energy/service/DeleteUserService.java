@@ -37,7 +37,7 @@ public class DeleteUserService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long userId = getUserId(parameters);
+            Long userId = getUserId(parameters, !allowEmpty);
 
             userDAO.deleteUserById(userId);
 

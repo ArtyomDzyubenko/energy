@@ -40,14 +40,15 @@ public class GetMetersService extends AbstractService {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
+
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long addressId = getAddressId(parameters);
-            Long userId = getUserId(parameters);
-
+            Long addressId = getAddressId(parameters, !allowEmpty);
+            Long userId = getUserId(parameters, !allowEmpty);
             String sKey = request.getParameter(SECRET_KEY);
-            String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-            parametersValidator.validateSecretKey(addressId.toString(), authUserSessionId, sKey);
+            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
+
+            parametersValidator.validateSecretKey(addressId.toString(), authorizedUserSessionId, sKey);
 
             List<Meter> meters = meterDAO.getMetersByAddressId(addressId);
             List<Resource> resources = resourceDAO.getAll();

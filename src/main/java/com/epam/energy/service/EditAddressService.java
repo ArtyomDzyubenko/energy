@@ -40,15 +40,12 @@ public class EditAddressService extends AbstractService {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-            UserValidator userValidator = UserValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            String userIdString = parameters.get(USER_ID)[0];
-
-            Long addressId = getAddressId(parameters);
-            Long userId = userValidator.validateId(userIdString, !allowEmpty);
+            Long userId = getUserId(parameters, !allowEmpty);
+            Long addressId = getAddressId(parameters, !allowEmpty);
 
             Address address = addressDAO.getAddressById(addressId).get(0);
             List<Street> streets = streetDAO.getAll();

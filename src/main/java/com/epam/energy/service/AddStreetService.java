@@ -60,7 +60,7 @@ public class AddStreetService extends AbstractService {
     private Street getStreet(Map<String, String[]> parameters) throws ValidationException, DAOException {
         StreetValidator streetValidator = StreetValidator.getInstance();
 
-        Long streetId = streetValidator.validateId(parameters.get(STREET_ID)[0], allowEmpty);
+        Long streetId = getStreetId(parameters, allowEmpty);
         String streetName = streetValidator.validateName(parameters.get(STREET_NAME)[0], !allowEmpty);
 
         Street street = new Street();

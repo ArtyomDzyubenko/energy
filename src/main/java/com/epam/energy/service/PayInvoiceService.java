@@ -37,9 +37,11 @@ public class PayInvoiceService extends AbstractService {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
+
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long invoiceId = getInvoiceId(parameters);
+            Long invoiceId = getInvoiceId(parameters, !allowEmpty);
+
             invoiceDAO.updatePayStatusById(invoiceId, paid);
 
             response.sendRedirect(getLastServiceURL(INVOICES_URL_LAST_STATE, request));

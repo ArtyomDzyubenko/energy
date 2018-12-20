@@ -62,13 +62,12 @@ public class AddInvoiceService extends AbstractService {
     }
 
     private Invoice getInvoice(Map<String, String[]> parameters) throws ValidationException, DAOException {
-        UserValidator userValidator = UserValidator.getInstance();
         MeasurementValidator measurementValidator = MeasurementValidator.getInstance();
         InvoiceValidator invoiceValidator = InvoiceValidator.getInstance();
         AddressValidator addressValidator = AddressValidator.getInstance();
 
-        Long invoiceId = invoiceValidator.validateId(parameters.get(INVOICE_ID)[0], allowEmpty);
-        Long userId = userValidator.validateId(parameters.get(USER_ID)[0], !allowEmpty);
+        Long invoiceId = getInvoiceId(parameters, allowEmpty);
+        Long userId = getUserId(parameters, !allowEmpty);
         Long startValueId = measurementValidator.validateId(parameters.get(MEASUREMENT_START_VALUE)[0], !allowEmpty);
         Long endValueId = measurementValidator.validateId(parameters.get(MEASUREMENT_END_VALUE)[0], !allowEmpty);
         Long addressId = addressValidator.validateId(parameters.get(ADDRESS_ID)[0], !allowEmpty);

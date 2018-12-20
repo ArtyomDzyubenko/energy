@@ -40,7 +40,7 @@ public class EditMeasurementService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long measurementId = getMeasurementId(parameters);
+            Long measurementId = getMeasurementId(parameters, !allowEmpty);
             Measurement measurement = measurementDAO.getMeasurementById(measurementId).get(0);
 
             request.setAttribute(MEASUREMENT_ID, measurementId);

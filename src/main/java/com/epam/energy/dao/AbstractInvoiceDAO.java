@@ -22,7 +22,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
     public abstract void updatePayStatusById(Long id, boolean status) throws DAOException;
     public abstract void deleteInvoiceById(Long id) throws DAOException;
 
-    List<Invoice> getInvoice(Long id, String query) throws DAOException {
+    List<Invoice> getInvoices(Long id, String query) throws DAOException {
         List<Invoice> invoices = new ArrayList<>();
         Connection connection = pool.getConnection();
 
@@ -74,7 +74,7 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
         Long invoiceId = resultSet.getLong(ID);
         invoice.setId(invoiceId);
         invoice.setDate(resultSet.getDate(INVOICE_DATE).toLocalDate());
-        List<Meter> meters = meterDAO.getMeter(resultSet.getLong(INVOICE_METER_ID));
+        List<Meter> meters = meterDAO.getMeterById(resultSet.getLong(INVOICE_METER_ID));
 
         if (!meters.isEmpty()) {
             invoice.setMeter(meters.get(0));
@@ -100,12 +100,12 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
             invoice.setEndValue(new Measurement());
         }
 
-        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
+        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
         invoice.setConsumption(resultSet.getDouble(INVOICE_CONSUMPTION));
         invoice.setPrice(resultSet.getDouble(INVOICE_PRICE));
         invoice.setUserId(resultSet.getLong(INVOICE_USER_ID));
         invoice.setPaid(resultSet.getBoolean(INVOICE_IS_PAID));
-        invoice.setSecretKey(invoiceId + authUserSessionId);
+        invoice.setSecretKey(invoiceId + authorizedUserSessionId);
 
         return invoice;
     }

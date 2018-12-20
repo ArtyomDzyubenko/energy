@@ -60,7 +60,7 @@ public class AddMeterReaderService extends AbstractService {
     private MeterReader getMeterReader(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
 
-        Long meterReaderId = meterReaderValidator.validateId(parameters.get(METER_READER_ID)[0], allowEmpty);
+        Long meterReaderId = getMeterReaderId(parameters, allowEmpty);
         Integer meterReaderNumber = meterReaderValidator.validateNumber(parameters.get(METER_READER_NUMBER)[0], !allowEmpty);
         String meterReaderIPAddress = meterReaderValidator.validateIPAddress(parameters.get(METER_READER_IP_ADDRESS)[0], !allowEmpty);
         Integer meterReaderPort = meterReaderValidator.validatePort(parameters.get(METER_READER_PORT)[0], !allowEmpty);

@@ -37,17 +37,17 @@ public class GetDataFromMeterReaderService extends AbstractService {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-            MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
+
             parametersValidator.validate(parameters, allowedParameters);
 
-            String meterReaderIdString = parameters.get(METER_READER_ID)[0];
-            Long meterReaderId = meterReaderValidator.validateId(meterReaderIdString, !allowEmpty);
+            Long meterReaderId = getMeterReaderId(parameters, !allowEmpty);
 
             MeterReader meterReader = meterReaderDAO.getMeterReaderById(meterReaderId).get(0);
             MeterReaderSocket socket = MeterReaderSocket.getInstance();
             List<Meter> meters = socket.getMetersFromMeterReader(meterReader.getIPAddress(), meterReader.getPort());
+
             measurementDAO.addMeasurements(meters);
 
             request.setAttribute(METERS_ATTRIBUTE, meters);

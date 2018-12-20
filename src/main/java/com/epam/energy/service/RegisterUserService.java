@@ -38,6 +38,7 @@ public class RegisterUserService extends AbstractService {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
+
             parametersValidator.validate(parameters, allowedParameters);
 
             User registeredUser = getRegisteredUser(parameters);
@@ -50,7 +51,7 @@ public class RegisterUserService extends AbstractService {
 
             User user = userDAO.getUserByLoginAndPassword(registeredUser.getLogin(), registeredUser.getPassword());
 
-            if (user != null) {
+            if (!user.getId().equals(LONG_ZERO)) {
                 request.setAttribute(USER_LOGIN, registeredUser.getLogin());
                 request.setAttribute(USER_PASSWORD, registeredUser.getPassword());
                 request.getRequestDispatcher(AUTH).forward(request, response);
@@ -71,7 +72,7 @@ public class RegisterUserService extends AbstractService {
     private User getRegisteredUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
         UserValidator userValidator = UserValidator.getInstance();
 
-        Long userId = getUserId(parameters);
+        Long userId = getUserId(parameters, allowEmpty);
         String userLogin = getUserLogin(parameters);
         String userPassword = getUserPassword(parameters);
         Long userPhone = userValidator.validatePhone(parameters.get(USER_PHONE)[0], allowEmpty);

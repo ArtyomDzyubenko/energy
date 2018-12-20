@@ -61,13 +61,12 @@ public class AddMeasurementService extends AbstractService {
 
     private Measurement getMeasurement(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeasurementValidator measurementValidator = MeasurementValidator.getInstance();
-        MeterValidator meterValidator = MeterValidator.getInstance();
 
         String dateTimeString = EMPTY_STRING;
 
-        Long  measurementId = measurementValidator.validateId(parameters.get(MEASUREMENT_ID)[0], allowEmpty);
+        Long  measurementId = getMeasurementId(parameters, allowEmpty);
         Double measurementValue = measurementValidator.validateValue(parameters.get(MEASUREMENT_VALUE)[0], !allowEmpty);
-        Long meterId = meterValidator.validateId(parameters.get(METER_ID)[0], allowEmpty);
+        Long meterId = getMeterId(parameters, allowEmpty);
         Timestamp dateTime;
 
         Measurement measurement = new Measurement();

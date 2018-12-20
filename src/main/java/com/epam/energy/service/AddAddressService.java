@@ -7,7 +7,6 @@ import java.io.IOException;
 import com.epam.energy.model.Address;
 import com.epam.energy.validator.AddressValidator;
 import com.epam.energy.validator.ServiceParametersValidator;
-import com.epam.energy.validator.StreetValidator;
 import com.epam.energy.validator.UserValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,14 +57,13 @@ public class AddAddressService extends AbstractService {
 
     private Address getAddress(Map<String, String[]> parameters) throws ServiceException {
         AddressValidator addressValidator = AddressValidator.getInstance();
-        StreetValidator streetValidator = StreetValidator.getInstance();
         UserValidator userValidator = UserValidator.getInstance();
 
         try {
-            Long addressId = getAddressId(parameters);
+            Long addressId = getAddressId(parameters, allowEmpty);
             String addressBuilding = addressValidator.validateBuilding(parameters.get(ADDRESS_BUILDING)[0], !allowEmpty);
             String addressFlat = addressValidator.validateFlat(parameters.get(ADDRESS_FLAT)[0], allowEmpty);
-            Long addressStreetId = streetValidator.validateId(parameters.get(STREET_ID)[0], !allowEmpty);
+            Long addressStreetId = getStreetId(parameters, !allowEmpty);
             Long userId;
 
             Address address = new Address();
@@ -78,7 +76,7 @@ public class AddAddressService extends AbstractService {
                 userId = userValidator.validateId(parameters.get(TRANSFER_USER_ID)[0], !allowEmpty);
                 address.setUserId(userId);
             } else if (parameters.containsKey(USER_ID)) {
-                userId = userValidator.validateId(parameters.get(USER_ID)[0], !allowEmpty);
+                userId = getUserId(parameters, !allowEmpty);
                 address.setUserId(userId);
             }
 

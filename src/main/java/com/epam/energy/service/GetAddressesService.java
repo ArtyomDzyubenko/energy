@@ -37,17 +37,16 @@ public class GetAddressesService extends AbstractService {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-            UserValidator userValidator = UserValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
+
             parametersValidator.validate(parameters, allowedParameters);
 
-            String userIdString = parameters.get(USER_ID)[0];
-            Long userId = userValidator.validateId(userIdString, !allowEmpty);
-
+            Long userId = getUserId(parameters, !allowEmpty);
             String sKey = parameters.get(SECRET_KEY)[0];
-            String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-            parametersValidator.validateSecretKey(userId.toString(), authUserSessionId, sKey);
+            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
+
+            parametersValidator.validateSecretKey(userId.toString(), authorizedUserSessionId, sKey);
 
             List<Address> address = addressDAO.getAddressesByUserId(userId);
             List<Street> streets = streetDAO.getAll();

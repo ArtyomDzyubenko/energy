@@ -60,7 +60,7 @@ public class AddUserService extends AbstractService {
     private User getUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
         UserValidator userValidator = UserValidator.getInstance();
 
-        Long userId = getUserId(parameters);
+        Long userId = getUserId(parameters, allowEmpty);
         String userLogin = getUserLogin(parameters);
         String userPassword = getUserPassword(parameters);
         String userFirstName = userValidator.validateFirstName(parameters.get(USER_FIRST_NAME)[0], !allowEmpty);

@@ -37,7 +37,7 @@ public class DeleteMeterReaderService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterReaderId = getMeterReaderId(parameters);
+            Long meterReaderId = getMeterReaderId(parameters, !allowEmpty);
 
             meterReaderDAO.deleteMeterReader(meterReaderId);
 

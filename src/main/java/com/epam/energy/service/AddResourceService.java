@@ -60,7 +60,7 @@ public class AddResourceService extends AbstractService {
     private Resource getResource(Map<String, String[]> parameters) throws ValidationException, DAOException {
         ResourceValidator resourceValidator = ResourceValidator.getInstance();
 
-        Long resourceId = resourceValidator.validateId(parameters.get(RESOURCE_ID)[0], allowEmpty);
+        Long resourceId = getResourceId(parameters, allowEmpty);
         String resourceName = resourceValidator.validateName(parameters.get(RESOURCE_NAME)[0], !allowEmpty);
         Double resourceCost = resourceValidator.validateCost(parameters.get(RESOURCE_COST)[0], !allowEmpty);
 

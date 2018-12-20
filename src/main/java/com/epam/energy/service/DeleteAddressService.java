@@ -37,7 +37,7 @@ public class DeleteAddressService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long addressId = getAddressId(parameters);
+            Long addressId = getAddressId(parameters, !allowEmpty);
 
             addressDAO.deleteAddressById(addressId);
 

@@ -45,14 +45,14 @@ public class EditMeterService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterId = getMeterId(parameters);
+            Long meterId = getMeterId(parameters, !allowEmpty);
             String addressIdString = parameters.get(ADDRESS_ID)[0];
             Long addressId = addressValidator.validateId(addressIdString, !allowEmpty);
 
             List<Address> addresses = addressDAO.getAll();
             List<Resource> resources = resourceDAO.getAll();
             List<MeterReader> readers = meterReaderDAO.getAll();
-            Meter meter = meterDAO.getMeter(meterId).get(0);
+            Meter meter = meterDAO.getMeterById(meterId).get(0);
 
             request.setAttribute(ADDRESSES_ATTRIBUTE, addresses);
             request.setAttribute(METER_READER_ID, meterId);

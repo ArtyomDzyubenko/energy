@@ -11,7 +11,6 @@ import java.util.List;
 import static com.epam.energy.util.Constants.*;
 import static com.epam.energy.util.Constants.LANGUAGE_COUNTRY;
 
-
 public abstract class AbstractLanguageDAO extends AbstractDAO {
     AbstractLanguageDAO() throws DAOException {}
 

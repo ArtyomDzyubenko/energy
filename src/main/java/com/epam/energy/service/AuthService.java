@@ -21,8 +21,7 @@ import static com.epam.energy.util.Constants.*;
 public class AuthService extends AbstractService {
     private static AuthService instance;
     private List<String> allowedParameters = new ArrayList<>();
-    private String authUserSessionId = EMPTY_STRING;
-    private List<Language> languages = new ArrayList<>();
+    private String authorizedUserSessionId = EMPTY_STRING;
 
     private AuthService() throws DAOException {
         init();
@@ -45,13 +44,13 @@ public class AuthService extends AbstractService {
             parametersValidator.validate(parameters, allowedParameters);
 
             User authUser = getAuthUser(parameters);
-            loadLanguages();
 
+            List<Language> languages = loadLanguages();
             request.getSession().setAttribute(AUTHORIZED_USER, authUser);
             request.getSession().setAttribute(LANGUAGES_ATTRIBUTE, languages);
 
             if (authUser.getId() != null) {
-                authUserSessionId = request.getSession().getId();
+                authorizedUserSessionId = request.getSession().getId();
                 request.getRequestDispatcher(SHOW_USERS).forward(request, response);
             } else {
                 String errorMessage = LanguageService.getInstance().getLocalization().getString("incorrectLoginPassword");
@@ -68,8 +67,8 @@ public class AuthService extends AbstractService {
         }
     }
 
-    public String getAuthUserSessionId() {
-        return authUserSessionId;
+    public String getAuthorizedUserSessionId() {
+        return authorizedUserSessionId;
     }
 
     private User getAuthUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
@@ -81,8 +80,8 @@ public class AuthService extends AbstractService {
         return userDAO.getUserByLoginAndPassword(userLogin, userPassword);
     }
 
-    private void loadLanguages() throws DAOException {
-        languages = LanguageDAO.getInstance().getAll();
+    private List<Language> loadLanguages() throws DAOException {
+        return LanguageDAO.getInstance().getAll();
     }
 
     private void init() {

@@ -38,7 +38,7 @@ public class EditUserService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long userId = getUserId(parameters);
+            Long userId = getUserId(parameters, !allowEmpty);
             User user = userDAO.getUserById(userId).get(0);
 
             request.setAttribute(USER_ATTRIBUTE, user);

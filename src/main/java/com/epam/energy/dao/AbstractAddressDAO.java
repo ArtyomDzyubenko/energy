@@ -22,7 +22,7 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
     public abstract void editAddress(Address address) throws DAOException;
     public abstract void deleteAddressById(Long addressId) throws DAOException;
 
-    List<Address> getAddressById(Long id, String query) throws DAOException {
+    List<Address> getAddresses(Long id, String query) throws DAOException {
         List<Address> addresses = new ArrayList<>();
         Connection connection = pool.getConnection();
 
@@ -73,8 +73,8 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
         }
 
         address.setUserId(resultSet.getLong(USER_ID));
-        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-        address.setSecretKey(Encryption.encrypt(addressId.toString() + authUserSessionId));
+        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
+        address.setSecretKey(Encryption.encrypt(addressId.toString() + authorizedUserSessionId));
 
         return address;
     }

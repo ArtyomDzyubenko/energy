@@ -16,12 +16,12 @@ public class AuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        servicesAllowedForGuest.addAll(Arrays.asList(AUTH, REGISTER_USER, SHOW_REGISTER_USER_FORM, INDEX_JSP));
-        servicesAllowedForUser.addAll(Arrays.asList(AUTH, LOGOUT, SHOW_USERS, EDIT_USER, ADD_USER, SHOW_ADDRESSES,
-                SHOW_METERS, SHOW_INVOICES, SHOW_MEASUREMENTS, PAY_INVOICE, SWITCH_LANGUAGE));
+        initAllowedServicesLists();
     }
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException, SecurityException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException,
+            ServletException, SecurityException {
+
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         HttpServletResponse response = (HttpServletResponse)servletResponse;
 
@@ -44,5 +44,11 @@ public class AuthFilter implements Filter {
         } else {
             request.getRequestDispatcher(INDEX_JSP).forward(request, response);
         }
+    }
+
+    private void initAllowedServicesLists(){
+        servicesAllowedForGuest.addAll(Arrays.asList(AUTH, REGISTER_USER, SHOW_REGISTER_USER_FORM, INDEX_JSP));
+        servicesAllowedForUser.addAll(Arrays.asList(AUTH, LOGOUT, SHOW_USERS, EDIT_USER, ADD_USER, SHOW_ADDRESSES,
+                SHOW_METERS, SHOW_INVOICES, SHOW_MEASUREMENTS, PAY_INVOICE, SWITCH_LANGUAGE));
     }
 }

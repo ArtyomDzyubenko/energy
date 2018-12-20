@@ -40,6 +40,8 @@ public class EnergyServlet extends HttpServlet {
             factory.executeService(serviceRequest, request, response);
         }
         catch (Exception e) {
+            e.printStackTrace();
+
             String errorMessage = e.getMessage();
             logger.error(errorMessage);
 

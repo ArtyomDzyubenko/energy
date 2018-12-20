@@ -15,7 +15,7 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
     AbstractMeterDAO() throws DAOException {}
 
     public abstract List<Meter> getMetersByAddressId(Long id) throws DAOException;
-    public abstract List<Meter> getMeter(Long id) throws DAOException;
+    public abstract List<Meter> getMeterById(Long id) throws DAOException;
     public abstract void addMeterByAddressId(Meter meter) throws DAOException;
     public abstract void editMeter(Meter meter) throws DAOException;
     public abstract void deleteMeter(Long id) throws DAOException;
@@ -69,9 +69,9 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
             meter.setResource(new Resource());
         }
 
-        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
+        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
         meter.setAddressId(resultSet.getLong(ADDRESS_ID));
-        meter.setSecretKey(Encryption.encrypt(meterId.toString() + authUserSessionId));
+        meter.setSecretKey(Encryption.encrypt(meterId.toString() + authorizedUserSessionId));
 
         return meter;
     }

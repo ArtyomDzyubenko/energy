@@ -59,13 +59,12 @@ public class AddMeterService extends AbstractService {
 
     private Meter getMeter(Map<String, String[]> parameters) throws ValidationException, DAOException {
         MeterValidator meterValidator = MeterValidator.getInstance();
-        MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
         AddressValidator addressValidator = AddressValidator.getInstance();
         ResourceValidator resourceValidator = ResourceValidator.getInstance();
 
-        Long meterId = getMeterId(parameters);
+        Long meterId = getMeterId(parameters, allowEmpty);
         Integer meterNumber = meterValidator.validateNumber(parameters.get(METER_NUMBER)[0], !allowEmpty);
-        Long meterReaderId = meterReaderValidator.validateId(parameters.get(METER_READER_ID)[0], !allowEmpty);
+        Long meterReaderId = getMeterReaderId(parameters, !allowEmpty);
         Long resourceId = resourceValidator.validateId(parameters.get(RESOURCE_ID)[0], !allowEmpty);
 
         Meter meter = new Meter();
@@ -79,7 +78,7 @@ public class AddMeterService extends AbstractService {
             addressId = addressValidator.validateId(parameters.get(TRANSFER_ADDRESS_ID)[0], !allowEmpty);
             meter.setAddressId(addressId);
         } else if (parameters.containsKey(ADDRESS_ID)) {
-            addressId = addressValidator.validateId(parameters.get(ADDRESS_ID)[0], !allowEmpty);
+            addressId = getAddressId(parameters, !allowEmpty);
             meter.setAddressId(addressId);
         }
 

@@ -35,13 +35,11 @@ public class EditStreetService extends AbstractService {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-            StreetValidator streetValidator = StreetValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            String streetIdString = parameters.get(STREET_ID)[0];
-            Long streetId = streetValidator.validateId(streetIdString, !allowEmpty);
+            Long streetId = getStreetId(parameters, !allowEmpty);
 
             Street street = streetDAO.getStreetById(streetId).get(0);
 

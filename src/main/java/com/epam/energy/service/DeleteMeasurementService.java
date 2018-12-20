@@ -37,7 +37,7 @@ public class DeleteMeasurementService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long measurementId = getMeasurementId(parameters);
+            Long measurementId = getMeasurementId(parameters, !allowEmpty);
 
             measurementDAO.deleteMeasurementById(measurementId);
 

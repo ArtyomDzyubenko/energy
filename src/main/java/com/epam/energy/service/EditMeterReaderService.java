@@ -38,7 +38,7 @@ public class EditMeterReaderService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterReaderId = getMeterReaderId(parameters);
+            Long meterReaderId = getMeterReaderId(parameters, !allowEmpty);
 
             MeterReader reader = meterReaderDAO.getMeterReaderById(meterReaderId).get(0);
 

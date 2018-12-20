@@ -37,16 +37,18 @@ public class GetMeasurementsService extends AbstractService {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
+
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterId = getMeterId(parameters);
+            Long meterId = getMeterId(parameters, !allowEmpty);
             String secretKey = parameters.get(SECRET_KEY)[0];
-            String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-            parametersValidator.validateSecretKey(meterId.toString(), authUserSessionId, secretKey);
+            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
-            Long addressId = getAddressId(parameters);
-            Long userId = getUserId(parameters);
-            List<Measurement> measurements = measurementDAO.getMeasurementByMeterId(meterId);
+            parametersValidator.validateSecretKey(meterId.toString(), authorizedUserSessionId, secretKey);
+
+            Long addressId = getAddressId(parameters, !allowEmpty);
+            Long userId = getUserId(parameters, !allowEmpty);
+            List<Measurement> measurements = measurementDAO.getMeasurementsByMeterId(meterId);
 
             saveLastServiceURL(MEASUREMENTS_URL_LAST_STATE, request);
             request.setAttribute(METER_ID, meterId);

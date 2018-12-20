@@ -21,12 +21,12 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
 
     AbstractMeasurementDAO() throws DAOException {}
 
-    public abstract List<Measurement> getMeasurementByMeterId(Long id) throws DAOException;
+    public abstract List<Measurement> getMeasurementsByMeterId(Long id) throws DAOException;
     public abstract List<Measurement> getMeasurementById(Long id) throws DAOException;
     public abstract void addMeasurement(Measurement measurement) throws DAOException;
+    public abstract void addMeasurements(List<Meter> meters) throws DAOException;
     public abstract void editMeasurement(Measurement measurement) throws DAOException;
     public abstract void deleteMeasurementById(Long id) throws DAOException;
-    public abstract void addMeasurements(List<Meter> meters) throws DAOException;
 
     List<Measurement> getMeasurements(Long id, String query) throws DAOException {
         List<Measurement> measurements = new ArrayList<>();
@@ -67,11 +67,10 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             for (Meter meter : meters) {
                 Long meterId = getMeterIdByMeterNumber(meter.getNumber(), connection);
+                meter.setId(meterId);
 
                 if (!meterId.equals(LONG_ZERO)) {
-                    preparedStatement.setTimestamp(1, meter.getMeasurement().getDateTime());
-                    preparedStatement.setDouble(2, meter.getMeasurement().getValue());
-                    preparedStatement.setLong(3, meterId);
+                    setMeasurementFromMeterToPreparedStatement(meter, preparedStatement);
                     preparedStatement.executeUpdate();
                 }
             }
@@ -104,8 +103,8 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
         measurement.setDateTime(resultSet.getTimestamp(MEASUREMENT_DATE_TIME));
         measurement.setValue(resultSet.getDouble(MEASUREMENT_VALUE));
         measurement.setMeterId(resultSet.getLong(METER_ID));
-        String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-        measurement.setSecretKey(Encryption.encrypt(measurementId.toString() + authUserSessionId));
+        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
+        measurement.setSecretKey(Encryption.encrypt(measurementId.toString() + authorizedUserSessionId));
 
         return measurement;
     }
@@ -119,5 +118,11 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
         } else {
             preparedStatement.setLong(3, measurement.getId());
         }
+    }
+
+    private void setMeasurementFromMeterToPreparedStatement(Meter meter, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setTimestamp(1, meter.getMeasurement().getDateTime());
+        preparedStatement.setDouble(2, meter.getMeasurement().getValue());
+        preparedStatement.setLong(3, meter.getId());
     }
 }

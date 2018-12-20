@@ -33,7 +33,7 @@ public class MeasurementDAO extends AbstractMeasurementDAO {
     }
 
     @Override
-    public List<Measurement> getMeasurementByMeterId(Long id) throws DAOException {
+    public List<Measurement> getMeasurementsByMeterId(Long id) throws DAOException {
         return getMeasurements(id, GET_MEASUREMENTS_BY_METER_ID);
     }
 

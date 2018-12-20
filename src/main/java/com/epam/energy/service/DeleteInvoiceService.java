@@ -37,7 +37,7 @@ public class DeleteInvoiceService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long invoiceId = getInvoiceId(parameters);
+            Long invoiceId = getInvoiceId(parameters, !allowEmpty);
 
             invoiceDAO.deleteInvoiceById(invoiceId);
 

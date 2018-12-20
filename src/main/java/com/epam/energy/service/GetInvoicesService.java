@@ -38,11 +38,14 @@ public class GetInvoicesService extends AbstractService {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
+
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long userId = getUserId(parameters);
-            String authUserSessionId = AuthService.getInstance().getAuthUserSessionId();
-            parametersValidator.validateSecretKey(userId.toString(), authUserSessionId, parameters.get(SECRET_KEY)[0]);
+            Long userId = getUserId(parameters, !allowEmpty);
+            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
+
+            parametersValidator.validateSecretKey(userId.toString(), authorizedUserSessionId, parameters.get(SECRET_KEY)[0]);
+
             List<Invoice> invoices = invoiceDAO.getInvoicesByUserId(userId);
 
             saveLastServiceURL(INVOICES_URL_LAST_STATE, request);

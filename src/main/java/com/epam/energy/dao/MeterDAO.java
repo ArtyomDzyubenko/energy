@@ -38,7 +38,7 @@ public class MeterDAO extends AbstractMeterDAO {
     }
 
     @Override
-    public List<Meter> getMeter(Long id) throws DAOException {
+    public List<Meter> getMeterById(Long id) throws DAOException {
         return getMeters(id, GET_METER_BY_ID);
     }
 

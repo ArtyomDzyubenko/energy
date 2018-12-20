@@ -29,7 +29,7 @@ public class InvoiceDAO extends AbstractInvoiceDAO {
 
     @Override
     public List<Invoice> getInvoicesByUserId(Long id) throws DAOException {
-        return getInvoice(id, GET_INVOICES_BY_USER_ID);
+        return getInvoices(id, GET_INVOICES_BY_USER_ID);
     }
 
     @Override

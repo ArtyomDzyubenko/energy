@@ -35,13 +35,11 @@ public class EditResourceService extends AbstractService {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-            ResourceValidator resourceValidator = ResourceValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            String resourceIdString = parameters.get(RESOURCE_ID)[0];
-            Long resourceId = resourceValidator.validateId(resourceIdString, !allowEmpty);
+            Long resourceId = getResourceId(parameters, !allowEmpty);
             Resource resource = resourceDAO.getResourceById(resourceId).get(0);
 
             request.setAttribute(RESOURCE_ATTRIBUTE, resource);

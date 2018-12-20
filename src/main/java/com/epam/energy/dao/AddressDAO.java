@@ -34,17 +34,17 @@ public class AddressDAO extends AbstractAddressDAO {
 
     @Override
     public List<Address> getAll() throws DAOException {
-        return getAddressById(null, GET_ADDRESSES);
+        return getAddresses(null, GET_ADDRESSES);
     }
 
     @Override
     public List<Address> getAddressesByUserId(Long id) throws DAOException {
-        return getAddressById(id, GET_ADDRESSES_BY_USER_ID);
+        return getAddresses(id, GET_ADDRESSES_BY_USER_ID);
     }
 
     @Override
     public List<Address> getAddressById(Long id) throws DAOException {
-        return getAddressById(id, GET_ADDRESS_BY_ID);
+        return getAddresses(id, GET_ADDRESS_BY_ID);
     }
 
     @Override

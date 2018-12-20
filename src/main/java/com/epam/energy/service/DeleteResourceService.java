@@ -34,13 +34,11 @@ public class DeleteResourceService extends AbstractService {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-            ResourceValidator resourceValidator = ResourceValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            String resourceIdString = parameters.get(RESOURCE_ID)[0];
-            Long resourceId = resourceValidator.validateId(resourceIdString, !allowEmpty);
+            Long resourceId = getResourceId(parameters, !allowEmpty);
 
             resourceDAO.deleteResource(resourceId);
 
