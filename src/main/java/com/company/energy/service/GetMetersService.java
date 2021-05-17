@@ -1,5 +1,6 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.*;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -8,7 +9,10 @@ import java.io.IOException;
 import com.company.energy.model.Meter;
 import com.company.energy.model.MeterReader;
 import com.company.energy.model.Resource;
+import com.company.energy.validator.AddressValidator;
 import com.company.energy.validator.ServiceParametersValidator;
+import com.company.energy.validator.UserValidator;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,8 +24,16 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.METERS_JSP;
 
 public class GetMetersService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractMeterDAO meterDAO = MeterDAO.getInstance();
+    private static final AbstractMeterReaderDAO meterReaderDAO = MeterReaderDAO.getInstance();
+    private static final AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
+    private static final AddressValidator addressValidator = AddressValidator.getInstance();
+    private static final UserValidator userValidator = UserValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static GetMetersService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private GetMetersService() throws DAOException {
         init();
@@ -38,14 +50,12 @@ public class GetMetersService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
 
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long addressId = getAddressId(parameters, !allowEmpty);
-            Long userId = getUserId(parameters, !allowEmpty);
+            Long addressId = addressValidator.validateAndGetId(parameters.get(ADDRESS_ID)[0], allowEmpty);
+            Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
             String sKey = request.getParameter(SECRET_KEY);
             String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
@@ -62,13 +72,7 @@ public class GetMetersService extends AbstractService {
             request.setAttribute(RESOURCES_ATTRIBUTE, resources);
             request.setAttribute(METER_READERS_ATTRIBUTE, readers);
             request.getRequestDispatcher(METERS_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (ServletException | IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractInvoiceDAO;
+import com.company.energy.dao.InvoiceDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -7,6 +9,8 @@ import com.company.energy.exception.ValidationException;
 import java.io.IOException;
 import com.company.energy.model.Invoice;
 import com.company.energy.validator.ServiceParametersValidator;
+import com.company.energy.validator.UserValidator;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,8 +22,13 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.INVOICES_JSP;
 
 public class GetInvoicesService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractInvoiceDAO invoiceDAO = InvoiceDAO.getInstance();
+    private static final UserValidator userValidator = UserValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static GetInvoicesService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private GetInvoicesService() throws DAOException {
         init();
@@ -36,13 +45,11 @@ public class GetInvoicesService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
 
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long userId = getUserId(parameters, !allowEmpty);
+            Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
             String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
             parametersValidator.validateSecretKey(userId.toString(), authorizedUserSessionId, parameters.get(SECRET_KEY)[0]);
@@ -53,13 +60,7 @@ public class GetInvoicesService extends AbstractService {
             request.setAttribute(USER_ID, userId);
             request.setAttribute(INVOICES_ATTRIBUTE, invoices);
             request.getRequestDispatcher(INVOICES_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (ServletException | IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

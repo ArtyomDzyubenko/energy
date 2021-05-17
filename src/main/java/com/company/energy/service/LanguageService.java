@@ -1,5 +1,6 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.LanguageDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -15,10 +16,13 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.LAST_URL;
 
 public class LanguageService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+    private static ResourceBundle localizationBundle = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);
+
+    private static final LanguageDAO languageDAO = LanguageDAO.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static LanguageService instance;
-    private List<String> allowedParameters = new ArrayList<>();
-    private ResourceBundle localizationBundle = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);
-    private ResourceBundle errorBundle = ResourceBundle.getBundle(DAO_ERROR_BUNDLE_NAME);
 
     private LanguageService() throws DAOException {
         init();
@@ -35,19 +39,13 @@ public class LanguageService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
             switchLocale(parameters, request);
 
             response.sendRedirect((String) request.getSession().getAttribute(LAST_URL));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
@@ -58,16 +56,11 @@ public class LanguageService extends AbstractService {
         Locale locale = new Locale(language.getCode(), language.getCountry());
         Locale.setDefault(locale);
         localizationBundle = ResourceBundle.getBundle(LOCALIZATION_BUNDLE_NAME);
-        errorBundle = ResourceBundle.getBundle(DAO_ERROR_BUNDLE_NAME);
         Config.set(request.getSession(), Config.FMT_LOCALE, locale);
     }
 
     public ResourceBundle getLocalization() {
         return localizationBundle;
-    }
-
-    public ResourceBundle getDAOErrorLocalization() {
-        return errorBundle;
     }
 
     private void init() {

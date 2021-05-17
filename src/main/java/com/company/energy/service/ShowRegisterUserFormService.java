@@ -26,9 +26,7 @@ public class ShowRegisterUserFormService extends AbstractService {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
             request.getRequestDispatcher(REGISTER_USER_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
+        } catch (ServletException | IOException e) {
             throw new ServiceException(e);
         }
     }

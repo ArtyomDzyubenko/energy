@@ -1,8 +1,11 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractMeterDAO;
+import com.company.energy.dao.MeterDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
+import com.company.energy.validator.MeterValidator;
 import com.company.energy.validator.ServiceParametersValidator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +16,12 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class DeleteMeterService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractMeterDAO meterDAO = MeterDAO.getInstance();
+    private static final MeterValidator meterValidator = MeterValidator.getInstance();
+
     private static DeleteMeterService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private DeleteMeterService() throws DAOException {
         init();
@@ -36,16 +43,12 @@ public class DeleteMeterService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterId = getMeterId(parameters, !allowEmpty);
+            Long meterId = meterValidator.validateAndGetId(parameters.get(METER_ID)[0], !allowEmpty);
 
             meterDAO.deleteMeter(meterId);
 
             response.sendRedirect(getLastServiceURL(METERS_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

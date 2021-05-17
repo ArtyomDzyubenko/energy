@@ -27,9 +27,7 @@ public class LogOutService extends AbstractService {
         try {
             request.getSession().invalidate();
             request.getRequestDispatcher(INDEX_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
+        } catch (ServletException | IOException e) {
             throw new ServiceException(e);
         }
     }

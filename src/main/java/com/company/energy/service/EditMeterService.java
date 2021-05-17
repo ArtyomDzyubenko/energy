@@ -1,5 +1,6 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.*;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -10,6 +11,7 @@ import com.company.energy.model.Meter;
 import com.company.energy.model.MeterReader;
 import com.company.energy.model.Resource;
 import com.company.energy.validator.AddressValidator;
+import com.company.energy.validator.MeterValidator;
 import com.company.energy.validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +24,15 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.METERS_JSP;
 
 public class EditMeterService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractAddressDAO addressDAO = AddressDAO.getInstance();
+    private static final AbstractMeterDAO meterDAO = MeterDAO.getInstance();
+    private static final AbstractMeterReaderDAO meterReaderDAO = MeterReaderDAO.getInstance();
+    private static final AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
+    private static final MeterValidator meterValidator = MeterValidator.getInstance();
+
     private static EditMeterService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private EditMeterService() throws DAOException {
         init();
@@ -46,9 +55,9 @@ public class EditMeterService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterId = getMeterId(parameters, !allowEmpty);
+            Long meterId = meterValidator.validateAndGetId(parameters.get(METER_ID)[0], !allowEmpty);
             String addressIdString = parameters.get(ADDRESS_ID)[0];
-            Long addressId = addressValidator.validateId(addressIdString, !allowEmpty);
+            Long addressId = addressValidator.validateAndGetId(addressIdString, !allowEmpty);
 
             List<Address> addresses = addressDAO.getAll();
             List<Resource> resources = resourceDAO.getAll();
@@ -62,13 +71,7 @@ public class EditMeterService extends AbstractService {
             request.setAttribute(RESOURCES_ATTRIBUTE, resources);
             request.setAttribute(METER_READERS_ATTRIBUTE, readers);
             request.getRequestDispatcher(METERS_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (ServletException | IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

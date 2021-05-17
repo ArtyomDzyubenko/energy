@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractUserDAO;
+import com.company.energy.dao.UserDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -16,8 +18,13 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class AddUserService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractUserDAO userDAO = UserDAO.getInstance();
+    private static final UserValidator userValidator = UserValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static AddUserService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private AddUserService() throws DAOException {
         init();
@@ -34,8 +41,6 @@ public class AddUserService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
@@ -48,26 +53,20 @@ public class AddUserService extends AbstractService {
             }
 
             response.sendRedirect(getLastServiceURL(USERS_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
 
     private User getUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
-        UserValidator userValidator = UserValidator.getInstance();
-
-        Long userId = getUserId(parameters, allowEmpty);
-        String userLogin = getUserLogin(parameters);
-        String userPassword = getUserPassword(parameters);
-        String userFirstName = userValidator.validateFirstName(parameters.get(USER_FIRST_NAME)[0], !allowEmpty);
-        String userLastName = userValidator.validateLastName(parameters.get(USER_LAST_NAME)[0], allowEmpty);
-        Long userPhone = userValidator.validatePhone(parameters.get(USER_PHONE)[0], !allowEmpty);
-        String userEmail = userValidator.validateEmail(parameters.get(USER_EMAIL)[0], allowEmpty);
-        Integer userPersonalAccount = userValidator.validatePersonalAccount(parameters.get(USER_PERSONAL_ACCOUNT)[0], allowEmpty);
+        Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], allowEmpty);
+        String userLogin = userValidator.validateAndGetLogin(parameters.get(USER_LOGIN)[0], !allowEmpty);
+        String userPassword = userValidator.validateAndGetPassword(parameters.get(USER_PASSWORD)[0], !allowEmpty);
+        String userFirstName = userValidator.validateAndGetFirstName(parameters.get(USER_FIRST_NAME)[0], !allowEmpty);
+        String userLastName = userValidator.validateAndGetLastName(parameters.get(USER_LAST_NAME)[0], allowEmpty);
+        Long userPhone = userValidator.validateAndGetPhone(parameters.get(USER_PHONE)[0], !allowEmpty);
+        String userEmail = userValidator.validateAndGetEmail(parameters.get(USER_EMAIL)[0], allowEmpty);
+        Integer userPersonalAccount = userValidator.validateAndGetPersonalAccount(parameters.get(USER_PERSONAL_ACCOUNT)[0], allowEmpty);
 
         User user = new User();
         user.setId(userId);

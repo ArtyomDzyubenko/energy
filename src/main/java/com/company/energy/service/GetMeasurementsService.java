@@ -1,12 +1,18 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractMeasurementDAO;
+import com.company.energy.dao.MeasurementDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
 
 import java.io.IOException;
 import com.company.energy.model.Measurement;
+import com.company.energy.validator.AddressValidator;
+import com.company.energy.validator.MeterValidator;
 import com.company.energy.validator.ServiceParametersValidator;
+import com.company.energy.validator.UserValidator;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,8 +23,16 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class GetMeasurementsService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractMeasurementDAO measurementDAO = MeasurementDAO.getInstance();
+    private static final AddressValidator addressValidator = AddressValidator.getInstance();
+    private static final MeterValidator meterValidator = MeterValidator.getInstance();
+    private static final UserValidator userValidator = UserValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
+
     private static GetMeasurementsService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private GetMeasurementsService() throws DAOException {
         init();
@@ -35,20 +49,18 @@ public class GetMeasurementsService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
 
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterId = getMeterId(parameters, !allowEmpty);
+            Long meterId = meterValidator.validateAndGetId(parameters.get(METER_ID)[0], !allowEmpty);
             String secretKey = parameters.get(SECRET_KEY)[0];
             String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
             parametersValidator.validateSecretKey(meterId.toString(), authorizedUserSessionId, secretKey);
 
-            Long addressId = getAddressId(parameters, !allowEmpty);
-            Long userId = getUserId(parameters, !allowEmpty);
+            Long addressId = addressValidator.validateAndGetId(parameters.get(ADDRESS_ID)[0], !allowEmpty);
+            Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
             List<Measurement> measurements = measurementDAO.getMeasurementsByMeterId(meterId);
 
             saveLastServiceURL(MEASUREMENTS_URL_LAST_STATE, request);
@@ -57,13 +69,7 @@ public class GetMeasurementsService extends AbstractService {
             request.setAttribute(USER_ID, userId);
             request.setAttribute(MEASUREMENTS_ATTRIBUTE, measurements);
             request.getRequestDispatcher(MEASUREMENTS_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (ServletException | IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

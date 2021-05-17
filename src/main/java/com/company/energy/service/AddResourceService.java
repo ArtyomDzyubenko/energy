@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractResourceDAO;
+import com.company.energy.dao.ResourceDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -16,8 +18,13 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class AddResourceService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
+    private static final ResourceValidator resourceValidator = ResourceValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static AddResourceService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private AddResourceService() throws DAOException{
         init();
@@ -34,8 +41,6 @@ public class AddResourceService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
@@ -48,21 +53,15 @@ public class AddResourceService extends AbstractService {
             }
 
             response.sendRedirect(getLastServiceURL(RESOURCES_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
 
     private Resource getResource(Map<String, String[]> parameters) throws ValidationException, DAOException {
-        ResourceValidator resourceValidator = ResourceValidator.getInstance();
-
-        Long resourceId = getResourceId(parameters, allowEmpty);
-        String resourceName = resourceValidator.validateName(parameters.get(RESOURCE_NAME)[0], !allowEmpty);
-        Double resourceCost = resourceValidator.validateCost(parameters.get(RESOURCE_COST)[0], !allowEmpty);
+        Long resourceId = resourceValidator.validateAndGetId(parameters.get(RESOURCE_ID)[0], allowEmpty);
+        String resourceName = resourceValidator.validateAndGetName(parameters.get(RESOURCE_NAME)[0], !allowEmpty);
+        Double resourceCost = resourceValidator.validateAndGetCost(parameters.get(RESOURCE_COST)[0], !allowEmpty);
 
         Resource resource = new Resource();
         resource.setId(resourceId);

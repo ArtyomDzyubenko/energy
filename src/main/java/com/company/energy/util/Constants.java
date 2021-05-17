@@ -3,7 +3,6 @@ package com.company.energy.util;
 public final class Constants {
     //RESOURCE BUNDLES
     public static final String LOCALIZATION_BUNDLE_NAME = "Locale";
-    public static final String DAO_ERROR_BUNDLE_NAME = "DAOError";
 
     //COMMON
     public static final String EMPTY_STRING = "";

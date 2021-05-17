@@ -1,8 +1,11 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractResourceDAO;
+import com.company.energy.dao.ResourceDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
+import com.company.energy.validator.ResourceValidator;
 import com.company.energy.validator.ServiceParametersValidator;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +17,12 @@ import static com.company.energy.util.Constants.RESOURCES_URL_LAST_STATE;
 import static com.company.energy.util.Constants.RESOURCE_ID;
 
 public class DeleteResourceService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
+    private static final ResourceValidator resourceValidator = ResourceValidator.getInstance();
+
     private static DeleteResourceService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private DeleteResourceService() throws DAOException {
         init();
@@ -37,16 +44,12 @@ public class DeleteResourceService extends AbstractService {
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long resourceId = getResourceId(parameters, !allowEmpty);
+            Long resourceId = resourceValidator.validateAndGetId(parameters.get(RESOURCE_ID)[0], !allowEmpty);
 
             resourceDAO.deleteResource(resourceId);
 
             response.sendRedirect(getLastServiceURL(RESOURCES_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

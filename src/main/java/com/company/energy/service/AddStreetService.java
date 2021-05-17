@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractStreetDAO;
+import com.company.energy.dao.StreetDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -16,8 +18,13 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class AddStreetService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractStreetDAO streetDAO = StreetDAO.getInstance();
+    private static final StreetValidator streetValidator = StreetValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static AddStreetService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private AddStreetService() throws DAOException {
         init();
@@ -34,8 +41,6 @@ public class AddStreetService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
@@ -48,20 +53,14 @@ public class AddStreetService extends AbstractService {
             }
 
             response.sendRedirect(getLastServiceURL(STREETS_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
 
     private Street getStreet(Map<String, String[]> parameters) throws ValidationException, DAOException {
-        StreetValidator streetValidator = StreetValidator.getInstance();
-
-        Long streetId = getStreetId(parameters, allowEmpty);
-        String streetName = streetValidator.validateName(parameters.get(STREET_NAME)[0], !allowEmpty);
+        Long streetId = streetValidator.validateAndGetId(parameters.get(STREET_ID)[0], allowEmpty);
+        String streetName = streetValidator.validateAndGetName(parameters.get(STREET_NAME)[0], !allowEmpty);
 
         Street street = new Street();
         street.setId(streetId);

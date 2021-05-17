@@ -1,9 +1,12 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractMeterReaderDAO;
+import com.company.energy.dao.MeterReaderDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
 import com.company.energy.model.MeterReader;
+import com.company.energy.validator.MeterReaderValidator;
 import com.company.energy.validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +18,13 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class EditMeterReaderService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractMeterReaderDAO meterReaderDAO = MeterReaderDAO.getInstance();
+    private static final MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static EditMeterReaderService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private EditMeterReaderService() throws DAOException {
         init();
@@ -33,24 +41,16 @@ public class EditMeterReaderService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long meterReaderId = getMeterReaderId(parameters, !allowEmpty);
+            Long meterReaderId = meterReaderValidator.validateAndGetId(parameters.get(METER_READER_ID)[0], !allowEmpty);
 
             MeterReader reader = meterReaderDAO.getMeterReaderById(meterReaderId).get(0);
 
             request.setAttribute(METER_READER_ATTRIBUTE, reader);
             request.getRequestDispatcher(METER_READERS_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (ServletException | IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

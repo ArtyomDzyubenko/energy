@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractUserDAO;
+import com.company.energy.dao.UserDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 
@@ -12,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import static com.company.energy.util.Constants.*;
 
 public class GetUsersService extends AbstractService {
+    private static final AbstractUserDAO userDAO = UserDAO.getInstance();
+
     private static GetUsersService instance;
 
     private GetUsersService() throws DAOException {}
@@ -32,19 +36,15 @@ public class GetUsersService extends AbstractService {
 
             if (authUser.isAdmin()) {
                 users = userDAO.getAll();
-                request.setAttribute(USERS_ATTRIBUTE, users);
             } else {
                 users = userDAO.getUserById(authUser.getId());
-                request.setAttribute(USERS_ATTRIBUTE, users);
             }
+
+            request.setAttribute(USERS_ATTRIBUTE, users);
 
             saveLastServiceURL(USERS_URL_LAST_STATE, request);
             request.getRequestDispatcher(USERS_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
+        } catch (ServletException | IOException | DAOException e) {
             throw new ServiceException(e);
         }
     }

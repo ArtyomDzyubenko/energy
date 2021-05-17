@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractMeterDAO;
+import com.company.energy.dao.MeterDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -19,8 +21,15 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.ADDRESS_ID;
 
 public class AddMeterService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractMeterDAO meterDAO = MeterDAO.getInstance();
+    private static final MeterValidator meterValidator = MeterValidator.getInstance();
+    private static final AddressValidator addressValidator = AddressValidator.getInstance();
+    private static final ResourceValidator resourceValidator = ResourceValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static AddMeterService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private AddMeterService() throws DAOException {
         init();
@@ -37,8 +46,6 @@ public class AddMeterService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
@@ -51,24 +58,16 @@ public class AddMeterService extends AbstractService {
             }
 
             response.sendRedirect(getLastServiceURL(METERS_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
 
     private Meter getMeter(Map<String, String[]> parameters) throws ValidationException, DAOException {
-        MeterValidator meterValidator = MeterValidator.getInstance();
-        AddressValidator addressValidator = AddressValidator.getInstance();
-        ResourceValidator resourceValidator = ResourceValidator.getInstance();
-
-        Long meterId = getMeterId(parameters, allowEmpty);
-        Integer meterNumber = meterValidator.validateNumber(parameters.get(METER_NUMBER)[0], !allowEmpty);
-        Long meterReaderId = getMeterReaderId(parameters, !allowEmpty);
-        Long resourceId = resourceValidator.validateId(parameters.get(RESOURCE_ID)[0], !allowEmpty);
+        Long meterId = meterValidator.validateAndGetId(parameters.get(METER_ID)[0], allowEmpty);
+        Integer meterNumber = meterValidator.validateAndGetNumber(parameters.get(METER_NUMBER)[0], !allowEmpty);
+        Long meterReaderId = meterValidator.validateAndGetId(parameters.get(METER_READER_ID)[0], !allowEmpty);
+        Long resourceId = resourceValidator.validateAndGetId(parameters.get(RESOURCE_ID)[0], !allowEmpty);
 
         Meter meter = new Meter();
         meter.setId(meterId);
@@ -78,10 +77,10 @@ public class AddMeterService extends AbstractService {
         Long addressId;
 
         if (parameters.containsKey(TRANSFER_ADDRESS_ID)) {
-            addressId = addressValidator.validateId(parameters.get(TRANSFER_ADDRESS_ID)[0], !allowEmpty);
+            addressId = addressValidator.validateAndGetId(parameters.get(TRANSFER_ADDRESS_ID)[0], !allowEmpty);
             meter.setAddressId(addressId);
         } else if (parameters.containsKey(ADDRESS_ID)) {
-            addressId = getAddressId(parameters, !allowEmpty);
+            addressId = addressValidator.validateAndGetId(parameters.get(ADDRESS_ID)[0], !allowEmpty);
             meter.setAddressId(addressId);
         }
 

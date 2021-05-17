@@ -1,9 +1,13 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractStreetDAO;
+import com.company.energy.dao.StreetDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
 import com.company.energy.validator.ServiceParametersValidator;
+import com.company.energy.validator.StreetValidator;
+
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +18,13 @@ import static com.company.energy.util.Constants.STREETS_URL_LAST_STATE;
 import static com.company.energy.util.Constants.STREET_ID;
 
 public class DeleteStreetService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractStreetDAO streetDAO = StreetDAO.getInstance();
+    private static final StreetValidator streetValidator = StreetValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static DeleteStreetService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private DeleteStreetService() throws DAOException {
         init();
@@ -32,21 +41,15 @@ public class DeleteStreetService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
-            Long streetId = getStreetId(parameters, !allowEmpty);
+            Long streetId = streetValidator.validateAndGetId(parameters.get(STREET_ID)[0], !allowEmpty);
 
             streetDAO.deleteStreetById(streetId);
 
             response.sendRedirect(getLastServiceURL(STREETS_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }

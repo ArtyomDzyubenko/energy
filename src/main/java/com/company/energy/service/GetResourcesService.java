@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractResourceDAO;
+import com.company.energy.dao.ResourceDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 
@@ -13,6 +15,8 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.RESOURCES_JSP;
 
 public class GetResourcesService extends AbstractService {
+    private static final AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
+
     private static GetResourcesService instance;
 
     private GetResourcesService() throws DAOException {};
@@ -33,11 +37,7 @@ public class GetResourcesService extends AbstractService {
             saveLastServiceURL(RESOURCES_URL_LAST_STATE, request);
             request.setAttribute(RESOURCES_ATTRIBUTE, resources);
             request.getRequestDispatcher(RESOURCES_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
+        } catch (ServletException | IOException | DAOException e) {
             throw new ServiceException(e);
         }
     }

@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractMeterReaderDAO;
+import com.company.energy.dao.MeterReaderDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -16,8 +18,13 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class AddMeterReaderService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractMeterReaderDAO meterReaderDAO = MeterReaderDAO.getInstance();
+    private static final MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static AddMeterReaderService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private AddMeterReaderService() throws DAOException{
         init();
@@ -34,8 +41,6 @@ public class AddMeterReaderService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
@@ -48,22 +53,16 @@ public class AddMeterReaderService extends AbstractService {
             }
 
             response.sendRedirect(getLastServiceURL(METER_READERS_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
 
     private MeterReader getMeterReader(Map<String, String[]> parameters) throws ValidationException, DAOException {
-        MeterReaderValidator meterReaderValidator = MeterReaderValidator.getInstance();
-
-        Long meterReaderId = getMeterReaderId(parameters, allowEmpty);
-        Integer meterReaderNumber = meterReaderValidator.validateNumber(parameters.get(METER_READER_NUMBER)[0], !allowEmpty);
-        String meterReaderIPAddress = meterReaderValidator.validateIPAddress(parameters.get(METER_READER_IP_ADDRESS)[0], !allowEmpty);
-        Integer meterReaderPort = meterReaderValidator.validatePort(parameters.get(METER_READER_PORT)[0], !allowEmpty);
+        Long meterReaderId = meterReaderValidator.validateAndGetId(parameters.get(METER_READER_ID)[0], allowEmpty);
+        Integer meterReaderNumber = meterReaderValidator.validateAndGetNumber(parameters.get(METER_READER_NUMBER)[0], !allowEmpty);
+        String meterReaderIPAddress = meterReaderValidator.validateAndGetIPAddress(parameters.get(METER_READER_IP_ADDRESS)[0], !allowEmpty);
+        Integer meterReaderPort = meterReaderValidator.validateAndGetPort(parameters.get(METER_READER_PORT)[0], !allowEmpty);
 
         MeterReader meterReader = new MeterReader();
         meterReader.setId(meterReaderId);

@@ -1,5 +1,6 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.*;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -15,8 +16,14 @@ import java.util.*;
 import static com.company.energy.util.Constants.*;
 
 public class AddAddressService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+
+    private static final AbstractAddressDAO addressDAO = AddressDAO.getInstance();
+    private static final UserValidator userValidator = UserValidator.getInstance();
+    private static final AddressValidator addressValidator = AddressValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
+
     private static AddAddressService instance;
-    private List<String> allowedParameters = new ArrayList<>();
 
     private AddAddressService() throws DAOException {
         init();
@@ -33,8 +40,6 @@ public class AddAddressService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 
@@ -47,24 +52,17 @@ public class AddAddressService extends AbstractService {
             }
 
             response.sendRedirect(getLastServiceURL(ADDRESSES_URL_LAST_STATE, request));
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
 
     private Address getAddress(Map<String, String[]> parameters) throws ServiceException {
-        AddressValidator addressValidator = AddressValidator.getInstance();
-        UserValidator userValidator = UserValidator.getInstance();
-
         try {
-            Long addressId = getAddressId(parameters, allowEmpty);
-            String addressBuilding = addressValidator.validateBuilding(parameters.get(ADDRESS_BUILDING)[0], !allowEmpty);
-            String addressFlat = addressValidator.validateFlat(parameters.get(ADDRESS_FLAT)[0], allowEmpty);
-            Long addressStreetId = getStreetId(parameters, !allowEmpty);
+            Long addressId = addressValidator.validateAndGetId(parameters.get(ADDRESS_ID)[0], allowEmpty);
+            String addressBuilding = addressValidator.validateAndGetBuilding(parameters.get(ADDRESS_BUILDING)[0], !allowEmpty);
+            String addressFlat = addressValidator.validateAndGetFlat(parameters.get(ADDRESS_FLAT)[0], allowEmpty);
+            Long addressStreetId = addressValidator.validateAndGetId(parameters.get(STREET_ID)[0], !allowEmpty);
             Long userId;
 
             Address address = new Address();
@@ -74,17 +72,15 @@ public class AddAddressService extends AbstractService {
             address.getStreet().setId(addressStreetId);
 
             if (parameters.containsKey(TRANSFER_USER_ID)) {
-                userId = userValidator.validateId(parameters.get(TRANSFER_USER_ID)[0], !allowEmpty);
+                userId = userValidator.validateAndGetId(parameters.get(TRANSFER_USER_ID)[0], !allowEmpty);
                 address.setUserId(userId);
             } else if (parameters.containsKey(USER_ID)) {
-                userId = getUserId(parameters, !allowEmpty);
+                userId = userValidator.validateAndGetId(parameters.get(TRANSFER_USER_ID)[0], !allowEmpty);
                 address.setUserId(userId);
             }
 
             return address;
-        } catch (ValidationException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
+        } catch (ValidationException | DAOException e) {
             throw new ServiceException(e);
         }
     }

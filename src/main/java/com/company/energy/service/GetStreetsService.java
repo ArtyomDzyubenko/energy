@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractStreetDAO;
+import com.company.energy.dao.StreetDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 
@@ -13,6 +15,8 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.STREETS_JSP;
 
 public class GetStreetsService extends AbstractService {
+    private static final AbstractStreetDAO streetDAO = StreetDAO.getInstance();
+
     private static GetStreetsService instance;
 
     private GetStreetsService() throws DAOException {}
@@ -33,11 +37,7 @@ public class GetStreetsService extends AbstractService {
             saveLastServiceURL(STREETS_URL_LAST_STATE, request);
             request.setAttribute(STREETS_ATTRIBUTE, streets);
             request.getRequestDispatcher(STREETS_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
+        } catch (ServletException | IOException | DAOException e) {
             throw new ServiceException(e);
         }
     }

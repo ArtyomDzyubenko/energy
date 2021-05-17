@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractUserDAO;
+import com.company.energy.dao.UserDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 import com.company.energy.exception.ValidationException;
@@ -20,9 +22,12 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class AuthService extends AbstractService {
+    private static final List<String> allowedParameters = new ArrayList<>();
+    private static String authorizedUserSessionId = EMPTY_STRING;
+
+    private static final AbstractUserDAO userDAO = UserDAO.getInstance();
+
     private static AuthService instance;
-    private List<String> allowedParameters = new ArrayList<>();
-    private String authorizedUserSessionId = EMPTY_STRING;
 
     private AuthService() throws DAOException {
         init();
@@ -57,13 +62,7 @@ public class AuthService extends AbstractService {
                 String errorMessage = LanguageService.getInstance().getLocalization().getString("incorrectLoginPassword");
                 throw new SecurityException(errorMessage);
             }
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        } catch (ValidationException e) {
+        } catch (ServletException | IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
     }
@@ -75,8 +74,8 @@ public class AuthService extends AbstractService {
     private User getAuthUser(Map<String, String[]> parameters) throws ValidationException, DAOException {
         UserValidator userValidator = UserValidator.getInstance();
 
-        String userLogin = userValidator.validateLogin(parameters.get(USER_LOGIN)[0], !allowEmpty);
-        String userPassword = userValidator.validatePassword(parameters.get(USER_PASSWORD)[0], !allowEmpty);
+        String userLogin = userValidator.validateAndGetLogin(parameters.get(USER_LOGIN)[0], !allowEmpty);
+        String userPassword = userValidator.validateAndGetPassword(parameters.get(USER_PASSWORD)[0], !allowEmpty);
 
         return userDAO.getUserByLoginAndPassword(userLogin, userPassword);
     }

@@ -10,8 +10,8 @@ import java.util.Map;
 import static com.company.energy.util.Constants.*;
 
 public class ServiceFactory {
-    private Logger logger = Logger.getLogger(ServiceFactory.class);
-    private Map<String, AbstractService> serviceMap = new HashMap<>();
+    private static final Logger logger = Logger.getLogger(ServiceFactory.class);
+    private static final Map<String, AbstractService> serviceMap = new HashMap<>();
 
     private static ServiceFactory instance;
 

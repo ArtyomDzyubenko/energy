@@ -1,5 +1,7 @@
 package com.company.energy.service;
 
+import com.company.energy.dao.AbstractMeterReaderDAO;
+import com.company.energy.dao.MeterReaderDAO;
 import com.company.energy.exception.DAOException;
 import com.company.energy.exception.ServiceException;
 
@@ -13,6 +15,8 @@ import static com.company.energy.util.Constants.*;
 import static com.company.energy.util.Constants.METER_READERS_JSP;
 
 public class GetMeterReadersService extends AbstractService {
+    private static final AbstractMeterReaderDAO meterReaderDAO = MeterReaderDAO.getInstance();
+
     private static GetMeterReadersService instance;
 
     private GetMeterReadersService() throws DAOException { }
@@ -33,11 +37,7 @@ public class GetMeterReadersService extends AbstractService {
             saveLastServiceURL(METER_READERS_URL_LAST_STATE, request);
             request.setAttribute(METER_READERS_ATTRIBUTE, readers);
             request.getRequestDispatcher(METER_READERS_JSP).forward(request, response);
-        } catch (ServletException e) {
-            throw new ServiceException(e);
-        } catch (IOException e) {
-            throw new ServiceException(e);
-        } catch (DAOException e) {
+        } catch (ServletException | IOException | DAOException e) {
             throw new ServiceException(e);
         }
     }
