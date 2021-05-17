@@ -32,7 +32,7 @@ public final class MeterReaderParser {
         return instance;
     }
 
-    int getMeterNumber(String input) {
+    public int getMeterNumber(String input) {
         String meterNumberString = input.substring(START_METER_NUMBER_STRING_POSITION, END_METER_NUMBER_STRING_POSITION);
         stringBuilder.setLength(0);
         String out = stringBuilder.append(meterNumberString).reverse().toString();
@@ -40,7 +40,7 @@ public final class MeterReaderParser {
         return Integer.parseInt(out, 16);
     }
 
-    int getTariffNumber(String input) {
+    public int getTariffNumber(String input) {
         String tariffNumberString = input.substring(START_TARIFF_NUMBER_STRING_POSITION, END_TARIFF_NUMBER_STRING_POSITION);
         stringBuilder.setLength(0);
         String out = stringBuilder.append(tariffNumberString).reverse().toString();
@@ -48,7 +48,7 @@ public final class MeterReaderParser {
         return Integer.parseInt(out, 16) + 1;   //tariff number starts from 0
     }
 
-    Timestamp getDate (String input) {
+    public Timestamp getDate (String input) {
         String secondsString = input.substring(START_SECONDS_STRING_POSITION, END_SECONDS_STRING_POSITION);
         stringBuilder.setLength(0);
         long UNIXSeconds =  Long.parseLong(stringBuilder.append(secondsString).reverse().toString(), 16) + OFFSET;
@@ -56,7 +56,7 @@ public final class MeterReaderParser {
         return Timestamp.valueOf(LocalDateTime.ofEpochSecond(UNIXSeconds, 0, ZoneOffset.UTC));
     }
 
-    Float getMeasurementValue(String input) {
+    public Float getMeasurementValue(String input) {
         String measurementString = input.substring(START_MEASUREMENT_STRING_POSITION, END_MEASUREMENT_STRING_POSITION);
         stringBuilder.setLength(0);
         byte[] bytes = stringToByteArray(stringBuilder.append(measurementString).reverse().toString());
@@ -75,23 +75,19 @@ public final class MeterReaderParser {
         return binaryStringToFloat32(result);
     }
 
-    String getDataString(String input) {
+    public String getDataString(String input) {
         return input.substring(DATA_STRING_START_POSITION, DATA_STRING_END_POSITION);
     }
 
-    String getChecksum(String input) {
+    public String getChecksum(String input) {
         return input.substring(CHECKSUM_STRING_START_POSITION, CHECKSUM_STRING_END_POSITION);
     }
 
-    byte[] stringToByteArray(String s) {
+    public byte[] stringToByteArray(String s) {
         return DatatypeConverter.parseHexBinary(s);
     }
 
-    private String byteToBinaryString(byte input) {
-        return Integer.toBinaryString((input & 0xFF) + 0x100).substring(1);
-    }
-
-    String swapStringSymbols(String input) {
+    public String swapStringSymbols(String input) {
         char[] out = input.toCharArray();
 
         for (int i = 0; i < out.length-1; i += 2) {
@@ -101,6 +97,10 @@ public final class MeterReaderParser {
         }
 
         return String.valueOf(out);
+    }
+
+    private String byteToBinaryString(byte input) {
+        return Integer.toBinaryString((input & 0xFF) + 0x100).substring(1);
     }
 
     private Float binaryStringToFloat32(String Binary ) {
