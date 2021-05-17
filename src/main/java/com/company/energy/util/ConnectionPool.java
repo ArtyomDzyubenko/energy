@@ -24,7 +24,7 @@ public final class ConnectionPool implements IConnectionPool {
         init();
     }
 
-    public static IConnectionPool getInstance() throws DAOException {
+    public static IConnectionPool getInstance() {
         return instance;
     }
 
