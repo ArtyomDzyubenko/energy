@@ -3,8 +3,8 @@ package com.company.energy.dao;
 import com.company.energy.exception.DAOException;
 import com.company.energy.model.Language;
 import com.company.energy.util.Constants;
+import com.company.energy.util.PooledConnection;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,9 +19,10 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
 
     List<Language> getLanguages(Long id, String query) throws DAOException {
         List<Language> languages = new ArrayList<>();
-        Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
+
             if (id != null) {
                 preparedStatement.setLong(1, id);
             }
@@ -33,8 +34,6 @@ public abstract class AbstractLanguageDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return languages;

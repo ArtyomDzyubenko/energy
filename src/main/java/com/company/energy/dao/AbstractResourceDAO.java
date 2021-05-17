@@ -3,8 +3,8 @@ package com.company.energy.dao;
 import com.company.energy.exception.DAOException;
 import com.company.energy.model.Resource;
 import com.company.energy.util.Constants;
+import com.company.energy.util.PooledConnection;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,9 +23,9 @@ public abstract class AbstractResourceDAO extends AbstractDAO {
 
     List<Resource> getResources(Long id, String query) throws DAOException {
         List<Resource> resources = new ArrayList<>();
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             if (id != null) {
                 preparedStatement.setLong(1, id);
             }
@@ -37,23 +37,19 @@ public abstract class AbstractResourceDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return resources;
     }
 
     void addOrEditResource(Resource resource, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setResourceToPreparedStatement(resource, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 

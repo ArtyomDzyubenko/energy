@@ -6,6 +6,7 @@ import com.company.energy.model.Resource;
 import com.company.energy.service.AuthService;
 import com.company.energy.util.Constants;
 import com.company.energy.util.Encryption;
+import com.company.energy.util.PooledConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,9 +23,10 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
 
     List<Meter> getMeters(Long id, String query) throws DAOException {
         List<Meter> meters = new ArrayList<>();
-        Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
+
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -33,23 +35,19 @@ public abstract class AbstractMeterDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return meters;
     }
 
     void addOrEditMeter(Meter meter, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setMeterToPreparedStatement(meter, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 

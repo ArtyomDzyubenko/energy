@@ -5,28 +5,37 @@ import com.company.energy.model.User;
 import com.company.energy.service.AuthService;
 import com.company.energy.util.Constants;
 import com.company.energy.util.Encryption;
+import com.company.energy.util.PooledConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractUserDAO extends AbstractDAO {
-    AbstractUserDAO() throws DAOException {}
+    AbstractUserDAO() throws DAOException {
+    }
 
     public abstract List<User> getAll() throws DAOException;
+
     public abstract List<User> getUserById(Long id) throws DAOException;
+
     public abstract User getUserByLoginAndPassword(String login, String password) throws DAOException;
+
     public abstract void addUser(User user) throws DAOException;
+
     public abstract void editUser(User user) throws DAOException;
+
     public abstract void registerUser(User user) throws DAOException;
+
     public abstract void updateRegisteredUser(User user) throws DAOException;
+
     public abstract void deleteUserById(Long id) throws DAOException;
 
     List<User> getUsers(Long id, String query) throws DAOException {
         List<User> users = new ArrayList<>();
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             if (id != null) {
                 preparedStatement.setLong(1, id);
             }
@@ -38,8 +47,6 @@ public abstract class AbstractUserDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return users;
@@ -48,9 +55,9 @@ public abstract class AbstractUserDAO extends AbstractDAO {
     User getUser(String login, String password, String query) throws DAOException {
         User user = new User();
 
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, Encryption.encrypt(password));
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -60,36 +67,30 @@ public abstract class AbstractUserDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return user;
     }
 
     void addOrEditUser(User user, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setUserToPreparedStatement(user, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 
     void registerUser(User user, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setRegisteredUserToPreparedStatement(user, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 

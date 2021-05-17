@@ -6,8 +6,8 @@ import com.company.energy.model.Meter;
 import com.company.energy.service.AuthService;
 import com.company.energy.util.Constants;
 import com.company.energy.util.Encryption;
+import com.company.energy.util.PooledConnection;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,9 +30,10 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
 
     List<Measurement> getMeasurements(Long id, String query) throws DAOException {
         List<Measurement> measurements = new ArrayList<>();
-        Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
+
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -41,32 +42,28 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return  measurements;
     }
 
     void addOrEditMeasurement(Measurement measurement, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setMeasurementToPreparedStatement(measurement, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 
     void addMeasurementsFromMeters(List<Meter> meters, String query) throws DAOException{
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             for (Meter meter : meters) {
-                Long meterId = getMeterIdByMeterNumber(meter.getNumber(), connection);
+                Long meterId = getMeterIdByMeterNumber(meter.getNumber());
                 meter.setId(meterId);
 
                 if (!meterId.equals(Constants.LONG_ZERO)) {
@@ -76,13 +73,13 @@ public abstract class AbstractMeasurementDAO extends AbstractDAO{
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 
-    private Long getMeterIdByMeterNumber(int meterNumber, Connection connection) throws DAOException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement(GET_METER_BY_METER_NUMBER)) {
+    private Long getMeterIdByMeterNumber(int meterNumber) throws DAOException {
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(GET_METER_BY_METER_NUMBER)) {
+
             preparedStatement.setInt(1, meterNumber);
             ResultSet resultSet = preparedStatement.executeQuery();
 

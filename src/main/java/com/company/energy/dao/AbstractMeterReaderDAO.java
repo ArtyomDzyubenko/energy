@@ -2,13 +2,14 @@ package com.company.energy.dao;
 
 import com.company.energy.exception.DAOException;
 import com.company.energy.model.MeterReader;
+import com.company.energy.util.PooledConnection;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.company.energy.util.Constants.*;
 
 public abstract class AbstractMeterReaderDAO extends AbstractDAO {
@@ -22,9 +23,10 @@ public abstract class AbstractMeterReaderDAO extends AbstractDAO {
 
     List<MeterReader> getMeterReaders(Long id, String query) throws DAOException {
         List<MeterReader> meterReaders = new ArrayList<>();
-        Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
+
             if (id != null) {
                 preparedStatement.setLong(1, id);
             }
@@ -36,23 +38,19 @@ public abstract class AbstractMeterReaderDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return meterReaders;
     }
 
     void addOrEditMeterReader(MeterReader meterReader, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setMeterReaderToPreparedStatement(meterReader, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 

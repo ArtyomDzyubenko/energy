@@ -5,6 +5,7 @@ import com.company.energy.model.Address;
 import com.company.energy.model.Street;
 import com.company.energy.service.AuthService;
 import com.company.energy.util.Encryption;
+import com.company.energy.util.PooledConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,9 +26,10 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
 
     List<Address> getAddresses(Long id, String query) throws DAOException {
         List<Address> addresses = new ArrayList<>();
-        Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
+
             if (id != null) {
                 preparedStatement.setLong(1, id);
             }
@@ -39,23 +41,19 @@ public abstract class AbstractAddressDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return addresses;
     }
 
     void addOrEditAddress(Address address, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setAddressToPreparedStatement(address, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 

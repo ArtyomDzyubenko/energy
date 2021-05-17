@@ -6,6 +6,7 @@ import com.company.energy.model.Measurement;
 import com.company.energy.model.Meter;
 import com.company.energy.service.AuthService;
 import com.company.energy.util.Constants;
+import com.company.energy.util.PooledConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,9 +25,10 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
 
     List<Invoice> getInvoices(Long id, String query) throws DAOException {
         List<Invoice> invoices = new ArrayList<>();
-        Connection connection = pool.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
+
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -35,37 +37,31 @@ public abstract class AbstractInvoiceDAO extends AbstractDAO{
             }
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return invoices;
     }
 
     void addInvoice(Invoice invoice, String query) throws DAOException{
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setInvoiceToPreparedStatement(invoice, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 
     void setPayStatus(Long id, boolean payStatus, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(2, id);
             preparedStatement.setBoolean(1, payStatus);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 

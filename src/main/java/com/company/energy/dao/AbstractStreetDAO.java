@@ -2,15 +2,15 @@ package com.company.energy.dao;
 
 import com.company.energy.exception.DAOException;
 import com.company.energy.model.Street;
+import com.company.energy.util.PooledConnection;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.company.energy.util.Constants.*;
-import static com.company.energy.util.Constants.LONG_ZERO;
 
 public abstract class AbstractStreetDAO extends AbstractDAO {
     AbstractStreetDAO() throws DAOException { }
@@ -24,9 +24,9 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
 
     List<Street> getStreets(Long id, String query) throws DAOException {
         List<Street> streets = new ArrayList<>();
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             if (id != null) {
                 preparedStatement.setLong(1, id);
             }
@@ -38,23 +38,19 @@ public abstract class AbstractStreetDAO extends AbstractDAO {
             }
         } catch (SQLException e) {
             throw new DAOException(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
 
         return streets;
     }
 
     void addOrEditStreet(Street street, String query) throws DAOException {
-        Connection connection = pool.getConnection();
+        try (PooledConnection connection = pool.getConnection();
+             PreparedStatement preparedStatement = connection.getConnection().prepareStatement(query)) {
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setStreetToPreparedStatement(street, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             exceptionHandler.getExceptionMessage(e);
-        } finally {
-            pool.releaseConnection(connection);
         }
     }
 
