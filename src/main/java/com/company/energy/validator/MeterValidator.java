@@ -16,15 +16,15 @@ public class MeterValidator extends Validator {
         return instance;
     }
 
-    public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
+    public Long validateAndGetId(String id, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("meterId");
 
-        return validateLongField(id, fieldName, allowEmpty);
+        return validateAndGetLongField(id, fieldName, allowEmpty);
     }
 
-    public Integer validateNumber(String number, boolean allowEmpty) throws ValidationException, DAOException {
+    public Integer validateAndGetNumber(String number, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("meterNumber");
 
-        return validateIntField(number, fieldName, allowEmpty);
+        return validateAndGetIntField(number, fieldName, allowEmpty);
     }
 }

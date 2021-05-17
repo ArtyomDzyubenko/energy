@@ -9,10 +9,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-class Validator {
-    StringBuilder concat = new StringBuilder();
-
-    String validateStringField(String field, int length, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
+public class Validator {
+    public String validateAndGetStringField(String field, int length, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
         if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return Constants.EMPTY_STRING;
         }
@@ -22,7 +20,7 @@ class Validator {
         return field;
     }
 
-    String validateStringField(String field, int length, String regex, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetStringField(String field, int length, String regex, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
         if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return Constants.EMPTY_STRING;
         }
@@ -34,14 +32,13 @@ class Validator {
         if (match) {
             return field;
         } else {
-            concat.setLength(0);
-            String errorMessage = concat.append(getErrorLocalization("incorrectSymbols")).append(" ").append(fieldName).toString();
-            
+            String errorMessage = getErrorLocalization("incorrectSymbols") + " " + fieldName;
+
             throw new ValidationException(errorMessage);
         }
     }
 
-    Long validateLongField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
+    public Long validateAndGetLongField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
         if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return Constants.LONG_ZERO;
         }
@@ -51,8 +48,7 @@ class Validator {
         try {
             out = Long.parseLong(field);
         } catch (NumberFormatException e) {
-            concat.setLength(0);
-            String errorMessage = getValueNotANumberErrorString(fieldName);
+             String errorMessage = getValueNotANumberErrorString(fieldName);
 
             throw new ValidationException(errorMessage);
         }
@@ -62,7 +58,7 @@ class Validator {
         return out;
     }
 
-    Integer validateIntField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
+    public Integer validateAndGetIntField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
         if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return Constants.INT_ZERO;
         }
@@ -72,9 +68,8 @@ class Validator {
         try {
             out = Integer.parseInt(field);
         } catch (NumberFormatException e) {
-            concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
-            
+
             throw new ValidationException(errorMessage);
         }
 
@@ -83,7 +78,7 @@ class Validator {
         return out;
     }
 
-    Double validateDoubleField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
+    public Double validateAndGetDoubleField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
         if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return Constants.DOUBLE_ZERO;
         }
@@ -93,9 +88,8 @@ class Validator {
         try {
             out = Double.parseDouble(field);
         } catch (NumberFormatException e) {
-            concat.setLength(0);
             String errorMessage = getValueNotANumberErrorString(fieldName);
-            
+
             throw new ValidationException(errorMessage);
         }
 
@@ -104,7 +98,7 @@ class Validator {
         return out;
     }
 
-    Timestamp validateDateTimeField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
+    public Timestamp validateAndGetDateTimeField(String field, String fieldName, boolean allowEmpty) throws ValidationException, DAOException {
         if (checkForEmptyField(field, fieldName, allowEmpty)) {
             return new Timestamp(new Date().getTime());
         }
@@ -114,10 +108,8 @@ class Validator {
         try {
             out = Timestamp.valueOf(field);
         } catch (IllegalArgumentException e) {
-            concat.setLength(0);
-            String errorMessage = concat.append(getErrorLocalization("incorrectDateTimeFormat"))
-                    .append(" ").append(fieldName).toString();
-            
+            String errorMessage = getErrorLocalization("incorrectDateTimeFormat") + " " + fieldName;
+
             throw new ValidationException(errorMessage);
         }
 
@@ -128,9 +120,7 @@ class Validator {
         if (field.isEmpty() && allowEmpty) {
             return true;
         } else if (field.isEmpty()) {
-            concat.setLength(0);
-            String errorMessage = concat.append(getErrorLocalization("emptyNotAllowed"))
-                    .append(" ").append(fieldName).toString();
+            String errorMessage = getErrorLocalization("emptyNotAllowed") + " " + fieldName;
 
             throw new ValidationException(errorMessage);
         }
@@ -140,29 +130,25 @@ class Validator {
 
     private void checkFieldLength(String field, String fieldName, int length) throws ValidationException, DAOException {
         if (field.length() > length) {
-            concat.setLength(0);
-            String errorMessage = concat.append(getErrorLocalization("stringLengthError"))
-                    .append(" ").append(length).append(" : ").append(fieldName).toString();
+            String errorMessage = getErrorLocalization("stringLengthError") + " " + length + " : " + fieldName;
 
             throw new ValidationException(errorMessage);
         }
     }
 
     private void checkNumberForNegativeValue(Number value, String fieldName) throws ValidationException, DAOException {
-        if ((value instanceof Long && value.longValue() < 0)
-                || (value instanceof Double && value.doubleValue() < 0)
-                || (value instanceof Integer && value.intValue() < 0)) {
+        if ((value instanceof Long && value.longValue() < 0) ||
+            (value instanceof Double && value.doubleValue() < 0) ||
+            (value instanceof Integer && value.intValue() < 0)) {
 
-            concat.setLength(0);
-            String errorMessage = concat.append(getErrorLocalization("negativeValueError"))
-                    .append(" ").append(fieldName).toString();
+            String errorMessage = getErrorLocalization("negativeValueError") + " " + fieldName;
 
             throw new ValidationException(errorMessage);
         }
     }
 
     private String getValueNotANumberErrorString(String fieldName) throws DAOException {
-        return concat.append(getErrorLocalization("valueNotANumberError")).append(" ").append(fieldName).toString();
+        return getErrorLocalization("valueNotANumberError") + " " + fieldName;
     }
 
     String getErrorLocalization(String key) throws DAOException {

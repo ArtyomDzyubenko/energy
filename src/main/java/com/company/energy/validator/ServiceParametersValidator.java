@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ServiceParametersValidator extends Validator {
-    private StringBuilder concat = new StringBuilder();
     private static ServiceParametersValidator instance;
 
     private ServiceParametersValidator() {}
@@ -24,9 +23,7 @@ public class ServiceParametersValidator extends Validator {
     public void validate(Map<String, String[]> inputParameters, List<String> validParameters) throws ValidationException, DAOException {
         for(String parameter: validParameters) {
             if (!inputParameters.containsKey(parameter)) {
-                concat.setLength(0);
-                String errorMessage = concat.append(getErrorLocalization("parameterNotFound"))
-                        .append(" ").append(parameter).toString();
+                String errorMessage = getErrorLocalization("parameterNotFound") + " " + parameter;
 
                 throw new ValidationException(errorMessage);
             }

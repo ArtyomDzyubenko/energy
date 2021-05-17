@@ -17,45 +17,45 @@ public class UserValidator extends Validator {
         return instance;
     }
 
-    public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
+    public Long validateAndGetId(String id, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("userId");
         
-        return validateLongField(id, fieldName, allowEmpty);
+        return validateAndGetLongField(id, fieldName, allowEmpty);
     }
 
-    public String validateLogin(String login, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetLogin(String login, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("login");
 
-        return validateStringField(login, Constants.STRING_MAX_LENGTH, Constants.USER_LOGIN_REGEX, fieldName, allowEmpty);
+        return validateAndGetStringField(login, Constants.STRING_MAX_LENGTH, Constants.USER_LOGIN_REGEX, fieldName, allowEmpty);
     }
 
-    public String validatePassword(String password, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetPassword(String password, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("password");
 
-        return validateStringField(password, Constants.STRING_MAX_LENGTH, fieldName, allowEmpty);
+        return validateAndGetStringField(password, Constants.STRING_MAX_LENGTH, fieldName, allowEmpty);
     }
 
-    public String validateFirstName(String firstName, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetFirstName(String firstName, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("firstName");
 
-        return validateStringField(firstName, Constants.STRING_MAX_LENGTH, Constants.USER_FIRST_LAST_NAME_REGEX, fieldName, allowEmpty);
+        return validateAndGetStringField(firstName, Constants.STRING_MAX_LENGTH, Constants.USER_FIRST_LAST_NAME_REGEX, fieldName, allowEmpty);
     }
 
-    public String validateLastName(String lastName, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetLastName(String lastName, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("lastName");
 
-        return validateStringField(lastName, Constants.STRING_MAX_LENGTH, Constants.USER_FIRST_LAST_NAME_REGEX, fieldName, allowEmpty);
+        return validateAndGetStringField(lastName, Constants.STRING_MAX_LENGTH, Constants.USER_FIRST_LAST_NAME_REGEX, fieldName, allowEmpty);
     }
 
-    public Long validatePhone(String phone, boolean allowEmpty) throws ValidationException, DAOException {
+    public Long validateAndGetPhone(String phone, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("phone");
-        Long out = validateLongField(phone, fieldName, allowEmpty);
+        Long out = validateAndGetLongField(phone, fieldName, allowEmpty);
 
         if (out < Constants.MIN_PHONE_NUMBER || out > Constants.MAX_PHONE_NUMBER ) {
-            concat.setLength(0);
-            String errorMessage = concat.append(getErrorLocalization("outOfRange")).append(" ")
-                    .append(Constants.MIN_PHONE_NUMBER).append(" - ").append(Constants.MAX_PHONE_NUMBER).append(" : ")
-                    .append(getErrorLocalization("phone")).toString();
+            String errorMessage =
+                    getErrorLocalization("outOfRange") + " " +
+                    Constants.MIN_PHONE_NUMBER + " - " + Constants.MAX_PHONE_NUMBER + " : " +
+                    getErrorLocalization("phone");
 
             throw new ValidationException(errorMessage);
         }
@@ -63,15 +63,15 @@ public class UserValidator extends Validator {
         return out;
     }
 
-    public String validateEmail(String email, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetEmail(String email, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("email");
 
-        return validateStringField(email, Constants.STRING_MAX_LENGTH, Constants.EMAIL_REGEX, fieldName, allowEmpty);
+        return validateAndGetStringField(email, Constants.STRING_MAX_LENGTH, Constants.EMAIL_REGEX, fieldName, allowEmpty);
     }
 
-    public Integer validatePersonalAccount(String personalAccount, boolean allowEmpty) throws ValidationException, DAOException {
+    public Integer validateAndGetPersonalAccount(String personalAccount, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("personalAccount");
 
-        return validateIntField(personalAccount, fieldName, allowEmpty);
+        return validateAndGetIntField(personalAccount, fieldName, allowEmpty);
     }
 }

@@ -17,15 +17,15 @@ public class StreetValidator extends Validator {
         return instance;
     }
 
-    public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
+    public Long validateAndGetId(String id, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("streetId");
 
-        return validateLongField(id,  fieldName, allowEmpty);
+        return validateAndGetLongField(id,  fieldName, allowEmpty);
     }
 
-    public String validateName(String name, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetName(String name, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("streetName");
 
-        return validateStringField(name, Constants.STRING_MAX_LENGTH, fieldName, allowEmpty);
+        return validateAndGetStringField(name, Constants.STRING_MAX_LENGTH, fieldName, allowEmpty);
     }
 }

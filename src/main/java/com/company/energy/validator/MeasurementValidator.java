@@ -18,21 +18,21 @@ public class MeasurementValidator extends Validator {
         return instance;
     }
 
-    public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
+    public Long validateAndGetId(String id, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("measurementId");
 
-        return validateLongField(id, fieldName, allowEmpty);
+        return validateAndGetLongField(id, fieldName, allowEmpty);
     }
 
-    public Timestamp validateDate(String date, boolean allowEmpty) throws ValidationException, DAOException {
+    public Timestamp validateAndGetDate(String date, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("date");
 
-        return validateDateTimeField(date, fieldName, allowEmpty);
+        return validateAndGetDateTimeField(date, fieldName, allowEmpty);
     }
 
-    public Double validateValue(String value, boolean allowEmpty) throws ValidationException, DAOException {
+    public Double validateAndGetValue(String value, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("value");
 
-        return validateDoubleField(value, fieldName, allowEmpty);
+        return validateAndGetDoubleField(value, fieldName, allowEmpty);
     }
 }

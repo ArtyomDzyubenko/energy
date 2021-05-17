@@ -17,22 +17,22 @@ public class ResourceValidator extends Validator {
         return instance;
     }
 
-    public Long validateId(String id, boolean allowEmpty) throws ValidationException, DAOException {
+    public Long validateAndGetId(String id, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("resourceId");
 
-        return validateLongField(id, fieldName, allowEmpty);
+        return validateAndGetLongField(id, fieldName, allowEmpty);
     }
 
-    public String validateName(String name, boolean allowEmpty) throws ValidationException, DAOException {
+    public String validateAndGetName(String name, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("resourceName");
 
-        return validateStringField(name, Constants.STRING_MAX_LENGTH, fieldName, allowEmpty);
+        return validateAndGetStringField(name, Constants.STRING_MAX_LENGTH, fieldName, allowEmpty);
     }
 
 
-    public Double validateCost(String cost, boolean allowEmpty) throws ValidationException, DAOException {
+    public Double validateAndGetCost(String cost, boolean allowEmpty) throws ValidationException, DAOException {
         String fieldName = getErrorLocalization("resourceCost");
 
-        return validateDoubleField(cost, fieldName, allowEmpty);
+        return validateAndGetDoubleField(cost, fieldName, allowEmpty);
     }
 }
