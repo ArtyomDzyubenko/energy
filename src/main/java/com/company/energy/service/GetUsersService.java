@@ -8,6 +8,8 @@ import com.company.energy.exception.ServiceException;
 import java.io.IOException;
 import java.util.List;
 import com.company.energy.model.User;
+import com.company.energy.util.Encryption;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +41,8 @@ public class GetUsersService extends AbstractService {
             } else {
                 users = userDAO.getUserById(authUser.getId());
             }
+
+            users.forEach(user -> user.setSecretKey(Encryption.encrypt(user.getId() + request.getSession().getId())));
 
             request.setAttribute(USERS_ATTRIBUTE, users);
 

@@ -8,6 +8,7 @@ import com.company.energy.exception.ValidationException;
 
 import java.io.IOException;
 import com.company.energy.model.Measurement;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.AddressValidator;
 import com.company.energy.validator.MeterValidator;
 import com.company.energy.validator.ServiceParametersValidator;
@@ -54,14 +55,13 @@ public class GetMeasurementsService extends AbstractService {
             parametersValidator.validate(parameters, allowedParameters);
 
             Long meterId = meterValidator.validateAndGetId(parameters.get(METER_ID)[0], !allowEmpty);
-            String secretKey = parameters.get(SECRET_KEY)[0];
-            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
-            parametersValidator.validateSecretKey(meterId.toString(), authorizedUserSessionId, secretKey);
+            parametersValidator.validateSecretKey(meterId.toString(), request.getSession().getId(), parameters.get(SECRET_KEY)[0]);
 
             Long addressId = addressValidator.validateAndGetId(parameters.get(ADDRESS_ID)[0], !allowEmpty);
             Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
             List<Measurement> measurements = measurementDAO.getMeasurementsByMeterId(meterId);
+            measurements.forEach(measurement -> measurement.setSecretKey(Encryption.encrypt(measurement.getId() + request.getSession().getId())));
 
             saveLastServiceURL(MEASUREMENTS_URL_LAST_STATE, request);
             request.setAttribute(METER_ID, meterId);

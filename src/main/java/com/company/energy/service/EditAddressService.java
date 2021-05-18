@@ -7,6 +7,7 @@ import com.company.energy.exception.ValidationException;
 import com.company.energy.model.Address;
 import com.company.energy.model.Street;
 import com.company.energy.model.User;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.AddressValidator;
 import com.company.energy.validator.ServiceParametersValidator;
 import com.company.energy.validator.UserValidator;
@@ -57,6 +58,8 @@ public class EditAddressService extends AbstractService {
             Long addressId = addressValidator.validateAndGetId(parameters.get(ADDRESS_ID)[0], !allowEmpty);
 
             Address address = addressDAO.getAddressById(addressId).get(0);
+            address.setSecretKey(Encryption.encrypt(address.getId() + request.getSession().getId()));
+
             List<Street> streets = streetDAO.getAll();
             List<User> users = userDAO.getAll();
 

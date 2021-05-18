@@ -32,6 +32,7 @@ public class AddInvoiceService extends AbstractService {
     private static final MeasurementValidator measurementValidator = MeasurementValidator.getInstance();
     private static final InvoiceValidator invoiceValidator = InvoiceValidator.getInstance();
     private static final AddressValidator addressValidator = AddressValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
     private static AddInvoiceService instance;
 
@@ -50,8 +51,6 @@ public class AddInvoiceService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
-
             Map<String, String[]> parameters = request.getParameterMap();
             parametersValidator.validate(parameters, allowedParameters);
 

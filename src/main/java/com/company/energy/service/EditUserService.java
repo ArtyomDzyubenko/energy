@@ -8,6 +8,7 @@ import com.company.energy.exception.ValidationException;
 
 import java.io.IOException;
 import com.company.energy.model.User;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.ServiceParametersValidator;
 import com.company.energy.validator.UserValidator;
 
@@ -48,6 +49,7 @@ public class EditUserService extends AbstractService {
 
             Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
             User user = userDAO.getUserById(userId).get(0);
+            user.setSecretKey(Encryption.encrypt(user.getId() + request.getSession().getId()));
 
             request.setAttribute(USER_ATTRIBUTE, user);
             request.getRequestDispatcher(USERS_JSP).forward(request, response);

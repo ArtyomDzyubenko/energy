@@ -131,9 +131,7 @@ public class MeterDAO implements AbstractMeterDAO {
             meter.setResource(new Resource());
         }
 
-        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
         meter.setAddressId(resultSet.getLong(Constants.ADDRESS_ID));
-        meter.setSecretKey(Encryption.encrypt(meterId.toString() + authorizedUserSessionId));
 
         return meter;
     }

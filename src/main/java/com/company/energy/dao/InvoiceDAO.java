@@ -4,7 +4,6 @@ import com.company.energy.exception.DAOException;
 import com.company.energy.model.Invoice;
 import com.company.energy.model.Measurement;
 import com.company.energy.model.Meter;
-import com.company.energy.service.AuthService;
 import com.company.energy.util.ConnectionPool;
 import com.company.energy.util.Constants;
 import com.company.energy.util.IConnectionPool;
@@ -153,12 +152,10 @@ public class InvoiceDAO implements AbstractInvoiceDAO {
             invoice.setEndValue(new Measurement());
         }
 
-        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
         invoice.setConsumption(resultSet.getDouble(Constants.INVOICE_CONSUMPTION));
         invoice.setPrice(resultSet.getDouble(Constants.INVOICE_PRICE));
         invoice.setUserId(resultSet.getLong(Constants.INVOICE_USER_ID));
         invoice.setPaid(resultSet.getBoolean(Constants.INVOICE_IS_PAID));
-        invoice.setSecretKey(invoiceId + authorizedUserSessionId);
 
         return invoice;
     }

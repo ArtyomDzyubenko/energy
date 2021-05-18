@@ -9,6 +9,7 @@ import java.io.IOException;
 import com.company.energy.model.Meter;
 import com.company.energy.model.MeterReader;
 import com.company.energy.model.Resource;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.AddressValidator;
 import com.company.energy.validator.ServiceParametersValidator;
 import com.company.energy.validator.UserValidator;
@@ -56,12 +57,12 @@ public class GetMetersService extends AbstractService {
 
             Long addressId = addressValidator.validateAndGetId(parameters.get(ADDRESS_ID)[0], allowEmpty);
             Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
-            String sKey = request.getParameter(SECRET_KEY);
-            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
-            parametersValidator.validateSecretKey(addressId.toString(), authorizedUserSessionId, sKey);
+            parametersValidator.validateSecretKey(addressId.toString(), request.getSession().getId(), request.getParameter(SECRET_KEY));
 
             List<Meter> meters = meterDAO.getMetersByAddressId(addressId);
+            meters.forEach(meter -> meter.setSecretKey(Encryption.encrypt(meter.getId() + request.getSession().getId())));
+
             List<Resource> resources = resourceDAO.getAll();
             List<MeterReader> readers = meterReaderDAO.getAll();
 

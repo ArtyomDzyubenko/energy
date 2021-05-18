@@ -182,8 +182,6 @@ public class UserDAO implements AbstractUserDAO {
         user.setEmail(resultSet.getString(Constants.USER_EMAIL));
         user.setPersonalAccount(resultSet.getInt(Constants.USER_PERSONAL_ACCOUNT));
         user.setAdmin(resultSet.getBoolean(Constants.USER_IS_ADMIN));
-        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
-        user.setSecretKey(Encryption.encrypt(id + authorizedUserSessionId));
 
         return user;
     }

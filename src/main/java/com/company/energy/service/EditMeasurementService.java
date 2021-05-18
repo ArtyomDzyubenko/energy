@@ -8,6 +8,7 @@ import com.company.energy.exception.ValidationException;
 
 import java.io.IOException;
 import com.company.energy.model.Measurement;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.MeasurementValidator;
 import com.company.energy.validator.ServiceParametersValidator;
 import javax.servlet.ServletException;
@@ -49,6 +50,7 @@ public class EditMeasurementService extends AbstractService {
 
             Long measurementId = measurementValidator.validateAndGetId(parameters.get(MEASUREMENT_ID)[0], !allowEmpty);
             Measurement measurement = measurementDAO.getMeasurementById(measurementId).get(0);
+            measurement.setSecretKey(Encryption.encrypt(measurement.getId() + request.getSession().getId()));
 
             request.setAttribute(MEASUREMENT_ID, measurementId);
             request.setAttribute(MEASUREMENT_ATTRIBUTE, measurement);

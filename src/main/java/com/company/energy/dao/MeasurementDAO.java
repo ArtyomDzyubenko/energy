@@ -166,8 +166,6 @@ public class MeasurementDAO implements AbstractMeasurementDAO {
         measurement.setDateTime(resultSet.getTimestamp(Constants.MEASUREMENT_DATE_TIME));
         measurement.setValue(resultSet.getDouble(Constants.MEASUREMENT_VALUE));
         measurement.setMeterId(resultSet.getLong(Constants.METER_ID));
-        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
-        measurement.setSecretKey(Encryption.encrypt(measurementId.toString() + authorizedUserSessionId));
 
         return measurement;
     }

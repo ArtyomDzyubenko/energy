@@ -11,6 +11,7 @@ import com.company.energy.exception.ValidationException;
 import java.io.IOException;
 import com.company.energy.model.Meter;
 import com.company.energy.model.MeterReader;
+import com.company.energy.util.Encryption;
 import com.company.energy.util.MeterReaderSocket;
 import com.company.energy.validator.MeterReaderValidator;
 import com.company.energy.validator.ServiceParametersValidator;
@@ -56,6 +57,7 @@ public class GetDataFromMeterReaderService extends AbstractService {
             MeterReader meterReader = meterReaderDAO.getMeterReaderById(meterReaderId).get(0);
             MeterReaderSocket socket = MeterReaderSocket.getInstance();
             List<Meter> meters = socket.getMetersFromMeterReader(meterReader.getIPAddress(), meterReader.getPort());
+            meters.forEach(meter -> meter.setSecretKey(Encryption.encrypt(meter.getId() + request.getSession().getId())));
 
             measurementDAO.addMeasurements(meters);
 

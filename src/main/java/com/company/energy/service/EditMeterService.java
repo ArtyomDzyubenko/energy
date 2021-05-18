@@ -10,6 +10,7 @@ import com.company.energy.model.Address;
 import com.company.energy.model.Meter;
 import com.company.energy.model.MeterReader;
 import com.company.energy.model.Resource;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.AddressValidator;
 import com.company.energy.validator.MeterValidator;
 import com.company.energy.validator.ServiceParametersValidator;
@@ -31,6 +32,7 @@ public class EditMeterService extends AbstractService {
     private static final AbstractMeterReaderDAO meterReaderDAO = MeterReaderDAO.getInstance();
     private static final AbstractResourceDAO resourceDAO = ResourceDAO.getInstance();
     private static final MeterValidator meterValidator = MeterValidator.getInstance();
+    private static final ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
 
     private static EditMeterService instance;
 
@@ -49,7 +51,6 @@ public class EditMeterService extends AbstractService {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         try {
-            ServiceParametersValidator parametersValidator = ServiceParametersValidator.getInstance();
             AddressValidator addressValidator = AddressValidator.getInstance();
 
             Map<String, String[]> parameters = request.getParameterMap();
@@ -60,9 +61,12 @@ public class EditMeterService extends AbstractService {
             Long addressId = addressValidator.validateAndGetId(addressIdString, !allowEmpty);
 
             List<Address> addresses = addressDAO.getAll();
+            addresses.forEach(address -> address.setSecretKey(Encryption.encrypt(address.getId().toString() + request.getSession().getId())));
+
             List<Resource> resources = resourceDAO.getAll();
             List<MeterReader> readers = meterReaderDAO.getAll();
             Meter meter = meterDAO.getMeterById(meterId).get(0);
+            meter.setSecretKey(Encryption.encrypt(meter.getId() + request.getSession().getId()));
 
             request.setAttribute(ADDRESSES_ATTRIBUTE, addresses);
             request.setAttribute(METER_READER_ID, meterId);

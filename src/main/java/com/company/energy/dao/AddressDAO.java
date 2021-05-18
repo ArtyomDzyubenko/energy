@@ -3,9 +3,7 @@ package com.company.energy.dao;
 import com.company.energy.exception.DAOException;
 import com.company.energy.model.Address;
 import com.company.energy.model.Street;
-import com.company.energy.service.AuthService;
 import com.company.energy.util.ConnectionPool;
-import com.company.energy.util.Encryption;
 import com.company.energy.util.IConnectionPool;
 import com.company.energy.util.PooledConnection;
 
@@ -146,8 +144,6 @@ public class AddressDAO implements AbstractAddressDAO {
         }
 
         address.setUserId(resultSet.getLong(USER_ID));
-        String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
-        address.setSecretKey(Encryption.encrypt(addressId.toString() + authorizedUserSessionId));
 
         return address;
     }

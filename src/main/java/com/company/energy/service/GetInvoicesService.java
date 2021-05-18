@@ -8,6 +8,7 @@ import com.company.energy.exception.ValidationException;
 
 import java.io.IOException;
 import com.company.energy.model.Invoice;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.ServiceParametersValidator;
 import com.company.energy.validator.UserValidator;
 
@@ -50,11 +51,11 @@ public class GetInvoicesService extends AbstractService {
             parametersValidator.validate(parameters, allowedParameters);
 
             Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
-            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
-            parametersValidator.validateSecretKey(userId.toString(), authorizedUserSessionId, parameters.get(SECRET_KEY)[0]);
+            parametersValidator.validateSecretKey(userId.toString(), request.getSession().getId(), parameters.get(SECRET_KEY)[0]);
 
             List<Invoice> invoices = invoiceDAO.getInvoicesByUserId(userId);
+            invoices.forEach(invoice -> invoice.setSecretKey(Encryption.encrypt(invoice.getId() + request.getSession().getId())));
 
             saveLastServiceURL(INVOICES_URL_LAST_STATE, request);
             request.setAttribute(USER_ID, userId);

@@ -23,7 +23,6 @@ import static com.company.energy.util.Constants.*;
 
 public class AuthService extends AbstractService {
     private static final List<String> allowedParameters = new ArrayList<>();
-    private static String authorizedUserSessionId = EMPTY_STRING;
 
     private static final AbstractUserDAO userDAO = UserDAO.getInstance();
 
@@ -56,7 +55,6 @@ public class AuthService extends AbstractService {
             request.getSession().setAttribute(LANGUAGES_ATTRIBUTE, languages);
 
             if (authUser.getId() != null) {
-                authorizedUserSessionId = request.getSession().getId();
                 request.getRequestDispatcher(SHOW_USERS).forward(request, response);
             } else {
                 String errorMessage = LanguageService.getInstance().getLocalization().getString("incorrectLoginPassword");
@@ -65,10 +63,6 @@ public class AuthService extends AbstractService {
         } catch (ServletException | IOException | DAOException | ValidationException e) {
             throw new ServiceException(e);
         }
-    }
-
-    public String getAuthorizedUserSessionId() {
-        return authorizedUserSessionId;
     }
 
     private User getAuthUser(Map<String, String[]> parameters) throws ValidationException, DAOException {

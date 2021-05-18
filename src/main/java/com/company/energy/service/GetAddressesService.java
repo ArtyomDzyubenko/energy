@@ -11,6 +11,7 @@ import com.company.energy.exception.ValidationException;
 import java.io.IOException;
 import com.company.energy.model.Address;
 import com.company.energy.model.Street;
+import com.company.energy.util.Encryption;
 import com.company.energy.validator.ServiceParametersValidator;
 import com.company.energy.validator.UserValidator;
 
@@ -53,12 +54,12 @@ public class GetAddressesService extends AbstractService {
             parametersValidator.validate(parameters, allowedParameters);
 
             Long userId = userValidator.validateAndGetId(parameters.get(USER_ID)[0], !allowEmpty);
-            String sKey = parameters.get(SECRET_KEY)[0];
-            String authorizedUserSessionId = AuthService.getInstance().getAuthorizedUserSessionId();
 
-            parametersValidator.validateSecretKey(userId.toString(), authorizedUserSessionId, sKey);
+            parametersValidator.validateSecretKey(userId.toString(), request.getSession().getId(), parameters.get(SECRET_KEY)[0]);
 
             List<Address> address = addressDAO.getAddressesByUserId(userId);
+            address.forEach(a -> a.setSecretKey(Encryption.encrypt(a.getId() + request.getSession().getId())));
+
             List<Street> streets = streetDAO.getAll();
 
             saveLastServiceURL(ADDRESSES_URL_LAST_STATE, request);
